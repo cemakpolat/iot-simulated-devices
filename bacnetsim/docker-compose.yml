@@ -1,0 +1,29 @@
+version: '3.8'
+volumes:
+  bacnet:
+  bacnet_test:
+
+services:
+  bacnet-simulation:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "47808:47808"  # Map host port 47808 to container port 47808
+      - "47809:47809"  # Map additional ports if needed
+      - "47810:47810"
+    volumes:
+      - bacnet:/app  # Mount the current directory to /app in the container (optional, for development)
+    environment:
+      - PYTHONUNBUFFERED=1  # Ensure logs are printed immediately
+    restart: unless-stopped  # Restart the container unless manually stopped
+
+  test-bacnet-simulation:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python -m unittest discover  # Run tests
+    volumes:
+      - bacnet_test:/app  # Mount the current directory to /app in the container
+    environment:
+      - PYTHONUNBUFFERED=1  # Ensure logs are printed immediately
