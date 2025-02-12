@@ -12,11 +12,11 @@ For ease of use, a `docker-compose` file is included to streamline the process o
 
 The following libraries are used:
 
-## Client Side
+## Client Side Libraries
 
 - `pysnmp==7.1.16`
 
-## Server Side
+## Server Side Libraries
 
 - `snmp_agent==0.2.3`
 - `psutil==5.9.8`
