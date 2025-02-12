@@ -1,0 +1,29 @@
+services:
+  snmp-server:
+    build:
+      context: ./snmp_server
+      dockerfile: Dockerfile
+    ports:
+      - "11611:11611"
+    networks:
+      - snmp_network
+    restart: unless-stopped
+
+  snmp-client:
+    build:
+      context: ./snmp_client
+      dockerfile: Dockerfile
+    depends_on:
+      - snmp-server
+    networks:
+      - snmp_network
+    environment:
+      - RUNS=10
+      - REQUEST_INTERVAL=3
+      - SNMP_AGENT_HOST=snmp-server
+
+    restart: unless-stopped
+
+networks:
+  snmp_network:
+    driver: bridge
