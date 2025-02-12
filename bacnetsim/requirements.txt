@@ -1,0 +1,2 @@
+bacpypes3~=0.0.98
+bacpypes~=0.18.7
