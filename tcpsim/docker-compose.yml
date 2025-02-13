@@ -1,0 +1,23 @@
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "50002:50002" # Update docker compose
+    environment:
+      - SERVER_HOST=0.0.0.0  # Bind to all interfaces
+      - SERVER_PORT=50002    # Default port
+    container_name: tcp_server
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    depends_on:
+      - server
+    environment:
+      - SERVER_HOST=server  # Use the Docker service name for the server
+      - SERVER_PORT=50002  # Default port
+      - DEVICE_NAME=device_1234  # Unique device name
+    #container_name: tcp_client # disable this if you want to scale the number of clients
