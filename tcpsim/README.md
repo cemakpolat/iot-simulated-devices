@@ -121,7 +121,3 @@ Feel free to contribute to this project by opening issues or submitting pull req
 
 ## License
 This project is open-source and available under the [MIT License](LICENSE).
-
----
-
-This updated `README.md` provides a more comprehensive guide, including prerequisites, project structure, environment variables, and troubleshooting tips. It also improves readability with better formatting and organization. Let me know if you need further adjustments!
