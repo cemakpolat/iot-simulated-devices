@@ -77,13 +77,10 @@ The second part of the code is designed for development and testing without Dock
 
 ## Project Structure
 ```
-.
-├── Dockerfile.client          # Dockerfile for the client
-├── Dockerfile.server          # Dockerfile for the server
+├── client/Dockerfile          # Dockerfile for the client
+├── server/Dockerfile          # Dockerfile for the server
 ├── docker-compose.yml         # Docker Compose configuration
-├── server.py                  # TCP server implementation
-├── client.py                  # TCP client implementation
-├── README.md                  # Project documentation
+├── mono/*.py                  # TCP server, client implementation
 ```
 
 ---
