@@ -20,3 +20,5 @@ The following libraries are used:
 
 - `snmp_agent==0.2.3`
 - `psutil==5.9.8`
+
+For more detail please take a look at the medium link: https://akpolatcem.medium.com/snmp-networks-helpful-reporter-even-in-the-age-of-iot-b9b696f2884e
