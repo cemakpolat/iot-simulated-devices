@@ -11,8 +11,7 @@ Common Use Cases:
 
 This project provides a simple BACnet device simulator implemented using threaded and asynchronous approaches, along with an example featuring a BACnet gateway. The repository contains three distinct implementations:
 
-1.  **Simulating BACnet Devices using Threading**
-2.  **Simulating BACnet Devices using Asynchronous Libraries**
+1.  **Simulating BACnet Devices**
 3.  **Simulating BACnet Gateway and Devices**
 
 You can easily dockerize and run these implementations using Docker Compose if needed.
