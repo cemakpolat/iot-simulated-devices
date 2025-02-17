@@ -17,7 +17,7 @@ on:
 
 jobs:
   bacnet-build-and-test:
-    if: ${{ contains(github.event.head_commit.message, 'bacnetsim') || contains(github.event.head_commit.modified, 'bacnetsim') }}
+    if: ${{ contains(github.event.head_commit.message, 'bacnetsim') || contains(github.event.commits[*].modified, 'bacnetsim/') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -38,7 +38,7 @@ jobs:
           python -m unittest discover bacnetsim  # Run tests for bacnetsim folder
 
   snmp-build-and-test:
-    if: ${{ contains(github.event.head_commit.message, 'snmpsim') || contains(github.event.head_commit.modified, 'snmpsim') }}
+    if: ${{ contains(github.event.head_commit.message, 'snmpsim') || contains(github.event.commits[*].modified, 'snmpsim/') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
