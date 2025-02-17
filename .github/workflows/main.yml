@@ -17,7 +17,7 @@ on:
 
 jobs:
   bacnet-build-and-test:
-    if: ${{ startsWith(github.event.head_commit.message, 'bacnetsim')  || contains(join(github.event.commits.*.message, ', '), 'bacnetsim')}}
+    #if: ${{ startsWith(github.event.head_commit.message, 'bacnetsim')  || contains(join(github.event.commits.*.message, ', '), 'bacnetsim')}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
