@@ -71,7 +71,7 @@ class BACnetDevice:
             except Exception as e:
                 logging.error(f"Error updating telemetry for {self.device.objectName}: {e}")
 
-            await asyncio.sleep(10)  # Update every 10 seconds
+            await asyncio.sleep(10) 
 
 
 async def main():
