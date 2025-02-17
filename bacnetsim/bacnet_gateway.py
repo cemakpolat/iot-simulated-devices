@@ -1,17 +1,14 @@
-import threading
+import asyncio
 import random
-import time
 import logging
 from bacpypes.app import BIPSimpleApplication, BIPForeignApplication
 from bacpypes.local.device import LocalDeviceObject
 from bacpypes.service.device import WhoIsIAmServices, DeviceCommunicationControlServices
 from bacpypes.object import AnalogValueObject
-from bacpypes.core import run, stop
+from bacpypes.core import run_once, stop
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-
-
 class BACnetGateway:
     def __init__(self, device_id, ip_address, port):
         self.device = LocalDeviceObject(
@@ -29,16 +26,18 @@ class BACnetGateway:
     def register_device(self, device_id, device_obj):
         self.devices[device_id] = device_obj
 
-    def respond_to_whois(self, low_limit=None, high_limit=None):
+    async def respond_to_whois(self, low_limit=None, high_limit=None):
         for device_id, device_obj in self.devices.items():
             if low_limit is None or (low_limit <= device_id <= high_limit):
                 device_obj.app.i_am(device_id=device_id)
 
-    def start(self):
+    async def start(self):
         logging.info("Starting BACnet Gateway...")
-        run()
+        while True:
+            await asyncio.sleep(0.1)  # Allow other tasks to run
+            run_once()  # Run the BACpypes core event loop once
 
-    def stop(self):
+    async def stop(self):
         logging.info("Stopping BACnet Gateway...")
         stop()
 
@@ -66,20 +65,18 @@ class SimulatedBACnetDevice:
         )
         self.app.add_object(self.temperature_sensor)
 
-    def update_temperature(self):
-        new_value = round(random.uniform(20.0, 30.0), 1)
-        self.temperature_sensor.presentValue = new_value
-        logging.info(f"Updated TemperatureSensor to: {new_value}")
+    async def update_temperature(self):
+        while True:
+            new_value = round(random.uniform(20.0, 30.0), 1)
+            self.temperature_sensor.presentValue = new_value
+            logging.info(f"Updated TemperatureSensor to: {new_value}")
+            await asyncio.sleep(10)  # Update every 10 seconds
 
-    def start(self):
-        try:
-            while True:
-                self.update_temperature()
-                time.sleep(10)  # Update every 10 seconds
-        except KeyboardInterrupt:
-            logging.info("Stopping device simulation.")
+    async def start(self):
+        logging.info(f"Starting Device {self.device.objectIdentifier}...")
+        await self.update_temperature()
 
-    def stop(self):
+    async def stop(self):
         logging.info(f"Stopping Device {self.device.objectIdentifier}...")
 
 
@@ -90,37 +87,31 @@ class SimulationManager:
         for device in self.devices:
             self.gateway.register_device(device.device.objectIdentifier, device)
 
-    def start(self):
-        threads = []
-        # Start gateway thread
-        gateway_thread = threading.Thread(target=self.gateway.start, daemon=True)
-        threads.append(gateway_thread)
-        gateway_thread.start()
-
-        # Start device threads
+    async def start(self):
+        tasks = []
+        # Start gateway task
+        tasks.append(asyncio.create_task(self.gateway.start()))
+        # Start device tasks
         for device in self.devices:
-            device_thread = threading.Thread(target=device.start, daemon=True)
-            threads.append(device_thread)
-            device_thread.start()
+            tasks.append(asyncio.create_task(device.start()))
+        return tasks
 
-        return threads
-
-    def stop(self, threads):
+    async def stop(self, tasks):
         for device in self.devices:
-            device.stop()
-        self.gateway.stop()
-        for thread in threads:
-            thread.join()
+            await device.stop()
+        await self.gateway.stop()
+        for task in tasks:
+            task.cancel()
+        await asyncio.gather(*tasks, return_exceptions=True)
 
 
-def main():
+async def main():
     # Configuration
     gateway_config = {
         "device_id": 100,
         "ip_address": "0.0.0.0",
         "port": 47808,
     }
-
     device_configs = [
         {
             "device_id": 1,
@@ -140,15 +131,15 @@ def main():
 
     # Initialize simulation manager
     manager = SimulationManager(gateway_config, device_configs)
-    threads = None
+    tasks = None
     try:
-        threads = manager.start()
+        tasks = await manager.start()
         print("Press Enter to stop the simulation...")
-        input()
+        await asyncio.Event().wait()  # Wait indefinitely until interrupted
     finally:
-        if threads:
-            manager.stop(threads)
+        if tasks:
+            await manager.stop(tasks)
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
