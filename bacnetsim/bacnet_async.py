@@ -1,4 +1,3 @@
-# pip install bacpypes3
 import asyncio
 import random
 import logging
