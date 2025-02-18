@@ -16,14 +16,25 @@ on:
       - 'snmpsim/**'
 
 jobs:
-  debug-event:
+  debug-changes:
     runs-on: ubuntu-latest
+    outputs:
+      changed_bacnetsim: ${{ steps.changed-files.outputs.bacnetsim }}
+      changed_snmpsim: ${{ steps.changed-files.outputs.snmpsim }}
     steps:
-      - name: Dump GitHub Context
-        run: echo "$GITHUB_CONTEXT" | jq .
+      - name: Checkout code
+        uses: actions/checkout@v4
 
+      - name: Get changed files
+        id: changed-files
+        run: |
+          # Get the list of changed files
+          CHANGED_FILES=$(git diff --name-only HEAD~1)
+          echo "Changed files: $CHANGED_FILES"
+
+          # Check if any files in bacnetsim/ or snmpsim/ were modified
+          BACNETSIM_CHANGED=false
   bacnet-build-and-test:
-    if: ${{ fromJSON(string(github.event)).event_name == 'push' && contains(fromJSON(string(github.event)).push.changes.*.filename, 'bacnetsim/') || github.event_name == 'pull_request' && contains(github.event.pull_request.changed_files, 'bacnetsim/') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +51,6 @@ jobs:
           python -m unittest discover bacnetsim  # Run tests for bacnetsim folder
 
   snmp-build-and-test:
-    if: ${{ fromJSON(string(github.event)).event_name == 'push' && contains(fromJSON(string(github.event)).push.changes.*.filename, 'snmpsim/') || github.event_name == 'pull_request' && contains(github.event.pull_request.changed_files, 'snmpsim/') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
