@@ -55,8 +55,10 @@ jobs:
 
           echo "bacnetsim=$BACNETSIM_CHANGED" >> $GITHUB_OUTPUT
           echo "snmpsim=$SNMPSIM_CHANGED" >> $GITHUB_OUTPUT
-          
+
   bacnet-build-and-test:
+    needs: debug-changes
+    if: ${{ needs.debug-changes.outputs.changed_bacnetsim == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -73,6 +75,8 @@ jobs:
           python -m unittest discover bacnetsim  # Run tests for bacnetsim folder
 
   snmp-build-and-test:
+    needs: debug-changes
+    if: ${{ needs.debug-changes.outputs.changed_snmpsim == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -83,7 +87,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r snmpsim/requirements.txt
+          # pip install -r snmpsim/requirements.txt
       - name: Run SNMP tests
         run: |
           python -m unittest discover snmpsim  # Run tests for snmpsim folder
