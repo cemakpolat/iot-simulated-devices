@@ -116,5 +116,5 @@ jobs:
       - name: Run tests with pytest
         run: |
           pip install pytest
-          pytest tests/
+          pytest modbussim/tests/
      
