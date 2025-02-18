@@ -57,7 +57,6 @@ class BACnetDevice:
     async def update_telemetry(self):
         while self.running:
             try:
-
                 self.temperature_sensor.presentValue = round(random.uniform(15.0, 35.0), 1)
                 self.humidity.presentValue = round(random.uniform(30.0, 90.0), 1)
                 self.co2.presentValue = round(random.uniform(400, 2000), 1)
