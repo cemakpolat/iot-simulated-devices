@@ -24,16 +24,38 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history to access parent commits
 
       - name: Get changed files
         id: changed-files
         run: |
-          # Get the list of changed files
-          CHANGED_FILES=$(git diff --name-only HEAD~1)
+          # Determine the range of commits to analyze
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            BASE_COMMIT=${{ github.event.pull_request.base.sha }}
+            HEAD_COMMIT=${{ github.event.pull_request.head.sha }}
+            CHANGED_FILES=$(git diff --name-only $BASE_COMMIT..$HEAD_COMMIT)
+          else
+            CHANGED_FILES=$(git diff --name-only HEAD^..HEAD)
+          fi
+
           echo "Changed files: $CHANGED_FILES"
 
           # Check if any files in bacnetsim/ or snmpsim/ were modified
           BACNETSIM_CHANGED=false
+          SNMPSIM_CHANGED=false
+
+          for FILE in $CHANGED_FILES; do
+            if [[ "$FILE" == bacnetsim/* ]]; then
+              BACNETSIM_CHANGED=true
+            elif [[ "$FILE" == snmpsim/* ]]; then
+              SNMPSIM_CHANGED=true
+            fi
+          done
+
+          echo "bacnetsim=$BACNETSIM_CHANGED" >> $GITHUB_OUTPUT
+          echo "snmpsim=$SNMPSIM_CHANGED" >> $GITHUB_OUTPUT
+          
   bacnet-build-and-test:
     runs-on: ubuntu-latest
     steps:
