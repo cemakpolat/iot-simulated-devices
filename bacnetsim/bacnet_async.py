@@ -85,6 +85,7 @@ async def main():
         tasks.append(asyncio.create_task(device.update_telemetry()))
 
     logging.info("Press Ctrl+C to stop the simulation...")
+    
     await asyncio.gather(*tasks)
 
 
