@@ -24,4 +24,4 @@ Assuming that you have docker and docker compose at your development environment
 
 `docker-compose up --build`
 
-The interaction server/master and slave/client will be seen on the terminal
+The interaction server/master and slave/client will be seen on the terminal.
