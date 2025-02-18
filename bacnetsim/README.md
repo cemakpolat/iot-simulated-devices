@@ -14,5 +14,4 @@ This project provides a simple BACnet device simulator implemented using threade
 1.  **Simulating BACnet Devices**
 3.  **Simulating BACnet Gateway and Devices**
 
-
 You can easily dockerize and run these implementations using Docker Compose if needed.
