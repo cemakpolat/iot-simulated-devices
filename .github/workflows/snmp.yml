@@ -1,0 +1,30 @@
+name: IoT Simulation CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'snmpsim/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'snmpsim/**'
+
+jobs:
+  snmp-build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup python environment
+        uses: action/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r smmpsim/requirements.txt
