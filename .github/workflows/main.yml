@@ -8,12 +8,14 @@ on:
     paths:
       - 'bacnetsim/**'
       - 'snmpsim/**'
+      - 'modbussim/**'
   pull_request:
     branches:
       - main
     paths:
       - 'bacnetsim/**'
       - 'snmpsim/**'
+      - 'modbussim/**'
 
 jobs:
   debug-changes:
