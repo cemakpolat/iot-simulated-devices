@@ -1,3 +1,97 @@
+# name: IoT Simulation CI/CD
+
+# on:
+#   push:
+#     branches:
+#       - main
+#       - develop
+#     paths:
+#       - 'bacnetsim/**'
+#       - 'snmpsim/**'
+#   pull_request:
+#     branches:
+#       - main
+#     paths:
+#       - 'bacnetsim/**'
+#       - 'snmpsim/**'
+
+# jobs:
+#   debug-changes:
+#     runs-on: ubuntu-latest
+#     outputs:
+#       changed_bacnetsim: ${{ steps.changed-files.outputs.bacnetsim }}
+#       changed_snmpsim: ${{ steps.changed-files.outputs.snmpsim }}
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0  # Fetch full history to access parent commits
+
+#       - name: Get changed files
+#         id: changed-files
+#         run: |
+#           # Determine the range of commits to analyze
+#           if [ "${{ github.event_name }}" == "pull_request" ]; then
+#             BASE_COMMIT=${{ github.event.pull_request.base.sha }}
+#             HEAD_COMMIT=${{ github.event.pull_request.head.sha }}
+#             CHANGED_FILES=$(git diff --name-only $BASE_COMMIT..$HEAD_COMMIT)
+#           else
+#             CHANGED_FILES=$(git diff --name-only HEAD^..HEAD)
+#           fi
+
+#           echo "Changed files: $CHANGED_FILES"
+
+#           # Check if any files in bacnetsim/ or snmpsim/ were modified
+#           BACNETSIM_CHANGED=false
+#           SNMPSIM_CHANGED=false
+
+#           for FILE in $CHANGED_FILES; do
+#             if [[ "$FILE" == bacnetsim/* ]]; then
+#               BACNETSIM_CHANGED=true
+#             elif [[ "$FILE" == snmpsim/* ]]; then
+#               SNMPSIM_CHANGED=true
+#             fi
+#           done
+
+#           echo "bacnetsim=$BACNETSIM_CHANGED" >> $GITHUB_OUTPUT
+#           echo "snmpsim=$SNMPSIM_CHANGED" >> $GITHUB_OUTPUT
+
+#   bacnet-build-and-test:
+#     needs: debug-changes
+#     if: ${{ needs.debug-changes.outputs.changed_bacnetsim == 'true' }}
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: Setup Python environment
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: '3.9'
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install -r bacnetsim/requirements.txt
+#       - name: Run Bacnet tests
+#         run: |
+#           python -m unittest discover bacnetsim  # Run tests for bacnetsim folder
+
+#   snmp-build-and-test:
+#     needs: debug-changes
+#     if: ${{ needs.debug-changes.outputs.changed_snmpsim == 'true' }}
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: Setup Python environment
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: '3.9'
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           # pip install -r snmpsim/requirements.txt
+#       - name: Run SNMP tests
+#         run: |
+#           python -m unittest discover snmpsim  # Run tests for snmpsim folder
+
 name: IoT Simulation CI/CD
 
 on:
@@ -22,10 +116,8 @@ jobs:
       changed_bacnetsim: ${{ steps.changed-files.outputs.bacnetsim }}
       changed_snmpsim: ${{ steps.changed-files.outputs.snmpsim }}
     steps:
-      - name: Checkout code
+      - name: Checkout code (shallow clone)
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Fetch full history to access parent commits
 
       - name: Get changed files
         id: changed-files
@@ -36,7 +128,8 @@ jobs:
             HEAD_COMMIT=${{ github.event.pull_request.head.sha }}
             CHANGED_FILES=$(git diff --name-only $BASE_COMMIT..$HEAD_COMMIT)
           else
-            CHANGED_FILES=$(git diff --name-only HEAD^..HEAD)
+            # For push events, compare the current commit with its parent
+            CHANGED_FILES=$(git diff --name-only HEAD^..HEAD 2>/dev/null || git diff --name-only 4b825dc642cb6eb9a060e54bf8d69288fbee4904..HEAD)
           fi
 
           echo "Changed files: $CHANGED_FILES"
@@ -87,7 +180,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # pip install -r snmpsim/requirements.txt
+          pip install -r snmpsim/requirements.txt
       - name: Run SNMP tests
         run: |
           python -m unittest discover snmpsim  # Run tests for snmpsim folder
