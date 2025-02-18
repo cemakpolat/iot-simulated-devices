@@ -3,7 +3,6 @@
 BACnet is an open protocol that enables seamless communication between devices from various manufacturers, facilitating centralized monitoring and control of building systems. Its applications range from small-scale projects like smart homes to large-scale deployments such as smart cities.
 
 Common Use Cases:
-
 *   **HVAC Systems:** Monitoring and controlling temperature, humidity, airflow, and energy consumption.
 *   **Lighting Control:** Automating lighting schedules and implementing occupancy-based control.
 *   **Security Systems:** Optimizing access control, surveillance, and alarm systems.
