@@ -54,7 +54,7 @@ jobs:
             elif [[ "$FILE" == snmpsim/* ]]; then
               SNMPSIM_CHANGED=true
             elif [[ "$FILE" == modbussim/* ]]; then
-              MODBUSSIMSIM_CHANGED=true
+              MODBUSSSIM_CHANGED=true
             fi
           done
 
