@@ -17,7 +17,7 @@ on:
 
 jobs:
   bacnet-build-and-test:
-    #if: ${{ startsWith(github.event.head_commit.message, 'bacnetsim')  || contains(join(github.event.commits.*.message, ', '), 'bacnetsim')}}
+    if: ${{ contains(github.event.push.diffs.files, 'bacnetsim/') || github.event_name == 'pull_request' && contains(github.event.pull_request.changed_files, 'bacnetsim/') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,15 +40,14 @@ jobs:
     if: ${{ startsWith(github.event.head_commit.message, 'snmpsim') || contains(join(github.event.commits.*.message, ', '), 'snmpsim') }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup python environment
-        uses: action/setup-python@v4
+        uses: action/setup-python@v5
         with:
           python-version: '3.9'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r smmpsim/requirements.txt
