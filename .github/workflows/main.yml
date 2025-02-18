@@ -23,6 +23,7 @@ jobs:
     outputs:
       changed_bacnetsim: ${{ steps.changed-files.outputs.bacnetsim }}
       changed_snmpsim: ${{ steps.changed-files.outputs.snmpsim }}
+      changed_modbussim: ${{ steps.changed-files.outputs.modbussim }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
