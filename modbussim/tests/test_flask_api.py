@@ -3,11 +3,11 @@
 import sys
 import os
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../modbus_server')))
 
 import pytest
 import json
-from modbus_server.flask_api import app  # Import Flask app
+from ..modbus_server.flask_api import app  # Import Flask app
 
 
 @pytest.fixture
