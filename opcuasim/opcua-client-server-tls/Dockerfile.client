@@ -1,0 +1,15 @@
+# Dockerfile.client  
+FROM python:3.9-slim
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Install required packages
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy client code
+COPY opcua_client.py .
+
+# Run the client
+CMD ["python", "opcua_client_tls.py"]
