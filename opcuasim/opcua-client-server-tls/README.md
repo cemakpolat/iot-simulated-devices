@@ -159,7 +159,7 @@ The `opc_system.sh` script provides comprehensive system management:
 ./opc_system.sh clean
 ```
 ## Interactive Client
-In case you aim at interacting dynamically with OPC UA server running, you can run the python code under `client-interactive` as follows
+In case you aim at interacting dynamically with OPC UA server running, you can run the python code under `client` as follows
 ```bash
    python client_interactive.py
 ```
