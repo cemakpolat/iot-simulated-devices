@@ -8,6 +8,7 @@ A comprehensive Docker-based Industrial OPC UA system with secure communication,
 This system consists of:
 - **OPC UA Server**: Secure industrial data server with TLS encryption
 - **OPC UA Client**: Automated client for data operations and monitoring
+- **OPC UA Client Interactive**: Interactive client for data operations and monitoring
 - **InfluxDB**: Time-series database for industrial data storage
 - **Telegraf**: Data collection and monitoring agent
 
@@ -29,8 +30,7 @@ This system consists of:
    ```bash
    ./opc_system.sh start
    ```
-
-That's it! The system will automatically:
+The system will automatically:
 - Generate SSL/TLS certificates
 - Set up environment configuration
 - Build and start all Docker containers
@@ -105,7 +105,7 @@ The `generate_certificates.sh` script creates SSL/TLS certificates for secure co
 
 ```bash
 #!/bin/bash
-# Automatically generates certificates for:
+# Automatically generates certificates for the users below:
 # - Server (localhost)
 # - Client (opcua-client)
 # - Telegraf (telegraf)
@@ -158,8 +158,15 @@ The `opc_system.sh` script provides comprehensive system management:
 # Clean everything for fresh start
 ./opc_system.sh clean
 ```
+## Interactive Client
+In case you aim at interacting dynamically with OPC UA server running, you can run the python code under `client-interactive` as follows
+```bash
+   python client_interactive.py
+```
+It is assumed that you created a virtual environment and installed the `requirements.txt`, as well as adapted the requested parameters if needed. 
 
 ## 🔧 Advanced Configuration
+
 
 ### Customizing Certificates
 
