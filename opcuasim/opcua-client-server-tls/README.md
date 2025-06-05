@@ -44,7 +44,9 @@ The system will automatically:
 ├── env.example              # Environment template
 ├── docker-compose.yml       # Docker services configuration
 ├── certificates/            # SSL/TLS certificates (auto-generated)
-├── logs/                   # Application logs
+├── logs/                     # Application logs (auto-generated)
+├── server/                   # OPC UA server codes
+├── client/                   # OPC UA client codes 
 └── README.md               # This file
 ```
 
