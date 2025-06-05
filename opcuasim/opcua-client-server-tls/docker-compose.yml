@@ -1,0 +1,89 @@
+services:
+  opcua-server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: opcua-industrial-server
+    hostname: opcua-server
+    ports:
+      - "4840:4840" # Non-secure endpoint
+      - "4843:4843" # Secure endpoint
+    volumes:
+      - ./certificates:/app/certificates
+    env_file:
+      - ./.env # Load all variables from .env into the server container's environment
+    networks:
+      - opcua-network
+    restart: on-failure
+
+  opcua-client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: opcua-industrial-client
+    hostname: opcua-client
+    depends_on:
+      - opcua-server
+    volumes:
+      - ./certificates:/app/certificates
+    environment:
+      # Explicitly pass these from the root .env to the client container
+      # Docker Compose will resolve ${VAR_NAME} from the .env file
+      OPC_SERVER_URL: ${CLIENT_OPC_SERVER_URL}
+      OPC_USE_TLS: ${CLIENT_OPC_USE_TLS}
+      OPC_USERNAME: ${CLIENT_OPC_USERNAME}
+      OPC_PASSWORD: ${CLIENT_OPC_PASSWORD}
+      OPC_OPERATION_INTERVAL: ${CLIENT_OPC_OPERATION_INTERVAL}
+      OPC_MONITORING_ENABLED: ${CLIENT_OPC_MONITORING_ENABLED}
+      OPC_AUTO_CONTROL_ENABLED: ${CLIENT_OPC_AUTO_CONTROL_ENABLED}
+      OPC_MAX_RETRIES: ${CLIENT_OPC_MAX_RETRIES}
+      OPC_RETRY_DELAY: ${CLIENT_OPC_RETRY_DELAY}
+    networks:
+      - opcua-network
+    restart: on-failure
+
+  telegraf:
+      image: telegraf:1.28-alpine
+      container_name: telegraf
+      volumes:
+        - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+        - ./certificates/:/etc/ssl/opc:ro
+        - ./logs/:/var/log/telegraf
+      environment:
+        - HOST_PROC=/host/proc
+        - HOST_SYS=/host/sys
+        - HOST_ETC=/host/etc
+      networks:
+        - opcua-network
+      depends_on:
+        - opcua-server
+      restart: unless-stopped
+      user: telegraf:999
+
+
+  influxdb:
+    image: influxdb:2.7
+    container_name: opcua-industrial-influxdb
+    ports:
+      - "8086:8086"
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=${DOCKER_INFLUXDB_INIT_MODE}
+      - DOCKER_INFLUXDB_INIT_USERNAME=${DOCKER_INFLUXDB_INIT_USERNAME}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${DOCKER_INFLUXDB_INIT_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=${DOCKER_INFLUXDB_INIT_ORG}
+      - DOCKER_INFLUXDB_INIT_BUCKET=${DOCKER_INFLUXDB_INIT_BUCKET}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
+  
+    volumes:
+      - influxdb_storage:/var/lib/influxdb2
+      #- influxdb_config:/etc/influxdb2 # enable if you have the config file
+    restart: unless-stopped
+    networks:
+        - opcua-network
+
+networks:
+  opcua-network:
+    driver: bridge
+volumes:
+  influxdb_storage:
