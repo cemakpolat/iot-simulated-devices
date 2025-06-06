@@ -1,5 +1,4 @@
 
----
 # Use Case: Smart Thermostat with AI Control
 In this project, we simulate a CoAP-enabled thermostat device with multiple RESTful resources. An AI-powered backend polls the device and makes real-time HVAC control decision using lightweight logic.
 
