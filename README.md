@@ -5,3 +5,4 @@ This project provides includes a number of simulated IoT device implementation w
 - tcp sim
 - modbus sim
 - opcua sim
+- coap sim
