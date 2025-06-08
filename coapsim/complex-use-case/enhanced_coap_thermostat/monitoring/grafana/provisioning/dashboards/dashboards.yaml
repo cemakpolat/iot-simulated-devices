@@ -1,0 +1,13 @@
+# monitoring/grafana/provisioning/dashboards/dashboards.yaml
+apiVersion: 1
+
+providers:
+  # A provider for our AI Thermostat dashboards
+  - name: 'AI Thermostat Dashboards'
+    orgId: 1
+    folder: '' # Store dashboards in the root folder
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/dashboards # Path inside the container where dashboard JSON is

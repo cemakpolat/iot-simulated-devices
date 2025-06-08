@@ -1,0 +1,22 @@
+# monitoring/prometheus.yml
+global:
+  scrape_interval: 15s # How frequently to scrape targets
+
+scrape_configs:
+  # Scrape Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Scrape the AI Controller's FastAPI metrics (if implemented to expose them)
+  # Assuming the FastAPI app exposes metrics at /metrics endpoint
+  - job_name: 'ai-controller-fastapi'
+    scrape_interval: 5s # Scrape more frequently for application metrics
+    static_configs:
+      - targets: ['ai-controller:8000'] # Docker service name and FastAPI port
+    metrics_path: /metrics # Default endpoint for FastAPI metrics (e.g., from prometheus_client)
+
+  # Scrape Grafana (if it exposes metrics)
+  - job_name: 'grafana'
+    static_configs:
+      - targets: ['grafana:3000'] # Docker service name and Grafana port

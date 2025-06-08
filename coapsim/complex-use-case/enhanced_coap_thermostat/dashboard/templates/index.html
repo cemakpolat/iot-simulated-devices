@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Thermostat Dashboard</title>
+    <!-- Tailwind CSS with Inter font -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Socket.IO client library -->
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <!-- Chart.js library for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Tailwind config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                fontFamily: {
+                    sans: ['Inter', 'sans-serif'],
+                },
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        dark: {
+                            900: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155',
+                        },
+                        light: {
+                            100: '#f8fafc',
+                            200: '#f1f5f9',
+                        }
+                    },
+                    backdropBlur: {
+                        xs: '2px',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.1) 0%, rgba(241, 245, 249, 1) 90%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .glass-card-dark {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .status-pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="h-full min-h-screen font-sans text-dark-900">
+    <!-- App Container -->
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="glass-card-dark py-4 px-6 shadow-lg">
+            <div class="container mx-auto flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h1 class="text-xl font-bold text-light-100">Smart Climate Control</h1>
+                </div>
+                <div id="status-indicator" class="flex items-center space-x-2 px-3 py-1 rounded-full bg-dark-700 text-light-100 text-sm font-medium">
+                    <span class="h-2 w-2 rounded-full bg-yellow-400 status-pulse"></span>
+                    <span id="status-text">Connecting...</span> <!-- Added ID for direct access -->
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow container mx-auto px-4 py-6">
+            <!-- Current Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <!-- Temperature Card -->
+                <div class="glass-card rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-dark-600">Temperature</p>
+                            <p id="current-temperature" class="text-3xl font-bold text-dark-900 mt-1">--°C</p>
+                        </div>
+                        <div class="p-2 rounded-lg bg-primary-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                            </svg>
+                        </div>
+                    </div>
+                    <p id="temperature-status" class="text-xs font-medium mt-2 text-dark-500">Status: --</p>
+                </div>
+
+                <!-- Humidity Card -->
+                <div class="glass-card rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-dark-600">Humidity</p>
+                            <p id="current-humidity" class="text-3xl font-bold text-dark-900 mt-1">--%</p>
+                        </div>
+                        <div class="p-2 rounded-lg bg-blue-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <p id="humidity-status" class="text-xs font-medium mt-2 text-dark-500">Status: --</p>
+                </div>
+
+                <!-- Air Quality Card -->
+                <div class="glass-card rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-dark-600">Air Quality</p>
+                            <p id="current-aqi" class="text-3xl font-bold text-dark-900 mt-1">-- AQI</p>
+                        </div>
+                        <div class="p-2 rounded-lg bg-green-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <p id="air-quality-status" class="text-xs font-medium mt-2 text-dark-500">Quality: --</p>
+                </div>
+
+                <!-- Occupancy Card -->
+                <div class="glass-card rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-dark-600">Occupancy</p>
+                            <p id="current-occupancy" class="text-3xl font-bold text-dark-900 mt-1">--</p>
+                        </div>
+                        <div class="p-2 rounded-lg bg-purple-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <p id="occupancy-status" class="text-xs font-medium mt-2 text-dark-500">Confidence: --</p>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left Column -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Temperature Chart -->
+                    <div class="glass-card rounded-xl p-5 shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-semibold text-dark-800">Temperature Forecast</h2>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 text-xs bg-primary-50 text-primary-600 rounded-lg">6h</button>
+                                <button class="px-3 py-1 text-xs bg-light-100 text-dark-500 rounded-lg">12h</button>
+                                <button class="px-3 py-1 text-xs bg-light-100 text-dark-500 rounded-lg">24h</button>
+                            </div>
+                        </div>
+                        <div class="h-64">
+                            <canvas id="temperatureChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- HVAC Status -->
+                    <div class="glass-card rounded-xl p-5 shadow-sm">
+                        <h2 class="text-lg font-semibold text-dark-800 mb-4">Climate Control</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Current State -->
+                            <div class="bg-light-100 rounded-lg p-4 flex items-center space-x-3">
+                                <div class="p-2 rounded-lg bg-primary-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-dark-500">Current Mode</p>
+                                    <p id="hvac-state" class="font-medium">--</p>
+                                </div>
+                            </div>
+
+                            <!-- Target Temp -->
+                            <div class="bg-light-100 rounded-lg p-4 flex items-center space-x-3">
+                                <div class="p-2 rounded-lg bg-blue-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-dark-500">Target Temperature</p>
+                                    <p id="target-temperature" class="font-medium">--°C</p>
+                                </div>
+                            </div>
+
+                            <!-- Energy Usage -->
+                            <div class="bg-light-100 rounded-lg p-4 flex items-center space-x-3">
+                                <div class="p-2 rounded-lg bg-green-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-dark-500">Energy Usage</p>
+                                    <p id="energy-consumption" class="font-medium">-- kWh</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Manual Controls -->
+                        <div class="mt-6">
+                            <h3 class="text-sm font-medium text-dark-600 mb-3">Manual Control</h3>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <div class="flex-1">
+                                    <label for="temp-input" class="block text-xs font-medium text-dark-500 mb-1">Set Target Temperature</label>
+                                    <div class="relative">
+                                        <input type="number" id="temp-input" value="22" step="0.5" min="15" max="30" 
+                                            class="w-full pl-3 pr-10 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                                        <span class="absolute right-3 top-2 text-sm text-dark-400">°C</span>
+                                    </div>
+                                </div>
+                                <!-- Removed onclick attributes, listeners added in JS -->
+                                <button id="set-target-btn" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors">
+                                    Set
+                                </button>
+                            </div>
+                            <div class="flex flex-wrap gap-2 mt-3">
+                                <!-- Removed onclick attributes, listeners added in JS -->
+                                <button id="heat-btn" class="flex-1 sm:flex-none px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
+                                    Heat
+                                </button>
+                                <button id="cool-btn" class="flex-1 sm:flex-none px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                                    Cool
+                                </button>
+                                <button id="off-btn" class="flex-1 sm:flex-none px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
+                                    Off
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="space-y-6">
+                    <!-- System Alerts -->
+                    <div class="glass-card rounded-xl p-5 shadow-sm h-full">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-semibold text-dark-800">System Alerts</h2>
+                            <!-- This could be a dynamic alert count later -->
+                            <span class="text-xs px-2 py-1 bg-red-100 text-red-600 rounded-full">Active</span>
+                        </div>
+                        <div id="alerts-list" class="space-y-3">
+                            <!-- Alerts will be inserted here -->
+                            <div class="text-center py-4 text-dark-400 no-alerts-message">No active alerts</div>
+                        </div>
+                    </div>
+
+                    <!-- Energy Efficiency -->
+                    <div class="glass-card rounded-xl p-5 shadow-sm">
+                        <h2 class="text-lg font-semibold text-dark-800 mb-4">Energy Efficiency</h2>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm text-dark-500">Current Usage</span>
+                            <span id="current-energy-usage" class="text-sm font-medium">-- kWh</span> <!-- New ID for current energy -->
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-primary-600 h-2.5 rounded-full" style="width: 45%"></div> <!-- Placeholder style -->
+                        </div>
+                        <div class="flex items-center justify-between mt-2">
+                            <span class="text-xs text-dark-400">Next Hour Predicted Temp: <span id="predicted-energy">--</span> °C</span>
+                            <span class="text-xs text-green-600">+12% efficiency</span> <!-- Placeholder -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="glass-card-dark py-3 px-6 text-center text-light-200 text-sm">
+            <p>© 2024 Smart Climate Control System. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
