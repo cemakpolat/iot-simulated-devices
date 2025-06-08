@@ -1,155 +1,3 @@
-# # mobile/api/mobile_endpoints.py
-# from fastapi import FastAPI, HTTPException, Depends
-# from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-# from pydantic import BaseModel
-# from typing import List, Optional
-# import jwt
-
-# app = FastAPI(title="Smart Thermostat Mobile API", version="2.0.0")
-# security = HTTPBearer()
-
-# class ThermostatCommand(BaseModel):
-#     action: str
-#     target_temperature: Optional[float] = None
-#     mode: Optional[str] = None
-#     fan_speed: Optional[str] = None
-
-# class ScheduleEntry(BaseModel):
-#     time: str
-#     temperature: float
-#     days: List[str]
-#     enabled: bool = True
-
-# class UserPreferences(BaseModel):
-#     comfort_temperature: float = 22.0
-#     energy_saving_mode: bool = False
-#     notifications_enabled: bool = True
-#     auto_mode_enabled: bool = True
-
-# def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
-#     """Verify JWT token"""
-#     try:
-#         payload = jwt.decode(
-#             credentials.credentials, 
-#             os.getenv("JWT_SECRET", "secret"), 
-#             algorithms=["HS256"]
-#         )
-#         return payload
-#     except jwt.InvalidTokenError:
-#         raise HTTPException(status_code=401, detail="Invalid token")
-
-# @app.get("/api/v1/status")
-# async def get_device_status(user=Depends(verify_token)):
-#     """Get current device status"""
-#     # In real implementation, fetch from CoAP device
-#     return {
-#         "device_id": "smart-thermostat-01",
-#         "online": True,
-#         "current_temperature": 23.5,
-#         "target_temperature": 22.0,
-#         "humidity": 45.2,
-#         "air_quality": {"aqi": 35, "quality": "good"},
-#         "hvac_state": "cooling",
-#         "energy_consumption": 2.1,
-#         "last_updated": time.time()
-#     }
-
-# @app.post("/api/v1/control")
-# async def send_command(command: ThermostatCommand, user=Depends(verify_token)):
-#     """Send control command to thermostat"""
-#     try:
-#         # In real implementation, send to CoAP device
-#         result = {
-#             "success": True,
-#             "command_executed": command.dict(),
-#             "timestamp": time.time()
-#         }
-#         return result
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
-
-# @app.get("/api/v1/predictions")
-# async def get_predictions(hours: int = 6, user=Depends(verify_token)):
-#     """Get temperature predictions"""
-#     # Mock predictions
-#     predictions = []
-#     for i in range(hours):
-#         predictions.append({
-#             "hour": i + 1,
-#             "temperature": round(22 + random.uniform(-1, 1), 1),
-#             "confidence": round(random.uniform(0.8, 0.95), 2)
-#         })
-    
-#     return {
-#         "predictions": predictions,
-#         "model_accuracy": 0.89,
-#         "last_updated": time.time()
-#     }
-
-# @app.get("/api/v1/energy")
-# async def get_energy_data(days: int = 7, user=Depends(verify_token)):
-#     """Get energy consumption data"""
-#     energy_data = []
-#     for i in range(days):
-#         energy_data.append({
-#             "date": (datetime.now() - timedelta(days=i)).isoformat(),
-#             "consumption": round(random.uniform(15, 35), 2),
-#             "cost": round(random.uniform(1.8, 4.2), 2),
-#             "efficiency_score": round(random.uniform(0.7, 0.95), 2)
-#         })
-    
-#     return {
-#         "daily_data": energy_data,
-#         "total_consumption": sum(d["consumption"] for d in energy_data),
-#         "average_daily": sum(d["consumption"] for d in energy_data) / len(energy_data),
-#         "cost_projection": round(random.uniform(45, 85), 2)
-#     }
-
-# @app.post("/api/v1/schedule")
-# async def set_schedule(schedule: List[ScheduleEntry], user=Depends(verify_token)):
-#     """Set thermostat schedule"""
-#     # In real implementation, store in database
-#     return {
-#         "success": True,
-#         "schedule_entries": len(schedule),
-#         "message": "Schedule updated successfully"
-#     }
-
-# @app.get("/api/v1/maintenance")
-# async def get_maintenance_status(user=Depends(verify_token)):
-#     """Get maintenance recommendations"""
-#     return {
-#         "maintenance_score": 25,
-#         "priority": "low",
-#         "last_service": "2024-01-15",
-#         "next_recommended": "2024-07-15",
-#         "recommendations": [
-#             "Clean air filter",
-#             "Check refrigerant levels"
-#         ],
-#         "estimated_cost": 120.00
-#     }
-
-# # Push notification service
-# from mobile.push_notifications import PushNotificationService
-
-# push_service = PushNotificationService()
-
-# @app.post("/api/v1/register-device")
-# async def register_mobile_device(device_data: dict, user=Depends(verify_token)):
-#     """Register mobile device for push notifications"""
-#     device_token = device_data.get("device_token")
-#     platform = device_data.get("platform")  # ios/android
-    
-#     success = await push_service.register_device(
-#         user_id=user["user_id"],
-#         device_token=device_token,
-#         platform=platform
-#     )
-    
-#     return {"success": success}
-
-
 # mobile/api/mobile_endpoints.py
 from fastapi import FastAPI, HTTPException, Depends, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -158,17 +6,20 @@ from typing import List, Optional, Dict, Any
 import jwt
 import os
 import time
-import random # For mock data
+import random 
 from datetime import datetime, timedelta
 import logging
 
 # Import PushNotificationService
-from push_notifications import PushNotificationService
+from ..push_notifications import PushNotificationService
+from ..config import ServerConfig 
 
 logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
 app = FastAPI(title="Smart Thermostat Mobile API", version="2.0.0")
+
+config = ServerConfig() # <--- Instantiate config here
 
 # Security schema for JWT
 security = HTTPBearer()
@@ -194,6 +45,13 @@ class DeviceRegistration(BaseModel):
     device_token: str # FCM token for push notifications
     platform: str # "ios" or "android"
     # Additional fields like app_version, device_model etc.
+
+def get_jwt_secret():
+    secret = os.getenv("JWT_SECRET", "your-secret-key")
+    if secret == "your-secret-key":
+        logger.warning("JWT_SECRET is using default value. Set a strong secret in .env for security.")
+    return secret
+
 
 # --- JWT Token Verification ---
 def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
@@ -403,15 +261,18 @@ async def login(username: str, password: str):
     Simulates a user login and generates a JWT token.
     In a real app, this would verify credentials against a database.
     """
+    
     # Dummy credentials for demonstration
     if username == "testuser" and password == "testpass":
-        config = ServerConfig()
         token_payload = {
             "sub": "testuser_id_123", # Subject (user ID)
             "username": "testuser",
             "exp": datetime.utcnow() + timedelta(hours=24) # Token expires in 24 hours
         }
-        token = jwt.encode(token_payload, config.JWT_SECRET, algorithm="HS256")
+        jwt_secret = get_jwt_secret() # <--- Use get_jwt_secret utility
+
+        token = jwt.encode(token_payload, jwt_secret, algorithm="HS256")
+        
         logger.info(f"Generated JWT token for user: {username}")
         return {"access_token": token, "token_type": "bearer"}
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
