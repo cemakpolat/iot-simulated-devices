@@ -1,6 +1,4 @@
 # docker-compose.yml
-version: '3.8'
-
 services:
   # CoAP Device
   coap-device:
@@ -62,21 +60,21 @@ services:
     restart: unless-stopped
 
   # # Mobile API
-  # mobile-api:
-  #   build:
-  #     context: .
-  #     dockerfile: mobile/Dockerfile
-  #   ports:
-  #     - "8000:8000"
-  #   depends_on:
-  #     - ai-controller
-  #     - postgres
-  #   environment:
-  #     - DATABASE_URL=postgresql://thermostat:password@postgres:5432/thermostat
-  #     - JWT_SECRET=your-secret-key
-  #   networks:
-  #     - thermostat-net
-  #   restart: unless-stopped
+  mobile-api:
+    build:
+      context: .
+      dockerfile: mobile/Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - ai-controller
+      - postgres
+    environment:
+      - DATABASE_URL=postgresql://thermostat:password@postgres:5432/thermostat
+      - JWT_SECRET=your-secret-key
+    networks:
+      - thermostat-net
+    restart: unless-stopped
 
   # # Time Series Database
   influxdb:
@@ -110,64 +108,64 @@ services:
     restart: unless-stopped
 
   # # PostgreSQL for User Data
-  # postgres:
-  #   image: postgres:15
-  #   environment:
-  #     - POSTGRES_DB=thermostat
-  #     - POSTGRES_USER=thermostat
-  #     - POSTGRES_PASSWORD=password
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   networks:
-  #     - thermostat-net
-  #   restart: unless-stopped
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=thermostat
+      - POSTGRES_USER=thermostat
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - thermostat-net
+    restart: unless-stopped
 
   # # Reverse Proxy
-  # nginx:
-  #   image: nginx:alpine
+  nginx:
+    image: nginx:stable
+    ports:
+      - "8080:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      #- ./certs:/etc/nginx/certs
+    depends_on:
+      - dashboard
+      - mobile-api
+    networks:
+      - thermostat-net
+    restart: unless-stopped
+
+  # # Monitoring
+  # prometheus:
+  #   image: prom/prometheus
   #   ports:
-  #     - "80:80"
-  #     - "443:443"
+  #     - "9090:9090"
   #   volumes:
-  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-  #     - ./certs:/etc/nginx/certs
-  #   depends_on:
-  #     - dashboard
-  #     #- mobile-api
+  #     - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+  #     - prometheus_data:/prometheus
   #   networks:
   #     - thermostat-net
   #   restart: unless-stopped
 
-  # # Monitoring
-  prometheus:
-    image: prom/prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-    networks:
-      - thermostat-net
-    restart: unless-stopped
-
-  grafana:
-    image: grafana/grafana
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_AUTH_ANONYMOUS_ENABLED=true # Optional: Allow anonymous access to dashboards
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer # Optional: Role for anonymous users
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./monitoring/grafana/dashboards:/etc/grafana/dashboards:ro # Mount dashboards JSONs
-    depends_on:
-      - prometheus
-      - influxdb
-    networks:
-      - thermostat-net
-    restart: unless-stopped
+  # grafana:
+  #   image: grafana/grafana
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #     - GF_AUTH_ANONYMOUS_ENABLED=true # Optional: Allow anonymous access to dashboards
+  #     - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer # Optional: Role for anonymous users
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #     - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+  #     - ./monitoring/grafana/dashboards:/etc/grafana/dashboards:ro # Mount dashboards JSONs
+  #   depends_on:
+  #     - prometheus
+  #     - influxdb
+  #   networks:
+  #     - thermostat-net
+  #   restart: unless-stopped
 
 networks:
   thermostat-net:
