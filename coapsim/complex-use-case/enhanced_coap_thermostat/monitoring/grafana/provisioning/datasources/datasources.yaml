@@ -1,0 +1,21 @@
+# monitoring/grafana/provisioning/datasources/datasources.yaml
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086 # Docker service name and port
+    jsonData:
+      defaultBucket: coap-data-bucket
+      organization: coap-data-org
+      version: Flux
+    secureJsonData:
+      token: coap-token-1234567890 # This should match your InfluxDB admin token from docker-compose.yml
+    isDefault: true # Make InfluxDB the default datasource
+
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090 # Docker service name and port
+    isDefault: false # Not the default, InfluxDB iss
