@@ -36,18 +36,19 @@ class EnhancedCoAPClient:
                 key = self.config.COAP_PSK_KEY.encode('utf-8')
                 
                 # Create security context
-                security_credentials = {
-                    'coaps://%s:*' % self.config.COAP_DEVICE_HOST: {
-                        'dtls': {
-                            'psk': key,
-                            'client_identity': identity
+
+                self.coap_context = await Context.create_client_context()
+                self.coap_context.client_credentials.load_from_dict(
+                    {
+                        "coaps://%s/*" % self.config.COAP_DEVICE_HOST: {
+                            "dtls": {
+                                "psk": key,
+                                "client-identity": identity,
+                            }
                         }
                     }
-                }
-                
-                self.coap_context = await Context.create_client_context(
-                    server_credentials=security_credentials
                 )
+
                 logger.info("CoAP client context created with DTLS security")
             else:
                 self.coap_context = await Context.create_client_context()

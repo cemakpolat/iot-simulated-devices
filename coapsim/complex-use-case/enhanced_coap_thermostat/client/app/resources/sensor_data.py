@@ -8,7 +8,6 @@ from sensors.humidity import HumiditySensor
 from sensors.air_quality import AirQualitySensor
 from sensors.occupancy import OccupancySensor
 
-
 class SensorDataResource(Resource):
     def __init__(self, device_id: str):
         super().__init__()

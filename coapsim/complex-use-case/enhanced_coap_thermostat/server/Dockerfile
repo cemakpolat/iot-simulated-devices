@@ -6,9 +6,9 @@ WORKDIR /app
 # Install system dependencies that might be needed by Python packages (e.g., cryptography)
 # This is usually not strictly necessary for basic pip install but can help resolve build issues.
 # Uncomment and add if you encounter issues during `pip install` related to native libraries.
-# RUN apt-get update && apt-get install -y --no-install-recommends \
-#     libssl-dev \
-#     && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 # Install Python dependencies from requirements.txt

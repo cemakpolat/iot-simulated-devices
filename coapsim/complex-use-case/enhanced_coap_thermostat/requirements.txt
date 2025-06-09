@@ -1,5 +1,5 @@
 # Core CoAP
-aiocoap>=0.4.1
+aiocoap==0.4.10
 cbor2>=5.4.0
 
 # ML & AI

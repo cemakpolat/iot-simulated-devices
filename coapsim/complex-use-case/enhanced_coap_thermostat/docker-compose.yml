@@ -11,8 +11,6 @@ services:
       - "5684:5684/udp"  # Secure CoAP
     environment:
       - DEVICE_ID=smart-thermostat-01
-      - ENABLE_DTLS=true
-      - SENSOR_INTERVAL=2
     volumes:
       - ./certs:/app/certs
     networks:
@@ -30,13 +28,6 @@ services:
       - coap-device
       - influxdb
       - redis
-    environment:
-      - COAP_DEVICE_HOST=coap-device
-      - INFLUXDB_URL=http://influxdb:8086
-      - REDIS_URL=redis://redis:6379
-      - POLL_INTERVAL=3
-      - ML_RETRAIN_INTERVAL_HOURS=24 # How often to retrain ML models
-      - LOG_LEVEL=INFO # Set logging level (can be DEBUG for more verbose output)
     volumes:
       - ./models:/app/models
       - ./logs:/app/logs
@@ -137,35 +128,35 @@ services:
     restart: unless-stopped
 
   # # Monitoring
-  # prometheus:
-  #   image: prom/prometheus
-  #   ports:
-  #     - "9090:9090"
-  #   volumes:
-  #     - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-  #     - prometheus_data:/prometheus
-  #   networks:
-  #     - thermostat-net
-  #   restart: unless-stopped
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - thermostat-net
+    restart: unless-stopped
 
-  # grafana:
-  #   image: grafana/grafana
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - GF_SECURITY_ADMIN_PASSWORD=admin
-  #     - GF_AUTH_ANONYMOUS_ENABLED=true # Optional: Allow anonymous access to dashboards
-  #     - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer # Optional: Role for anonymous users
-  #   volumes:
-  #     - grafana_data:/var/lib/grafana
-  #     - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
-  #     - ./monitoring/grafana/dashboards:/etc/grafana/dashboards:ro # Mount dashboards JSONs
-  #   depends_on:
-  #     - prometheus
-  #     - influxdb
-  #   networks:
-  #     - thermostat-net
-  #   restart: unless-stopped
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true # Optional: Allow anonymous access to dashboards
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer # Optional: Role for anonymous users
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/etc/grafana/dashboards:ro # Mount dashboards JSONs
+    depends_on:
+      - prometheus
+      - influxdb
+    networks:
+      - thermostat-net
+    restart: unless-stopped
 
 networks:
   thermostat-net:

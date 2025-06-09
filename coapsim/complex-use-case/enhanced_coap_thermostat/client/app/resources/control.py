@@ -1,7 +1,7 @@
 import json
 import aiocoap
 from aiocoap.resource import Resource
-# client/app/resources/control.py
+
 class EnhancedControlResource(Resource):
     def __init__(self):
         super().__init__()
