@@ -11,8 +11,8 @@ from security.dtls_handler import DTLSSecurityHandler
 from resources.sensor_data import SensorDataResource
 from resources.device_status import DeviceStatusResource
 from resources.control import EnhancedControlResource
-# from .resources.configuration import ConfigurationResource # Will be added in Phase 3
-# from .resources.diagnostics import DiagnosticsResource   # Will be added in Phase 3
+from resources.configuration import ConfigurationResource 
+from resources.diagnostics import DiagnosticsResource  
 from utils.logger import setup_logger
 
 logger = setup_logger(__name__)
@@ -40,6 +40,8 @@ class CoAPDevice:
         root.add_resource(['sensor', 'data'], SensorDataResource(self.config.DEVICE_ID))
         root.add_resource(['device', 'status'], DeviceStatusResource(self.config.DEVICE_ID))
         root.add_resource(['control'], self.control_resource) 
+        root.add_resource(['config'], ConfigurationResource(self.config))
+        root.add_resource(['diagnostics'], DiagnosticsResource(self.config.DEVICE_ID, self.device_start_time))
         
         #self.config.ENABLE_DTLS = False
         if self.config.ENABLE_DTLS:
