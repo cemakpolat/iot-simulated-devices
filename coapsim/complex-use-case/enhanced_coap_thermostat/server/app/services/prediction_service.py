@@ -5,9 +5,9 @@ import joblib
 import os
 from typing import Optional, Dict, Any  # Add this import
 
-from models.lstm_predictor import LSTMTemperaturePredictor
-from models.anomaly_detector import AnomalyDetector 
-from database.influxdb_client import InfluxDBClient
+from ..models.lstm_predictor import LSTMTemperaturePredictor
+from ..models.anomaly_detector import AnomalyDetector 
+from ..database.influxdb_client import InfluxDBClient
 
 logger = logging.getLogger(__name__)
 

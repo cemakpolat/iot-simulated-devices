@@ -210,11 +210,11 @@ import asyncio
 import os
 from typing import Dict, Any, TYPE_CHECKING
 
-from config import ServerConfig
-from notifiers.webhook_notifiers import BaseWebhookNotifier, SlackWebhookNotifier, GenericWebhookNotifier
+from ..config import ServerConfig
+from ..notifiers.webhook_notifiers import BaseWebhookNotifier, SlackWebhookNotifier, GenericWebhookNotifier
 
 if TYPE_CHECKING:
-    from api.websocket_handler import WebSocketManager
+    from ..api.websocket_handler import WebSocketManager
 
 logger = logging.getLogger(__name__)
 

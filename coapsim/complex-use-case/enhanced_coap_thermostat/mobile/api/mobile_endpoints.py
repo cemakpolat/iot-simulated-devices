@@ -1,5 +1,5 @@
 # mobile/api/mobile_endpoints.py
-from fastapi import FastAPI, HTTPException, Depends, status, Request
+from fastapi import FastAPI, HTTPException, Depends, status, Request, Form
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
@@ -255,24 +255,63 @@ async def send_test_push_notification(user_id: str, user: Dict = Depends(verify_
     return {"success": success, "message": "Test notification sent status."}
 
 # Placeholder for user login/token generation
-@app.post("/login", response_model=Dict[str, str])
-async def login(username: str, password: str):
-    """
-    Simulates a user login and generates a JWT token.
-    In a real app, this would verify credentials against a database.
-    """
+# @app.post("/login", response_model=Dict[str, str])
+# async def login(username: str, password: str):
+#     """
+#     Simulates a user login and generates a JWT token.
+#     In a real app, this would verify credentials against a database.
+#     """
     
-    # Dummy credentials for demonstration
-    if username == "testuser" and password == "testpass":
-        token_payload = {
-            "sub": "testuser_id_123", # Subject (user ID)
-            "username": "testuser",
-            "exp": datetime.utcnow() + timedelta(hours=24) # Token expires in 24 hours
-        }
-        jwt_secret = get_jwt_secret() # <--- Use get_jwt_secret utility
+#     # Dummy credentials for demonstration
+#     if username == "testuser" and password == "testpass":
+#         token_payload = {
+#             "sub": "testuser_id_123", # Subject (user ID)
+#             "username": "testuser",
+#             "exp": datetime.utcnow() + timedelta(hours=24) # Token expires in 24 hours
+#         }
+#         jwt_secret = get_jwt_secret() # <--- Use get_jwt_secret utility
 
-        token = jwt.encode(token_payload, jwt_secret, algorithm="HS256")
+#         token = jwt.encode(token_payload, jwt_secret, algorithm="HS256")
         
-        logger.info(f"Generated JWT token for user: {username}")
-        return {"access_token": token, "token_type": "bearer"}
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+#         logger.info(f"Generated JWT token for user: {username}")
+#         return {"access_token": token, "token_type": "bearer"}
+#     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+
+# mobile/api/mobile_endpoints.py
+
+# ... (existing imports) ...
+import aiohttp # Ensure this is imported for HTTP calls
+# ...
+
+@app.post("/login", response_model=Dict[str, str])
+async def login(username: str = Form(...), password: str = Form(...)):
+    """
+    Authenticates a user against the AI Controller's (or a dedicated auth service's) API
+    and generates a JWT token upon success.
+    """
+    auth_service_url = "http://ai-controller:8000/auth/login" # <--- NEW: AI Controller's auth endpoint
+    
+    try:
+        async with aiohttp.ClientSession() as session:
+            # Send credentials to the AI Controller's new authentication endpoint
+            async with session.post(auth_service_url, json={"username": username, "password": password}) as resp:
+                if resp.status == status.HTTP_200_OK:
+                    auth_response = await resp.json()
+                    # The AI Controller should return the JWT token directly
+                    jwt_token = auth_response.get("access_token") 
+                    if jwt_token:
+                        return {"access_token": jwt_token, "token_type": "bearer"}
+                    else:
+                        logger.error("AI Controller login response missing access_token.")
+                        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Authentication service error.")
+                elif resp.status == status.HTTP_401_UNAUTHORIZED:
+                    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+                else:
+                    logger.error(f"AI Controller login failed with status {resp.status}: {await resp.text()}")
+                    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Authentication service unavailable or error.")
+    except aiohttp.ClientError as e:
+        logger.error(f"Failed to connect to AI Controller auth service: {e}", exc_info=True)
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Authentication service unreachable.")
+    except Exception as e:
+        logger.error(f"Unexpected error during login: {e}", exc_info=True)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Login process failed.")

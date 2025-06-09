@@ -5,8 +5,8 @@ from aiocoap import Code, Context, GET, PUT, POST
 import json
 import logging
 import time
-from utils.data_validator import DataValidator
-from config import ServerConfig
+from ..utils.data_validator import DataValidator
+from ..config import ServerConfig
 
 logger = logging.getLogger(__name__)
 
