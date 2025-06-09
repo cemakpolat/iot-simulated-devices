@@ -1,5 +1,3 @@
-# server/app/coap/client.py
-# server/app/coap/client.py
 import asyncio
 import aiocoap
 from aiocoap.message import Message
@@ -7,7 +5,7 @@ from aiocoap import Code, Context, GET, PUT, POST
 import json
 import logging
 import time
-
+from utils.data_validator import DataValidator
 from config import ServerConfig
 
 logger = logging.getLogger(__name__)
@@ -94,6 +92,24 @@ class EnhancedCoAPClient:
                 return None
         logger.warning(f"Failed to get sensor data. CoAP Response: {response.code.name if response else 'No response'}")
         return None
+    
+    # async def get_all_sensor_data(self) -> dict:
+    #
+    #     """Retrieves all sensor data from the device."""
+    #     response = await self._send_request(GET, "sensor/data")
+    #     if response and response.code.is_successful():
+    #         try:
+    #             data = json.loads(response.payload.decode('utf-8'))
+    #             if DataValidator.validate_all_sensor_data(data): # Use the validator
+    #                 logger.debug("Sensor data validated successfully.")
+    #                 return data
+    #             else:
+    #                 logger.warning("Received sensor data failed validation.")
+    #                 return None
+    #         except json.JSONDecodeError as e:
+    #             logger.error(f"Failed to decode sensor data JSON: {e}")
+    #             return None
+    #     return None
 
     async def get_device_status(self) -> dict:
         """Retrieves device status information from the thermostat device (`/device/status` resource)."""
@@ -118,6 +134,52 @@ class EnhancedCoAPClient:
             return True
         logger.error(f"Failed to send control command '{command}'. CoAP Response: {response.code.name if response else 'No response'}")
         return False
+    
+    #  async def send_control_command(self, command: dict) -> bool:
+    #     """Sends a control command to the device."""
+    #     if not DataValidator.validate_control_command(command): # Use the validator
+    #         logger.warning(f"Control command failed validation: {command}")
+    #         return False
+
+    #     payload = json.dumps(command).encode('utf-8')
+    #     response = await self._send_request(POST, "control", payload, content_format=50) # JSON format
+    #     if response and response.code.is_successful():
+    #         logger.info(f"Control command {command} sent successfully. Device response: {response.payload.decode()}")
+    #         return True
+    #     logger.error(f"Failed to send control command {command}. Response code: {response.code.name if response else 'None'}")
+    #     return False
+    
+    async def get_configuration(self) -> dict:
+        """Retrieves device configuration."""
+        response = await self._send_request(GET, "config")
+        if response and response.code.is_successful():
+            try:
+                return json.loads(response.payload.decode('utf-8'))
+            except json.JSONDecodeError as e:
+                logger.error(f"Failed to decode configuration JSON: {e}")
+                return None
+        return None
+    
+    # async def update_configuration(self, config_update: dict) -> bool:
+    #     """Sends an update for device configuration."""
+    #     payload = json.dumps(config_update).encode('utf-8')
+    #     response = await self._send_request(POST, "config", payload, content_format=50) # JSON format
+    #     if response and response.code.is_successful():
+    #         logger.info(f"Configuration update {config_update} sent successfully. Device response: {response.payload.decode()}")
+    #         return True
+    #     logger.error(f"Failed to send configuration update {config_update}. Response code: {response.code.name if response else 'None'}")
+    #     return False
+
+    async def get_diagnostics(self) -> dict:
+        """Retrieves device diagnostics."""
+        response = await self._send_request(GET, "diagnostics")
+        if response and response.code.is_successful():
+            try:
+                return json.loads(response.payload.decode('utf-8'))
+            except json.JSONDecodeError as e:
+                logger.error(f"Failed to decode diagnostics JSON: {e}")
+                return None
+        return None
     
     # Other CoAP interactions (e.g., /config, /diagnostics) will be added in later phases
 
