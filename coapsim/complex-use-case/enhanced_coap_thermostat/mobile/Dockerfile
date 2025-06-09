@@ -13,8 +13,8 @@ COPY ./mobile /app/mobile
 # This should also be mounted as a volume if containing sensitive files
 COPY certs /app/certs
 
-EXPOSE 8000
+EXPOSE 8001
 
 # Command to run the FastAPI mobile API
 # The mobile_endpoints.py exposes the `app` instance.
-CMD ["uvicorn", "mobile.api.mobile_endpoints:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "mobile.api.mobile_endpoints:app", "--host", "0.0.0.0", "--port", "8001"]

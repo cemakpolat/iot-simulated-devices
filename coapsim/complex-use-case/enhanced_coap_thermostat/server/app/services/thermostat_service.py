@@ -4,12 +4,12 @@ from datetime import datetime, timedelta
 from typing import Optional, Dict, Any, List
 
 # Imports for components passed as dependencies
-from models.ensemble_model import EnsemblePredictor
-from database.influxdb_client import InfluxDBClient
-from coap.client import EnhancedCoAPClient
-from services.prediction_service import PredictionService 
-from services.maintenance_service import MaintenanceService 
-from services.notification_service import NotificationService 
+from ..models.ensemble_model import EnsemblePredictor
+from ..database.influxdb_client import InfluxDBClient
+from ..coap.client import EnhancedCoAPClient
+from ..services.prediction_service import PredictionService 
+from ..services.maintenance_service import MaintenanceService 
+from ..services.notification_service import NotificationService 
 
 logger = logging.getLogger(__name__)
 

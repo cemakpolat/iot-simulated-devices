@@ -2,6 +2,7 @@ import asyncio
 import logging
 import os
 from datetime import datetime, timedelta
+from fastapi import  Depends
 
 # Setup basic logging for the server process (before importing other modules)
 # This will log to console and potentially to a file defined by basicConfig.
@@ -9,31 +10,37 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 logger = logging.getLogger(__name__)
 
 # Import configuration from this server's app folder
-from config import ServerConfig
+from .config import ServerConfig
 
 # Import core components and services
-from database.influxdb_client import InfluxDBClient
-from coap.client import EnhancedCoAPClient
+from .database.influxdb_client import InfluxDBClient
+from .database.postgres_client import PostgreSQLClient 
+from .security.password_hasher import PasswordHasher 
+
+from .coap.client import EnhancedCoAPClient
 
 # Import ML Models (will be fully implemented in Phase 3/4)
-from models.lstm_predictor import LSTMTemperaturePredictor
-from models.anomaly_detector import AnomalyDetector
-from models.energy_optimizer import EnergyOptimizer
-from models.ensemble_model import EnsemblePredictor
+from .models.lstm_predictor import LSTMTemperaturePredictor
+from .models.anomaly_detector import AnomalyDetector
+from .models.energy_optimizer import EnergyOptimizer
+from .models.ensemble_model import EnsemblePredictor
 
 # Import Services (will be fully implemented in Phase 3/4)
-from services.thermostat_service import ThermostatControlService
-from services.prediction_service import PredictionService
-from services.maintenance_service import MaintenanceService
-from services.notification_service import NotificationService 
+from .services.thermostat_service import ThermostatControlService
+from .services.prediction_service import PredictionService
+from .services.maintenance_service import MaintenanceService
+from .services.notification_service import NotificationService 
+
+from .api.websocket_handler import WebSocketManager
 
 
-# --- NEW: Import WebSocket Manager ---
-from api.websocket_handler import WebSocketManager
+from .api.rest_gateway import app as fastapi_app 
 
+# --- Initialize PostgreSQL Client ---
+postgres_client = PostgreSQLClient(os.getenv("DATABASE_URL", "postgresql://thermostat:password@postgres:5432/thermostat"))
 
-# --- NEW: Import FastAPI app from rest_gateway ---
-from api.rest_gateway import app as fastapi_app 
+# --- Inject get_db dependency into FastAPI app ---
+fastapi_app.dependency_overrides[Depends(postgres_client.get_db)] = postgres_client.get_db
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -159,9 +166,14 @@ async def startup_event():
     fastapi_app.state.influx_client = influx_client
     fastapi_app.state.coap_client = coap_client
     fastapi_app.state.notification_service = notification_service # Also inject notification service
+    fastapi_app.state.postgres_client = postgres_client 
+    fastapi_app.state.websocket_manager = websocket_manager
+    fastapi_app.state.config = config
+
+
 
     # Start background tasks
-    fastapi_app.state.control_loop_task = asyncio.create_task(control_loop_task_function())
+    fastapi_app.state.control_loop_task = asyncio.create_task(control_loop())
     fastapi_app.state.websocket_server_task = asyncio.create_task(websocket_manager.start_server(host="0.0.0.0", port=8092))
     
     logger.info("Background control loop and WebSocket server tasks started.")
