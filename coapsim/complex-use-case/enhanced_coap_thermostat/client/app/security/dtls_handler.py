@@ -23,18 +23,13 @@ class DTLSSecurityHandler:
             identity = self.security_manager.psk_identity # ensure it's str, not bytes
             key = self.security_manager.psk_key
 
-             # Convert bytes to str if necessary
-            if isinstance(identity, str):
-                identity = identity.decode("ascii")
-            if isinstance(key, str):
-                key = key.decode("ascii")
-
             # Create credentials dictionary in the format expected by aiocoap
             credentials = {
-                "coaps://*": {
+                #"coaps://*": {
+                ":client": {
                     "dtls": {
-                        "psk": key,  # Just the key bytes, not a tuple
-                        "client_identity": identity  # Separate field for identity
+                       "psk":  key,
+                        "client-identity": identity,
 
                     }
                 }
@@ -54,5 +49,6 @@ class DTLSSecurityHandler:
         credentials = self.get_dtls_credentials()
         if credentials:
             # Load credentials into the context's client_credentials store
-            context.client_credentials.load_from_dict(credentials)
+              
+            context.server_credentials.load_from_dict(credentials)
             logger.info("DTLS credentials applied to context.")

@@ -15,7 +15,7 @@ class DeviceConfig(BaseSettings):
     SECURE_PORT: int = int(os.getenv("COAPS_PORT", 5684))
     
     # Security
-    ENABLE_DTLS: bool = os.getenv("ENABLE_DTLS", "true").lower() == "true"
+    ENABLE_DTLS: bool =  os.getenv("ENABLE_DTLS", "false")
     PSK_IDENTITY: str = os.getenv("PSK_IDENTITY", "thermostat")
     PSK_KEY: str = os.getenv("PSK_KEY", "secretkey123")
     

@@ -28,14 +28,14 @@ class AirQualitySensor:
             "quality": self._get_quality_level(aqi),
             "timestamp": time.time()
         }
-    
+
     def _calculate_aqi(self, pm2_5: float, pm10: float, co2: float) -> int:
         # Simplified AQI calculation
         pm2_5_aqi = min(pm2_5 * 4, 300)
         pm10_aqi = min(pm10 * 2, 300)
         co2_aqi = min((co2 - 400) * 0.2, 100)
         return int(max(pm2_5_aqi, pm10_aqi, co2_aqi))
-    
+
     def _get_quality_level(self, aqi: int) -> str:
         if aqi <= 50:
             return "good"

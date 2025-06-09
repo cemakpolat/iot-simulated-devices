@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Thermostat Dashboard</title>
+    <title>Quantum Climate Interface</title> <!-- More futuristic title -->
     <!-- Tailwind CSS with Inter font -->
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -20,30 +20,40 @@
                 },
                 extend: {
                     colors: {
-                        primary: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            200: '#bae6fd',
-                            300: '#7dd3fc',
-                            400: '#38bdf8',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e',
+                        // Futuristic color palette
+                        'space-dark': '#0D1117', // Dark background
+                        'nebula-blue': '#1F2B4D', // Slightly lighter dark blue
+                        'cyber-teal': '#00F0FF', // Accent color (neon/glow)
+                        'synth-purple': '#8E2DE2', // Another accent color
+                        'fusion-gray': '#A0AEC0', // Light text/icon color
+                        'data-light': '#E2E8F0', // Very light text/background for contrast
+
+                        primary: { // Re-purposed for primary actions/highlights
+                            50: '#E0F7FA',
+                            100: '#B2EBF2',
+                            200: '#80DEEA',
+                            300: '#4DD0E1',
+                            400: '#26C6DA',
+                            500: '#00BCD4', // Main blue
+                            600: '#00ACC1',
+                            700: '#0097A7',
+                            800: '#00838F',
+                            900: '#006064',
                         },
-                        dark: {
-                            900: '#0f172a',
-                            800: '#1e293b',
-                            700: '#334155',
-                        },
-                        light: {
-                            100: '#f8fafc',
-                            200: '#f1f5f9',
-                        }
+                        // Old dark/light no longer needed, using new palette names
+                    },
+                    boxShadow: {
+                        'glow-sm': '0 0 5px rgba(0, 240, 255, 0.4)',
+                        'glow-md': '0 0 15px rgba(0, 240, 255, 0.6)',
+                        'glow-lg': '0 0 30px rgba(0, 240, 255, 0.8)',
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)', // For the glass cards
                     },
                     backdropBlur: {
                         xs: '2px',
+                        sm: '4px',
+                        md: '8px',
+                        lg: '12px',
+                        xl: '16px',
                     }
                 }
             }
@@ -51,115 +61,153 @@
     </script>
     <style>
         body {
-            background: radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.1) 0%, rgba(241, 245, 249, 1) 90%);
+            /* Futuristic background: deep space gradient with subtle radial glow */
+            background: linear-gradient(135deg, #0D1117 0%, #1F2B4D 100%);
+            color: #E2E8F0; /* Default text color */
         }
+        
         .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(31, 43, 77, 0.5); /* nebula-blue with transparency */
+            backdrop-filter: blur(12px); /* Increased blur */
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 240, 255, 0.2); /* Cyber teal border */
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); /* Glass shadow */
+            transition: all 0.3s ease; /* Smooth transitions */
         }
+        .glass-card:hover {
+            border-color: rgba(0, 240, 255, 0.4); /* Stronger glow on hover */
+            box-shadow: 0 8px 40px 0 rgba(31, 38, 135, 0.5), 0 0 10px rgba(0, 240, 255, 0.6);
+            transform: translateY(-2px); /* Subtle lift effect */
+        }
+
+        /* Darker variant for header/footer if needed, but the main glass-card can be versatile */
         .glass-card-dark {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(13, 17, 23, 0.7); /* space-dark with transparency */
+            backdrop-filter: blur(16px); /* Even more blur */
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(142, 45, 226, 0.3); /* Synth purple border */
+            box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
         }
+
         .status-pulse {
-            animation: pulse 2s infinite;
+            animation: pulse-glow 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
         }
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 1; box-shadow: 0 0 5px currentColor; }
+            50% { opacity: 0.7; box-shadow: 0 0 15px currentColor; }
+        }
+
+        /* Input and button focus styles */
+        input:focus, button:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.5); /* Cyber teal glow */
+        }
+
+        /* Custom scrollbar for a futuristic touch */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1F2B4D;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00BCD4;
+            border-radius: 10px;
+            border: 2px solid #1F2B4D;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00F0FF;
         }
     </style>
 </head>
-<body class="h-full min-h-screen font-sans text-dark-900">
+<body class="h-full min-h-screen font-sans text-data-light">
     <!-- App Container -->
     <div class="min-h-screen flex flex-col">
         <!-- Header -->
-        <header class="glass-card-dark py-4 px-6 shadow-lg">
+        <header class="glass-card-dark py-4 px-6 shadow-lg relative z-10 rounded-b-xl">
             <div class="container mx-auto flex justify-between items-center">
                 <div class="flex items-center space-x-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <!-- Icon with cyber-teal glow -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-cyber-teal drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <h1 class="text-xl font-bold text-light-100">Smart Climate Control</h1>
+                    <h1 class="text-2xl font-bold text-data-light tracking-wide">QUANTUM CLIMATE INTERFACE</h1>
                 </div>
-                <div id="status-indicator" class="flex items-center space-x-2 px-3 py-1 rounded-full bg-dark-700 text-light-100 text-sm font-medium">
-                    <span class="h-2 w-2 rounded-full bg-yellow-400 status-pulse"></span>
-                    <span id="status-text">Connecting...</span> <!-- Added ID for direct access -->
+                <div id="status-indicator" class="flex items-center space-x-2 px-4 py-2 rounded-full bg-nebula-blue text-fusion-gray text-sm font-medium border border-cyber-teal/30">
+                    <span class="h-3 w-3 rounded-full bg-yellow-400 status-pulse"></span>
+                    <span id="status-text">INITIATING PROTOCOLS...</span> <!-- More futuristic status text -->
                 </div>
             </div>
         </header>
 
         <!-- Main Content -->
-        <main class="flex-grow container mx-auto px-4 py-6">
+        <main class="flex-grow container mx-auto px-4 py-8">
             <!-- Current Stats Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <!-- Temperature Card -->
-                <div class="glass-card rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="glass-card rounded-2xl p-6 shadow-glass hover:shadow-glow-md transition-all duration-300">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-sm font-medium text-dark-600">Temperature</p>
-                            <p id="current-temperature" class="text-3xl font-bold text-dark-900 mt-1">--°C</p>
+                            <p class="text-sm font-medium text-fusion-gray">Ambient Temperature</p>
+                            <p id="current-temperature" class="text-4xl font-bold text-cyber-teal mt-2 drop-shadow-md">--°C</p>
                         </div>
-                        <div class="p-2 rounded-lg bg-primary-50">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div class="p-3 rounded-xl bg-primary-900/20 border border-primary-500/30">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
                             </svg>
                         </div>
                     </div>
-                    <p id="temperature-status" class="text-xs font-medium mt-2 text-dark-500">Status: --</p>
+                    <p id="temperature-status" class="text-xs font-medium mt-3 text-fusion-gray/80">Status: <span class="text-cyber-teal">OPTIMAL</span></p>
                 </div>
 
                 <!-- Humidity Card -->
-                <div class="glass-card rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="glass-card rounded-2xl p-6 shadow-glass hover:shadow-glow-md transition-all duration-300">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-sm font-medium text-dark-600">Humidity</p>
-                            <p id="current-humidity" class="text-3xl font-bold text-dark-900 mt-1">--%</p>
+                            <p class="text-sm font-medium text-fusion-gray">Atmospheric Humidity</p>
+                            <p id="current-humidity" class="text-4xl font-bold text-cyber-teal mt-2 drop-shadow-md">--%</p>
                         </div>
-                        <div class="p-2 rounded-lg bg-blue-50">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div class="p-3 rounded-xl bg-primary-900/20 border border-primary-500/30">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
                         </div>
                     </div>
-                    <p id="humidity-status" class="text-xs font-medium mt-2 text-dark-500">Status: --</p>
+                    <p id="humidity-status" class="text-xs font-medium mt-3 text-fusion-gray/80">Status: <span class="text-cyber-teal">STABLE</span></p>
                 </div>
 
                 <!-- Air Quality Card -->
-                <div class="glass-card rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="glass-card rounded-2xl p-6 shadow-glass hover:shadow-glow-md transition-all duration-300">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-sm font-medium text-dark-600">Air Quality</p>
-                            <p id="current-aqi" class="text-3xl font-bold text-dark-900 mt-1">-- AQI</p>
+                            <p class="text-sm font-medium text-fusion-gray">Air Purity Index</p>
+                            <p id="current-aqi" class="text-4xl font-bold text-cyber-teal mt-2 drop-shadow-md">-- AQI</p>
                         </div>
-                        <div class="p-2 rounded-lg bg-green-50">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div class="p-3 rounded-xl bg-primary-900/20 border border-primary-500/30">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
                             </svg>
                         </div>
                     </div>
-                    <p id="air-quality-status" class="text-xs font-medium mt-2 text-dark-500">Quality: --</p>
+                    <p id="air-quality-status" class="text-xs font-medium mt-3 text-fusion-gray/80">Quality: <span class="text-cyber-teal">EXCELLENT</span></p>
                 </div>
 
                 <!-- Occupancy Card -->
-                <div class="glass-card rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="glass-card rounded-2xl p-6 shadow-glass hover:shadow-glow-md transition-all duration-300">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-sm font-medium text-dark-600">Occupancy</p>
-                            <p id="current-occupancy" class="text-3xl font-bold text-dark-900 mt-1">--</p>
+                            <p class="text-sm font-medium text-fusion-gray">Occupancy Scans</p>
+                            <p id="current-occupancy" class="text-4xl font-bold text-cyber-teal mt-2 drop-shadow-md">--</p>
                         </div>
-                        <div class="p-2 rounded-lg bg-purple-50">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div class="p-3 rounded-xl bg-primary-900/20 border border-primary-500/30">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                         </div>
                     </div>
-                    <p id="occupancy-status" class="text-xs font-medium mt-2 text-dark-500">Confidence: --</p>
+                    <p id="occupancy-status" class="text-xs font-medium mt-3 text-fusion-gray/80">Confidence: <span class="text-cyber-teal">HIGH</span></p>
                 </div>
             </div>
 
@@ -168,91 +216,90 @@
                 <!-- Left Column -->
                 <div class="lg:col-span-2 space-y-6">
                     <!-- Temperature Chart -->
-                    <div class="glass-card rounded-xl p-5 shadow-sm">
-                        <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-lg font-semibold text-dark-800">Temperature Forecast</h2>
-                            <div class="flex space-x-2">
-                                <button class="px-3 py-1 text-xs bg-primary-50 text-primary-600 rounded-lg">6h</button>
-                                <button class="px-3 py-1 text-xs bg-light-100 text-dark-500 rounded-lg">12h</button>
-                                <button class="px-3 py-1 text-xs bg-light-100 text-dark-500 rounded-lg">24h</button>
+                    <div class="glass-card rounded-2xl p-6 shadow-glass">
+                        <div class="flex justify-between items-center mb-5">
+                            <h2 class="text-xl font-semibold text-data-light">Climatic Projections</h2>
+                            <div class="flex space-x-3">
+                                <button class="px-4 py-2 text-sm bg-primary-500 text-data-light rounded-lg hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-cyber-teal focus:ring-offset-2 focus:ring-offset-nebula-blue transition-all duration-200 shadow-glow-sm">6h</button>
+                                <button class="px-4 py-2 text-sm bg-nebula-blue text-fusion-gray rounded-lg hover:bg-nebula-blue/80 focus:outline-none focus:ring-2 focus:ring-cyber-teal focus:ring-offset-2 focus:ring-offset-nebula-blue transition-all duration-200">12h</button>
+                                <button class="px-4 py-2 text-sm bg-nebula-blue text-fusion-gray rounded-lg hover:bg-nebula-blue/80 focus:outline-none focus:ring-2 focus:ring-cyber-teal focus:ring-offset-2 focus:ring-offset-nebula-blue transition-all duration-200">24h</button>
                             </div>
                         </div>
-                        <div class="h-64">
+                        <div class="h-72">
                             <canvas id="temperatureChart"></canvas>
+                            <!-- Note: Chart.js styling would need to be updated in dashboard.js to match the dark theme. -->
                         </div>
                     </div>
 
                     <!-- HVAC Status -->
-                    <div class="glass-card rounded-xl p-5 shadow-sm">
-                        <h2 class="text-lg font-semibold text-dark-800 mb-4">Climate Control</h2>
+                    <div class="glass-card rounded-2xl p-6 shadow-glass">
+                        <h2 class="text-xl font-semibold text-data-light mb-5">HVAC System Diagnostics</h2>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <!-- Current State -->
-                            <div class="bg-light-100 rounded-lg p-4 flex items-center space-x-3">
-                                <div class="p-2 rounded-lg bg-primary-100">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div class="bg-nebula-blue/60 rounded-xl p-5 flex items-center space-x-4 border border-cyber-teal/20">
+                                <div class="p-3 rounded-full bg-cyber-teal/20">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-cyber-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="text-xs text-dark-500">Current Mode</p>
-                                    <p id="hvac-state" class="font-medium">--</p>
+                                    <p class="text-xs text-fusion-gray">Operational Mode</p>
+                                    <p id="hvac-state" class="font-medium text-data-light text-lg">--</p>
                                 </div>
                             </div>
 
                             <!-- Target Temp -->
-                            <div class="bg-light-100 rounded-lg p-4 flex items-center space-x-3">
-                                <div class="p-2 rounded-lg bg-blue-100">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div class="bg-nebula-blue/60 rounded-xl p-5 flex items-center space-x-4 border border-cyber-teal/20">
+                                <div class="p-3 rounded-full bg-cyber-teal/20">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-cyber-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="text-xs text-dark-500">Target Temperature</p>
-                                    <p id="target-temperature" class="font-medium">--°C</p>
+                                    <p class="text-xs text-fusion-gray">Nominal Temperature</p>
+                                    <p id="target-temperature" class="font-medium text-data-light text-lg">--°C</p>
                                 </div>
                             </div>
 
                             <!-- Energy Usage -->
-                            <div class="bg-light-100 rounded-lg p-4 flex items-center space-x-3">
-                                <div class="p-2 rounded-lg bg-green-100">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div class="bg-nebula-blue/60 rounded-xl p-5 flex items-center space-x-4 border border-cyber-teal/20">
+                                <div class="p-3 rounded-full bg-cyber-teal/20">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-cyber-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="text-xs text-dark-500">Energy Usage</p>
-                                    <p id="energy-consumption" class="font-medium">-- kWh</p>
+                                    <p class="text-xs text-fusion-gray">Energetic Flux</p>
+                                    <p id="energy-consumption" class="font-medium text-data-light text-lg">-- kWh</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Manual Controls -->
-                        <div class="mt-6">
-                            <h3 class="text-sm font-medium text-dark-600 mb-3">Manual Control</h3>
-                            <div class="flex flex-col sm:flex-row gap-3">
-                                <div class="flex-1">
-                                    <label for="temp-input" class="block text-xs font-medium text-dark-500 mb-1">Set Target Temperature</label>
+                        <div class="mt-8">
+                            <h3 class="text-sm font-medium text-fusion-gray mb-4 border-b border-fusion-gray/20 pb-2">Manual Control Override</h3>
+                            <div class="flex flex-col sm:flex-row gap-4 items-end">
+                                <div class="flex-1 w-full">
+                                    <label for="temp-input" class="block text-xs font-medium text-fusion-gray mb-2">Set Target Temperature</label>
                                     <div class="relative">
                                         <input type="number" id="temp-input" value="22" step="0.5" min="15" max="30" 
-                                            class="w-full pl-3 pr-10 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
-                                        <span class="absolute right-3 top-2 text-sm text-dark-400">°C</span>
+                                            class="w-full pl-4 pr-12 py-3 bg-space-dark border border-primary-500/50 rounded-lg text-cyber-teal text-lg focus:ring-2 focus:ring-cyber-teal focus:border-cyber-teal transition-all duration-200 shadow-inner">
+                                        <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-fusion-gray">°C</span>
                                     </div>
                                 </div>
-                                <!-- Removed onclick attributes, listeners added in JS -->
-                                <button id="set-target-btn" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors">
-                                    Set
+                                <button id="set-target-btn" class="w-full sm:w-auto px-6 py-3 bg-primary-600 text-data-light rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-cyber-teal focus:ring-offset-2 focus:ring-offset-nebula-blue transition-colors shadow-glow-sm font-semibold text-base uppercase">
+                                    Activate
                                 </button>
                             </div>
-                            <div class="flex flex-wrap gap-2 mt-3">
-                                <!-- Removed onclick attributes, listeners added in JS -->
-                                <button id="heat-btn" class="flex-1 sm:flex-none px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
+                            <div class="grid grid-cols-3 gap-3 mt-4">
+                                <button id="heat-btn" class="px-5 py-3 bg-red-600 text-data-light rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-nebula-blue transition-colors shadow-md font-semibold uppercase">
                                     Heat
                                 </button>
-                                <button id="cool-btn" class="flex-1 sm:flex-none px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                                <button id="cool-btn" class="px-5 py-3 bg-blue-600 text-data-light rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-nebula-blue transition-colors shadow-md font-semibold uppercase">
                                     Cool
                                 </button>
-                                <button id="off-btn" class="flex-1 sm:flex-none px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
-                                    Off
+                                <button id="off-btn" class="px-5 py-3 bg-gray-600 text-data-light rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-nebula-blue transition-colors shadow-md font-semibold uppercase">
+                                    Standby
                                 </button>
                             </div>
                         </div>
@@ -262,31 +309,25 @@
                 <!-- Right Column -->
                 <div class="space-y-6">
                     <!-- System Alerts -->
-                    <div class="glass-card rounded-xl p-5 shadow-sm h-full">
-                        <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-lg font-semibold text-dark-800">System Alerts</h2>
-                            <!-- This could be a dynamic alert count later -->
-                            <span class="text-xs px-2 py-1 bg-red-100 text-red-600 rounded-full">Active</span>
+                    <div class="glass-card rounded-2xl p-6 shadow-glass h-full flex flex-col">
+                        <div class="flex justify-between items-center mb-5">
+                            <h2 class="text-xl font-semibold text-data-light">System Anomaly Log</h2>
+                            <!-- Dynamic alert count -->
+                            <span class="text-sm px-3 py-1 bg-red-800/50 text-red-300 rounded-full border border-red-500/30">CRITICAL</span>
                         </div>
-                        <div id="alerts-list" class="space-y-3">
+                        <div id="alerts-list" class="space-y-4 flex-grow overflow-y-auto">
                             <!-- Alerts will be inserted here -->
-                            <div class="text-center py-4 text-dark-400 no-alerts-message">No active alerts</div>
-                        </div>
-                    </div>
-
-                    <!-- Energy Efficiency -->
-                    <div class="glass-card rounded-xl p-5 shadow-sm">
-                        <h2 class="text-lg font-semibold text-dark-800 mb-4">Energy Efficiency</h2>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm text-dark-500">Current Usage</span>
-                            <span id="current-energy-usage" class="text-sm font-medium">-- kWh</span> <!-- New ID for current energy -->
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2.5">
-                            <div class="bg-primary-600 h-2.5 rounded-full" style="width: 45%"></div> <!-- Placeholder style -->
-                        </div>
-                        <div class="flex items-center justify-between mt-2">
-                            <span class="text-xs text-dark-400">Next Hour Predicted Temp: <span id="predicted-energy">--</span> °C</span>
-                            <span class="text-xs text-green-600">+12% efficiency</span> <!-- Placeholder -->
+                            <div class="bg-nebula-blue/40 p-4 rounded-lg border border-synth-purple/30 text-fusion-gray text-sm">
+                                <p class="text-red-300 font-semibold mb-1">WARNING: Sensor Drift Detected (Unit 7)</p>
+                                <p class="text-xs text-fusion-gray">Temperature readings from Unit 7 show minor discrepancies. Routine calibration recommended within 24 hours.</p>
+                                <span class="block text-right text-xs text-fusion-gray/70 mt-2">Timestamp: 2024-06-08 14:30:15Z</span>
+                            </div>
+                            <div class="bg-nebula-blue/40 p-4 rounded-lg border border-yellow-500/30 text-fusion-gray text-sm">
+                                <p class="text-yellow-300 font-semibold mb-1">ALERT: Atmospheric Particulates Elevated</p>
+                                <p class="text-xs text-fusion-gray">Air Quality Index temporarily exceeding optimal parameters. Initiating advanced filtration protocols.</p>
+                                <span class="block text-right text-xs text-fusion-gray/70 mt-2">Timestamp: 2024-06-08 14:15:00Z</span>
+                            </div>
+                            <div class="text-center py-4 text-fusion-gray/60 no-alerts-message text-lg">No critical anomalies reported.</div>
                         </div>
                     </div>
                 </div>
@@ -294,12 +335,11 @@
         </main>
 
         <!-- Footer -->
-        <footer class="glass-card-dark py-3 px-6 text-center text-light-200 text-sm">
-            <p>© 2024 Smart Climate Control System. All rights reserved.</p>
+        <footer class="glass-card-dark py-4 px-6 text-center text-fusion-gray text-sm rounded-t-xl">
+            <p>© 2024 Quantum Climate Solutions. All rights reserved. // INTERFACE V.3.2.1 BETA</p>
         </footer>
     </div>
 
     <!-- JavaScript -->
+    <!-- This path assumes dashboard.js is in a 'static/js' directory. -->
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-</body>
-</html>

@@ -41,10 +41,7 @@ class CoAPDevice:
         root.add_resource(['device', 'status'], DeviceStatusResource(self.config.DEVICE_ID))
         root.add_resource(['control'], self.control_resource) 
         
-        # Resources to be added in Phase 3
-        # root.add_resource(['config'], ConfigurationResource(self.config))
-        # root.add_resource(['diagnostics'], DiagnosticsResource(self.config.DEVICE_ID, self.device_start_time))
-        self.config.ENABLE_DTLS = False
+        #self.config.ENABLE_DTLS = False
         if self.config.ENABLE_DTLS:
             logger.info(f"Starting CoAP server with DTLS on {self.config.HOST}:{self.config.SECURE_PORT}...")
             

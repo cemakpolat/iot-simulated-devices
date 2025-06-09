@@ -55,5 +55,4 @@ class SecurityManager:
                 ))
         return private_key, public_key
 
-    # Certificate handling functions would be added here if using X.509 certs for DTLS.
-    # For PSK, the `get_psk_credentials` is the key.
+    

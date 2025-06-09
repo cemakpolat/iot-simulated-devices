@@ -73,7 +73,6 @@ class NotificationService:
             # Run webhook sending in a separate asyncio task
             asyncio.create_task(self._send_webhook_alerts(alert_payload)) 
         
-          # --- NEW: Send alert to WebSocket clients (e.g., dashboard) ---
         if self._websocket_manager:
             # We need to wrap the alert in a structure the dashboard expects
             dashboard_alert_format = {

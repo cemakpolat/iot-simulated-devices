@@ -3,7 +3,6 @@ import aiocoap
 from aiocoap.resource import Resource
 import time
 import random
-# client/app/resources/device_status.py
 
 class DeviceStatusResource(Resource):
     def __init__(self, device_id: str):

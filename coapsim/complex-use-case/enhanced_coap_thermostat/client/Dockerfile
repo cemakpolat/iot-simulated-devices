@@ -1,14 +1,14 @@
 # client/Dockerfile
-FROM python:3.9-slim-buster
+FROM python:3.10-slim-buster
 
 WORKDIR /app
 
 # Install system dependencies for DTLS (if needed, e.g., libssl-dev)
 # For aiocoap with DTLS, usually only requires Python cryptography, which is handled by pip
 # Uncomment and add if you encounter issues with DTLS security dependencies
-# RUN apt-get update && apt-get install -y --no-install-recommends \
-#     libssl-dev \
-#     && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 # Install Python dependencies
