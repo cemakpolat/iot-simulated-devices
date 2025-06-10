@@ -96,6 +96,7 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    #command: redis-server --requirepass redispassword123
     networks:
       - thermostat-net
     restart: unless-stopped
@@ -128,36 +129,50 @@ services:
       - thermostat-net
     restart: unless-stopped
 
+  redisinsight:
+    image: redislabs/redisinsight:1.14.0
+    ports:
+      - "8003:8001"
+    volumes:
+      - redisinsight_data:/db
+    environment:
+      - RIPORT=8001
+      - RIHOST=0.0.0.0
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - thermostat-net
   # # Monitoring
-  # prometheus:
-  #   image: prom/prometheus
-  #   ports:
-  #     - "9090:9090"
-  #   volumes:
-  #     - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-  #     - prometheus_data:/prometheus
-  #   networks:
-  #     - thermostat-net
-  #   restart: unless-stopped
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - thermostat-net
+    restart: unless-stopped
 
-  # grafana:
-  #   image: grafana/grafana
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - GF_SECURITY_ADMIN_PASSWORD=admin
-  #     - GF_AUTH_ANONYMOUS_ENABLED=true # Optional: Allow anonymous access to dashboards
-  #     - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer # Optional: Role for anonymous users
-  #   volumes:
-  #     - grafana_data:/var/lib/grafana
-  #     - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
-  #     - ./monitoring/grafana/dashboards:/etc/grafana/dashboards:ro # Mount dashboards JSONs
-  #   depends_on:
-  #     - prometheus
-  #     - influxdb
-  #   networks:
-  #     - thermostat-net
-  #   restart: unless-stopped
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true # Optional: Allow anonymous access to dashboards
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer # Optional: Role for anonymous users
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/etc/grafana/dashboards:ro # Mount dashboards JSONs
+    depends_on:
+      - prometheus
+      - influxdb
+    networks:
+      - thermostat-net
+    restart: unless-stopped
 
 networks:
   thermostat-net:
@@ -169,3 +184,4 @@ volumes:
   postgres_data:
   prometheus_data:
   grafana_data:
+  redisinsight_data:

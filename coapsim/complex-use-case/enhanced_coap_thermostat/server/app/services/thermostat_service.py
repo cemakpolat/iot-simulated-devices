@@ -1,5 +1,7 @@
 import asyncio
 import logging
+import os
+import json
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any, List
 
@@ -10,6 +12,7 @@ from ..coap.client import EnhancedCoAPClient
 from ..services.prediction_service import PredictionService 
 from ..services.maintenance_service import MaintenanceService 
 from ..services.notification_service import NotificationService 
+from ..utils.redis_client import RedisClient # <--- NEW import
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +24,7 @@ class ThermostatControlService:
     """
     def __init__(self, ensemble_model_instance: EnsemblePredictor, db_client: InfluxDBClient, 
                     coap_client: EnhancedCoAPClient, notification_service: NotificationService,
-                    prediction_service: PredictionService, maintenance_service: MaintenanceService):
+                    prediction_service: PredictionService, maintenance_service: MaintenanceService, redis_client: RedisClient):
         """
         Initializes the ThermostatControlService with all its required dependencies.
         :param ensemble_model_instance: An instance of EnsemblePredictor for AI decisions.
@@ -38,6 +41,7 @@ class ThermostatControlService:
         self.notification_service = notification_service
         self.prediction_service = prediction_service  
         self.maintenance_service = maintenance_service 
+        self.redis_client = redis_client # <--- NEW injection
         self.decision_history = [] # Stores recent control decisions for logging/debugging
         self._last_processed_sensor_data: Optional[Dict[str, Any]] = None # Cache for dashboard/WS
         self._last_predictions: Optional[List[float]] = None # Cache for dashboard/WS
@@ -84,6 +88,11 @@ class ThermostatControlService:
             current_device_data = {**sensor_data, **device_status} # Merge dictionaries
             self._last_processed_sensor_data = current_device_data # Cache for external access
             logger.debug(f"Current device data received: Temp={current_device_data.get('temperature', {}).get('value')}°C, HVAC={current_device_data.get('hvac_state', 'N/A')}")
+
+            await self.redis_client.set(
+            f"latest_sensor_data:{current_device_data.get('device_id', 'unknown')}", 
+            json.dumps(current_device_data), 
+            ex=30)
 
             # 2. Get historical data for ML models from InfluxDB
             # The amount of historical data needed depends on the LSTM's `sequence_length`

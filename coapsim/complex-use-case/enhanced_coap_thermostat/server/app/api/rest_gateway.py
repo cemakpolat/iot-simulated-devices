@@ -1,6 +1,5 @@
 # server/app/api/rest_gateway.py
-from fastapi import FastAPI, HTTPException, Depends, status, Request, Form, Header # <--- ADD Header
-
+from fastapi import FastAPI, HTTPException, Depends, status, Request, Form, Header, Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
@@ -9,6 +8,8 @@ import os
 import time
 import logging
 import json
+from ..utils.redis_client import RedisClient
+from prometheus_client import generate_latest # <--- ADD THIS
 
 # Import services and clients
 from ..services.thermostat_service import ThermostatControlService
@@ -94,6 +95,9 @@ def get_postgres_db_session(request: Request) -> Session:
 def get_password_hasher() -> PasswordHasher:
     return PasswordHasher() # PasswordHasher is stateless, can instantiate directly or make it a singleton
 
+def get_redis_client_instance(request: Request) -> RedisClient:
+    return request.app.state.redis_client # Assuming injected via app.state
+
 # --- JWT Token Verification (unchanged) ---
 def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> AuthenticatedUser: 
     print(f"DEBUG: verify_token called with credentials: {credentials.credentials[:20]}...")
@@ -146,8 +150,16 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)) 
 @app.get("/status/{device_id}", response_model=Dict[str, Any])
 async def get_device_status(device_id: str, 
                             user: AuthenticatedUser = Depends(verify_token), 
-                            coap_client: EnhancedCoAPClient = Depends(get_coap_client)):
-    #logger.info(f"API: User {user.get('sub')} requesting status for device {device_id}")
+                            coap_client: EnhancedCoAPClient = Depends(get_coap_client),
+                            redis_client: RedisClient = Depends(get_redis_client_instance)):
+     # Try to get from Redis cache first
+    cached_data = await redis_client.get(f"latest_sensor_data:{device_id}")
+    if cached_data:
+        logger.info(f"API: Serving status for {device_id} from Redis cache.")
+        return json.loads(cached_data)
+
+    
+    #logger.info(f"API: User {user.get('sub')}x requesting status for device {device_id}")
     device_data = await coap_client.get_device_status()
     sensor_data = await coap_client.get_all_sensor_data()
 
@@ -155,7 +167,11 @@ async def get_device_status(device_id: str,
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Device {device_id} not found or offline.")
 
     full_data = {**sensor_data, **device_data} # Ensure sensor_data is first for structure
+    await redis_client.set(f"latest_sensor_data:{device_id}", json.dumps(full_data), ex=30) # Cache it
     return full_data
+
+
+
 
 @app.post("/control/{device_id}", response_model=Dict[str, Any])
 async def send_control_command(device_id: str, 
@@ -323,3 +339,10 @@ async def register_user(reg_data: RegisterRequest,
 
     logger.info(f"User '{reg_data.username}' registered successfully with ID: {new_user.id}")
     return {"message": "User registered successfully."}
+
+@app.get("/metrics")
+async def metrics():
+    """
+    Endpoint for Prometheus to scrape metrics.
+    """
+    return Response(generate_latest(), media_type="text/plain")

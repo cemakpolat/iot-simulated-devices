@@ -32,8 +32,7 @@ from .services.maintenance_service import MaintenanceService
 from .services.notification_service import NotificationService 
 
 from .api.websocket_handler import WebSocketManager
-
-
+from .utils.redis_client import RedisClient # <--- NEW import
 from .api.rest_gateway import app as fastapi_app 
 
 # --- Initialize PostgreSQL Client ---
@@ -84,16 +83,19 @@ maintenance_service = MaintenanceService(
     db_client=influx_client, 
     notification_service=notification_service
 )
+redis_client = RedisClient(os.getenv("REDIS_URL", "redis://redis:6379")) # <--- NEW instantiation
 thermostat_service = ThermostatControlService(
     ensemble_model_instance=ensemble_predictor,
     db_client=influx_client,
     coap_client=coap_client,
     notification_service=notification_service,
     prediction_service=prediction_service,  # Pass the prediction service instance
-    maintenance_service=maintenance_service  # Pass the maintenance service instance
+    maintenance_service=maintenance_service,  # Pass the maintenance service instance
+    redis_client = redis_client # <--- NEW injection
 )
 
-# --- NEW: Initialize WebSocket Manager ---
+
+
 websocket_manager = WebSocketManager(thermostat_service, config)
 
 notification_service.set_websocket_manager(websocket_manager)
@@ -169,6 +171,7 @@ async def startup_event():
     fastapi_app.state.postgres_client = postgres_client 
     fastapi_app.state.websocket_manager = websocket_manager
     fastapi_app.state.config = config
+    fastapi_app.state.redis_client = redis_client
 
 
 
@@ -203,6 +206,8 @@ async def shutdown_event():
     # Perform clean shutdown of services
     await websocket_manager.stop()
     await coap_client.shutdown()
+    await redis_client.close() # <--- NEW: Close Redis client on shutdown
+
     # If InfluxDB client needs explicit closing: influx_client.client.close()
     
     logger.info("AI Controller application shut down completely.")
