@@ -1,5 +1,5 @@
 # server/app/api/rest_gateway.py
-from fastapi import FastAPI, HTTPException, Depends, status, Request, Form # <--- ADD Form
+from fastapi import FastAPI, HTTPException, Depends, status, Request, Form, Header # <--- ADD Header
 
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
@@ -8,6 +8,7 @@ import jwt
 import os
 import time
 import logging
+import json
 
 # Import services and clients
 from ..services.thermostat_service import ThermostatControlService
@@ -50,10 +51,16 @@ class LoginRequest(BaseModel):
     password: str
 
 
-class RegisterRequest(BaseModel): # <--- ADD THIS
+class RegisterRequest(BaseModel): 
     username: str
     email: str
     password: str
+
+class AuthenticatedUser(BaseModel):
+    id: str # Corresponds to 'sub' in JWT
+    username: str
+    roles: List[str] = [] # Ensure roles is a list, default to empty
+ 
 
 # --- Dependency Injection (Services will be injected via FastAPI's state) ---
 # These functions define how dependencies are obtained for endpoints.
@@ -88,33 +95,59 @@ def get_password_hasher() -> PasswordHasher:
     return PasswordHasher() # PasswordHasher is stateless, can instantiate directly or make it a singleton
 
 # --- JWT Token Verification (unchanged) ---
-def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    try:
-        # Load config to get JWT_SECRET. This relies on main.py setting config in app.state.
-        config_instance = app.state.get('config', ServerConfig()) # Fallback to new instance if not set
-        payload = jwt.decode(
-            credentials.credentials, 
-            config_instance.JWT_SECRET, 
-            algorithms=["HS256"]
-        )
-        return payload
-    except jwt.ExpiredSignatureError:
-        logger.warning("JWT token expired.")
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
-    except jwt.InvalidTokenError:
-        logger.warning("Invalid JWT token received.")
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    except Exception as e:
-        logger.error(f"Unexpected error during token verification: {e}", exc_info=True)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Token verification error.")
+def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> AuthenticatedUser: 
+    print(f"DEBUG: verify_token called with credentials: {credentials.credentials[:20]}...")
+    
+    # Ensure app.state.config is set. This *must* work.
+    if not hasattr(app.state, 'config'):
+        print("CRITICAL ERROR: app.state.config is NOT set before verify_token is called!")
+        raise RuntimeError("app.state.config is not set during verify_token execution.")
+    
+    config_instance = app.state.config
+    print(f"DEBUG: config_instance.JWT_SECRET: {config_instance.JWT_SECRET[:5]}...") # Log part of secret for confirmation
+
+    payload = jwt.decode(
+        credentials.credentials, 
+        config_instance.JWT_SECRET, 
+        algorithms=["HS256"]
+    )
+    
+    print(f"DEBUG: Decoded JWT payload: {json.dumps(payload, indent=2)}")
+
+    user_id = payload.get("sub")
+    username = payload.get("username")
+    user_roles = payload.get("roles", [])
+
+    print(f"DEBUG: Extracted user_id: {user_id}, username: {username}, roles: {user_roles}")
+
+    if not user_id or not username:
+        print(f"DEBUG: Validation failed: Missing 'sub' or 'username'. user_id={user_id}, username={username}")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid token payload structure.")
+
+    if not isinstance(user_roles, list):
+        print(f"DEBUG: Validation failed: Invalid 'roles' type. Type={type(user_roles)}, Value={user_roles}")
+        user_roles = [str(user_roles)] if user_roles is not None else []
+        # After conversion, re-check type:
+        if not isinstance(user_roles, list):
+            print(f"DEBUG: Roles conversion failed, still not a list. Final roles: {user_roles}")
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid 'roles' type after conversion.")
+
+
+    print(f"DEBUG: Token successfully verified. Returning AuthenticatedUser for {username}.")
+    return AuthenticatedUser(
+        id=user_id,
+        username=username,
+        roles=user_roles
+    )
+
 
 # --- API Endpoints ---
 
 @app.get("/status/{device_id}", response_model=Dict[str, Any])
 async def get_device_status(device_id: str, 
-                            user: Dict = Depends(verify_token), 
+                            user: AuthenticatedUser = Depends(verify_token), 
                             coap_client: EnhancedCoAPClient = Depends(get_coap_client)):
-    logger.info(f"API: User {user.get('sub')} requesting status for device {device_id}")
+    #logger.info(f"API: User {user.get('sub')} requesting status for device {device_id}")
     device_data = await coap_client.get_device_status()
     sensor_data = await coap_client.get_all_sensor_data()
 
@@ -152,7 +185,7 @@ async def send_control_command(device_id: str,
 @app.get("/predictions/{device_id}", response_model=Dict[str, Any])
 async def get_temperature_predictions(device_id: str, 
                                       hours: int = 24, 
-                                      user: Dict = Depends(verify_token), 
+                                      user: AuthenticatedUser = Depends(verify_token), 
                                       prediction_service: PredictionService = Depends(get_prediction_service)):
     logger.info(f"API: User {user.get('sub')} requesting {hours}-hour predictions for device {device_id}")
     predictions_data = await prediction_service.get_predictions(hours_ahead=hours)
@@ -165,7 +198,7 @@ async def get_temperature_predictions(device_id: str,
 
 @app.get("/maintenance/{device_id}", response_model=Dict[str, Any])
 async def get_device_maintenance_status(device_id: str, 
-                                        user: Dict = Depends(verify_token), 
+                                        user: AuthenticatedUser = Depends(verify_token), 
                                         maintenance_service: MaintenanceService = Depends(get_maintenance_service),
                                         coap_client: EnhancedCoAPClient = Depends(get_coap_client)):
     logger.info(f"API: User {user.get('sub')} requesting maintenance status for device {device_id}")
@@ -183,7 +216,7 @@ async def get_device_maintenance_status(device_id: str,
 @app.get("/energy/{device_id}", response_model=Dict[str, Any])
 async def get_energy_data(device_id: str, 
                           days: int = 7, 
-                          user: Dict = Depends(verify_token), 
+                          user: AuthenticatedUser = Depends(verify_token), 
                           influx_client: InfluxDBClient = Depends(get_influxdb_client)):
     logger.info(f"API: User {user.get('sub')} requesting {days}-day energy data for device {device_id}")
     energy_data_list = await influx_client.get_energy_data(device_id, days=days)
@@ -247,7 +280,7 @@ async def authenticate_user(login_data: LoginRequest,
     token_payload = {
         "sub": str(user.id), # Ensure UUID is converted to string for JWT payload
         "username": user.username,
-        "roles": user.roles, # Include roles in token if needed for RBAC
+        "roles": user.roles if user.roles is not None else [], 
         "exp": datetime.now(timezone.utc) + timedelta(hours=24), 
         
         "iat": datetime.now(timezone.utc) # Add "issued at" timestamp for JWT best practice

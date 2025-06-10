@@ -2,7 +2,6 @@
 services:
   # CoAP Device
   coap-device:
-    hostname: coap-device
     build: 
       context: .
       dockerfile: client/Dockerfile
@@ -57,7 +56,6 @@ services:
       context: .
       dockerfile: mobile/Dockerfile
     ports:
-      
       - "8001:8001"
     depends_on:
       - ai-controller
@@ -65,7 +63,7 @@ services:
     environment:
       - DATABASE_URL=postgresql://thermostat:password@postgres:5432/thermostat
       - JWT_SECRET=your-secret-key
-      - AI_CONTROLLER_API_URL=http://ai-controller:8092 # <--- NEW: URL for AI Controller API
+      - AI_CONTROLLER_API_URL=http://ai-controller:8000
 
     networks:
       - thermostat-net
@@ -117,7 +115,7 @@ services:
 
   # Reverse Proxy
   nginx:
-    image: nginx:stable
+    image: nginx:alpine
     ports:
       - "8080:80"
       - "443:443"
