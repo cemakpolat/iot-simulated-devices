@@ -2,10 +2,9 @@
 services:
   # CoAP Device
   coap-device:
-    hostname: coap-device
     build: 
       context: .
-      dockerfile: client/Dockerfile
+      dockerfile: coap_device/Dockerfile
     ports:
       - "5683:5683/udp"
       - "5684:5684/udp"  # Secure CoAP
@@ -22,8 +21,29 @@ services:
     build:
       context: .
       dockerfile: server/Dockerfile
+    environment:
+      # Email Configuration
+      - SMTP_SERVER=${SMTP_SERVER:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - EMAIL_USERNAME=${EMAIL_USERNAME}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+      - FROM_EMAIL=${FROM_EMAIL}
+      - ALERT_EMAIL=${ALERT_EMAIL}
+      
+      # Webhook Configuration
+      - WEBHOOK_URLS=${WEBHOOK_URLS:-}
+      
+      # FCM Configuration
+      - FCM_PROJECT_ID=${FCM_PROJECT_ID}
+      - FCM_PRIVATE_KEY_ID=${FCM_PRIVATE_KEY_ID}
+      - FCM_PRIVATE_KEY=${FCM_PRIVATE_KEY}
+      - FCM_CLIENT_EMAIL=${FCM_CLIENT_EMAIL}
+      - FCM_CLIENT_ID=${FCM_CLIENT_ID}
+      - FCM_SERVICE_ACCOUNT_PATH=${FCM_SERVICE_ACCOUNT_PATH:-}
+      - FCM_SERVER_PORT=${FCM_SERVER_PORT:-5001}
     ports:
       - "8092:8092"
+      - "8000:8000"
     depends_on:
       - coap-device
       - influxdb
@@ -31,6 +51,7 @@ services:
     volumes:
       - ./models:/app/models
       - ./logs:/app/logs
+      - ./firebase-service-account-key.json:/app/firebase-service-account-key.json
     networks:
       - thermostat-net
     restart: unless-stopped
@@ -56,13 +77,15 @@ services:
       context: .
       dockerfile: mobile/Dockerfile
     ports:
-      - "8000:8000"
+      - "8001:8001"
     depends_on:
       - ai-controller
       - postgres
     environment:
       - DATABASE_URL=postgresql://thermostat:password@postgres:5432/thermostat
       - JWT_SECRET=your-secret-key
+      - AI_CONTROLLER_API_URL=http://ai-controller:8000
+
     networks:
       - thermostat-net
     restart: unless-stopped
@@ -94,6 +117,7 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    #command: redis-server --requirepass redispassword123
     networks:
       - thermostat-net
     restart: unless-stopped
@@ -113,7 +137,7 @@ services:
 
   # Reverse Proxy
   nginx:
-    image: nginx:stable
+    image: nginx:alpine
     ports:
       - "8080:80"
       - "443:443"
@@ -126,6 +150,20 @@ services:
       - thermostat-net
     restart: unless-stopped
 
+  redisinsight:
+    image: redislabs/redisinsight:1.14.0
+    ports:
+      - "8003:8001"
+    volumes:
+      - redisinsight_data:/db
+    environment:
+      - RIPORT=8001
+      - RIHOST=0.0.0.0
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - thermostat-net
   # # Monitoring
   prometheus:
     image: prom/prometheus
@@ -157,6 +195,25 @@ services:
       - thermostat-net
     restart: unless-stopped
 
+  client_fcm:
+    build: 
+      context: ./client_fcm
+      dockerfile: Dockerfile
+    volumes:
+      - ./client_fcm:/usr/share/nginx/html
+    environment:
+      - FCM_API_KEY=${FCM_API_KEY}
+      - FCM_PROJECT_ID=${FCM_PROJECT_ID}
+      - FCM_AUTH_DOMAIN=${FCM_AUTH_DOMAIN}
+      - FCM_STORAGE_BUCKET=${FCM_STORAGE_BUCKET}
+      - FCM_SENDER_ID=${FCM_SENDER_ID}
+      - FCM_APP_ID=${FCM_APP_ID}
+      - FCM_VAPID_KEY=${FCM_VAPID_KEY}
+      - BACKEND_URL=http://localhost:8000
+    ports:
+      - "3011:3000"
+    networks:
+      - thermostat-net
 networks:
   thermostat-net:
     driver: bridge
@@ -167,3 +224,4 @@ volumes:
   postgres_data:
   prometheus_data:
   grafana_data:
+  redisinsight_data:

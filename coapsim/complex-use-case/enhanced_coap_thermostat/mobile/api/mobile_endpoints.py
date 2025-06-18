@@ -1,34 +1,35 @@
 # mobile/api/mobile_endpoints.py
-from fastapi import FastAPI, HTTPException, Depends, status, Request
+from fastapi import FastAPI, HTTPException, Depends, status, Request, Form, Header # <--- Ensure Header is here
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import jwt
-import os
+import os 
 import time
 import random 
 from datetime import datetime, timedelta
 import logging
+import asyncio
+import aiohttp 
 
-# Import PushNotificationService
 from ..push_notifications import PushNotificationService
-from ..config import ServerConfig 
 
 logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
 app = FastAPI(title="Smart Thermostat Mobile API", version="2.0.0")
 
-config = ServerConfig() # <--- Instantiate config here
-
 # Security schema for JWT
 security = HTTPBearer()
 
-# --- Initialize Push Notification Service ---
-# This instance will be created once when the API starts.
+# Initialize Push Notification Service
 push_service = PushNotificationService()
 
-# Pydantic models for request/response bodies
+# --- Base URL for AI Controller API ---
+AI_CONTROLLER_API_BASE_URL = os.getenv("AI_CONTROLLER_API_URL", "http://ai-controller:8000")
+logger.info(f"Mobile API configured to connect to AI Controller at: {AI_CONTROLLER_API_BASE_URL}")
+
+# Pydantic models for request/response bodies (unchanged)
 class ThermostatCommand(BaseModel):
     action: str
     target_temperature: Optional[float] = None
@@ -42,22 +43,12 @@ class ScheduleEntry(BaseModel):
     enabled: bool = True
 
 class DeviceRegistration(BaseModel):
-    device_token: str # FCM token for push notifications
-    platform: str # "ios" or "android"
-    # Additional fields like app_version, device_model etc.
+    device_token: str 
+    platform: str 
 
-def get_jwt_secret():
-    secret = os.getenv("JWT_SECRET", "your-secret-key")
-    if secret == "your-secret-key":
-        logger.warning("JWT_SECRET is using default value. Set a strong secret in .env for security.")
-    return secret
-
-
-# --- JWT Token Verification ---
+# --- JWT Token Verification (unchanged) ---
 def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    """Verifies the JWT token from the Authorization header."""
     try:
-        # Load JWT_SECRET from environment. In a real app, use a proper config loader.
         jwt_secret = os.getenv("JWT_SECRET", "your-secret-key")
         if jwt_secret == "your-secret-key":
             logger.warning("JWT_SECRET is using default value in mobile API. Please set it securely in .env.")
@@ -78,153 +69,212 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
         logger.error(f"Mobile API: Unexpected error during token verification: {e}", exc_info=True)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Token verification error.")
 
-# --- API Endpoints ---
+# --- API Endpoints: NOW PROXYING TO AI CONTROLLER WITH TOKEN FORWARDING ---
 
 @app.get("/status/{device_id}", response_model=Dict[str, Any])
-async def get_device_status(device_id: str, user: Dict = Depends(verify_token)):
+async def get_device_status(device_id: str, 
+                            user: Dict = Depends(verify_token), # Original token validation
+                            authorization: Optional[str] = Header(None) # <--- ADDED to signature
+                           ):
     """
-    Retrieves the current status and sensor data of a specific thermostat device.
-    In a full system, this would call the AI Controller's REST API endpoint.
-    For this phase, it returns mock data.
+    Retrieves the current status and sensor data of a specific thermostat device from AI Controller.
     """
-    logger.info(f"Mobile API: User {user.get('sub')} requesting status for device {device_id}")
-    return {
-        "device_id": device_id,
-        "online": True,
-        "current_temperature": round(20 + random.uniform(-2, 5), 1),
-        "target_temperature": 22.0,
-        "humidity": round(40 + random.uniform(-5, 10), 1),
-        "air_quality": {"aqi": random.randint(20, 150), "quality": "good" if random.randint(0,100) < 70 else "moderate"},
-        "hvac_state": random.choice(["cooling", "heating", "off"]),
-        "energy_consumption": round(random.uniform(1.0, 3.5), 2),
-        "last_updated": time.time()
-    }
+    logger.info(f"Mobile API: User {user.get('sub')} requesting status for device {device_id} from AI Controller.")
+    
+    headers = {}
+    if authorization:
+        headers["Authorization"] = authorization # <--- Forward the token
+
+    try:
+        async with aiohttp.ClientSession(headers=headers) as session: # <--- PASS HEADERS HERE
+            async with session.get(f"{AI_CONTROLLER_API_BASE_URL}/status/{device_id}", timeout=10) as resp:
+                resp.raise_for_status() 
+                return await resp.json()
+    except aiohttp.ClientError as e:
+        logger.error(f"Mobile API: Error fetching status for {device_id} from AI Controller: {e}", exc_info=True)
+        if isinstance(e, aiohttp.ClientResponseError):
+            raise HTTPException(status_code=e.status, detail=f"AI Controller error: {e.message}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to fetch device status: {e}")
+    except asyncio.TimeoutError:
+        logger.error(f"Mobile API: Timeout fetching status for {device_id} from AI Controller.")
+        raise HTTPException(status_code=status.HTTP_504_GATEWAY_TIMEOUT, detail="AI Controller response timed out.")
+    except Exception as e:
+        logger.error(f"Mobile API: Unexpected error in get_device_status: {e}", exc_info=True)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An unexpected error occurred: {e}")
+
 
 @app.post("/control/{device_id}", response_model=Dict[str, Any])
-async def send_control_command(device_id: str, command: ThermostatCommand, user: Dict = Depends(verify_token)):
+async def send_control_command(device_id: str, 
+                               command: ThermostatCommand, 
+                               user: Dict = Depends(verify_token),
+                               authorization: Optional[str] = Header(None) # <--- ADDED to signature
+                              ):
     """
-    Sends a control command to the thermostat device.
-    In a full system, this would forward the command to the AI Controller's REST API.
-    For this phase, it returns a mock success.
+    Sends a control command to the thermostat device via the AI Controller.
     """
-    logger.info(f"Mobile API: User {user.get('sub')} sending command {command.dict()} to device {device_id}")
+    logger.info(f"Mobile API: User {user.get('sub')} sending command {command.dict()} to device {device_id} via AI Controller.")
+    
+    headers = {}
+    if authorization:
+        headers["Authorization"] = authorization # <--- Forward the token
+
     try:
-        # Simulate sending command to AI Controller and getting response
-        # In actual implementation:
-        # ai_controller_response = await aiohttp_client.post(f"http://ai-controller:8000/api/v1/control/{device_id}", json=command.dict())
-        # ai_controller_response.raise_for_status()
-        # result = await ai_controller_response.json()
-        
-        result = {
-            "success": True,
-            "command_executed": command.dict(),
-            "device_id": device_id,
-            "timestamp": time.time()
-        }
-        return result
+        async with aiohttp.ClientSession(headers=headers) as session: # <--- PASS HEADERS HERE
+            async with session.post(f"{AI_CONTROLLER_API_BASE_URL}/control/{device_id}", json=command.dict(), timeout=10) as resp:
+                resp.raise_for_status() 
+                return await resp.json()
+    except aiohttp.ClientError as e:
+        logger.error(f"Mobile API: Error sending control command for {device_id} to AI Controller: {e}", exc_info=True)
+        if isinstance(e, aiohttp.ClientResponseError):
+            raise HTTPException(status_code=e.status, detail=f"AI Controller error: {e.message}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to send control command: {e}")
+    except asyncio.TimeoutError:
+        logger.error(f"Mobile API: Timeout sending control command for {device_id} to AI Controller.")
+        raise HTTPException(status_code=status.HTTP_504_GATEWAY_TIMEOUT, detail="AI Controller response timed out.")
     except Exception as e:
-        logger.error(f"Mobile API: Error sending command to {device_id}: {e}", exc_info=True)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        logger.error(f"Mobile API: Unexpected error in send_control_command: {e}", exc_info=True)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An unexpected error occurred: {e}")
+
 
 @app.get("/predictions/{device_id}", response_model=Dict[str, Any])
-async def get_temperature_predictions(device_id: str, hours: int = 6, user: Dict = Depends(verify_token)):
+async def get_temperature_predictions(device_id: str, 
+                                      hours: int = 6, 
+                                      user: Dict = Depends(verify_token),
+                                      authorization: Optional[str] = Header(None) # <--- ADDED to signature
+                                     ):
     """
-    Retrieves temperature predictions for the next few hours for a specific device.
-    In a full system, this would call the AI Controller's REST API.
-    For this phase, it returns mock data.
+    Retrieves temperature predictions for the next few hours for a specific device from AI Controller.
     """
-    logger.info(f"Mobile API: User {user.get('sub')} requesting {hours}-hour predictions for device {device_id}")
-    predictions = []
-    current_temp = round(20 + random.uniform(-2, 5), 1)
-    for i in range(hours):
-        predictions.append({
-            "hour_ahead": i + 1,
-            "temperature": round(current_temp + random.uniform(-1, 1), 1),
-            "confidence": round(random.uniform(0.8, 0.95), 2)
-        })
+    logger.info(f"Mobile API: User {user.get('sub')} requesting {hours}-hour predictions for device {device_id} from AI Controller.")
     
-    return {
-        "predictions": predictions,
-        "model_accuracy": 0.89,
-        "last_updated": time.time(),
-        "device_id": device_id
-    }
+    headers = {}
+    if authorization:
+        headers["Authorization"] = authorization
+
+    try:
+        async with aiohttp.ClientSession(headers=headers) as session: # <--- PASS HEADERS HERE
+            async with session.get(f"{AI_CONTROLLER_API_BASE_URL}/predictions/{device_id}?hours={hours}", timeout=10) as resp:
+                resp.raise_for_status() 
+                return await resp.json()
+    except aiohttp.ClientError as e:
+        logger.error(f"Mobile API: Error fetching predictions for {device_id} from AI Controller: {e}", exc_info=True)
+        if isinstance(e, aiohttp.ClientResponseError):
+            raise HTTPException(status_code=e.status, detail=f"AI Controller error: {e.message}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to fetch predictions: {e}")
+    except asyncio.TimeoutError:
+        logger.error(f"Mobile API: Timeout fetching predictions for {device_id} from AI Controller.")
+        raise HTTPException(status_code=status.HTTP_504_GATEWAY_TIMEOUT, detail="AI Controller response timed out.")
+    except Exception as e:
+        logger.error(f"Mobile API: Unexpected error in get_temperature_predictions: {e}", exc_info=True)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An unexpected error occurred: {e}")
 
 @app.get("/energy/{device_id}", response_model=Dict[str, Any])
-async def get_energy_data(device_id: str, days: int = 7, user: Dict = Depends(verify_token)):
+async def get_energy_data(device_id: str, 
+                          days: int = 7, 
+                          user: Dict = Depends(verify_token),
+                          authorization: Optional[str] = Header(None) # <--- ADDED to signature
+                         ):
     """
-    Retrieves historical energy consumption data for a specific device.
-    In a full system, this would call the AI Controller's REST API.
-    For this phase, it returns mock data.
+    Retrieves historical energy consumption data for a specific device from AI Controller.
     """
-    logger.info(f"Mobile API: User {user.get('sub')} requesting {days}-day energy data for device {device_id}")
-    energy_data = []
-    for i in range(days):
-        energy_data.append({
-            "date": (datetime.now() - timedelta(days=i)).isoformat().split('T')[0],
-            "consumption_kwh": round(random.uniform(15, 35), 2),
-            "cost_usd": round(random.uniform(1.8, 4.2), 2),
-            "efficiency_score": round(random.uniform(0.7, 0.95), 2)
-        })
+    logger.info(f"Mobile API: User {user.get('sub')} requesting {days}-day energy data for device {device_id} from AI Controller.")
     
-    total_consumption = sum(d["consumption_kwh"] for d in energy_data)
-    average_daily = total_consumption / len(energy_data) if energy_data else 0
+    headers = {}
+    if authorization:
+        headers["Authorization"] = authorization
 
-    return {
-        "daily_data": energy_data,
-        "total_consumption_kwh": round(total_consumption, 2),
-        "average_daily_kwh": round(average_daily, 2),
-        "cost_projection_monthly_usd": round(average_daily * 30 * 0.15, 2), 
-        "device_id": device_id
-    }
+    try:
+        async with aiohttp.ClientSession(headers=headers) as session: # <--- PASS HEADERS HERE
+            async with session.get(f"{AI_CONTROLLER_API_BASE_URL}/energy/{device_id}?days={days}", timeout=10) as resp:
+                resp.raise_for_status() 
+                return await resp.json()
+    except aiohttp.ClientError as e:
+        logger.error(f"Mobile API: Error fetching energy data for {device_id} from AI Controller: {e}", exc_info=True)
+        if isinstance(e, aiohttp.ClientResponseError):
+            raise HTTPException(status_code=e.status, detail=f"AI Controller error: {e.message}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to fetch energy data: {e}")
+    except asyncio.TimeoutError:
+        logger.error(f"Mobile API: Timeout fetching energy data for {device_id} from AI Controller.")
+        raise HTTPException(status_code=status.HTTP_504_GATEWAY_TIMEOUT, detail="AI Controller response timed out.")
+    except Exception as e:
+        logger.error(f"Mobile API: Unexpected error in get_energy_data: {e}", exc_info=True)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An unexpected error occurred: {e}")
 
 @app.post("/schedule/{device_id}", response_model=Dict[str, Any])
-async def set_schedule(device_id: str, schedule: List[ScheduleEntry], user: Dict = Depends(verify_token)):
+async def set_schedule(device_id: str, 
+                       schedule: List[ScheduleEntry], 
+                       user: Dict = Depends(verify_token),
+                       authorization: Optional[str] = Header(None) # <--- ADDED to signature
+                      ):
     """
-    Sets thermostat schedule.
-    In a full system, this would update the schedule in PostgreSQL and potentially send it to the device.
-    For this phase, it returns a mock success.
+    Sets thermostat schedule via the AI Controller.
     """
-    logger.info(f"Mobile API: User {user.get('sub')} setting schedule for device {device_id} with {len(schedule)} entries.")
-    return {
-        "success": True,
-        "schedule_entries_count": len(schedule),
-        "message": "Schedule updated successfully (mock)",
-        "device_id": device_id
-    }
+    logger.info(f"Mobile API: User {user.get('sub')} setting schedule for device {device_id} with {len(schedule)} entries via AI Controller.")
+    
+    headers = {}
+    if authorization:
+        headers["Authorization"] = authorization
+
+    try:
+        async with aiohttp.ClientSession(headers=headers) as session: # <--- PASS HEADERS HERE
+            async with session.post(f"{AI_CONTROLLER_API_BASE_URL}/schedule/{device_id}", json=[s.dict() for s in schedule], timeout=10) as resp:
+                resp.raise_for_status() 
+                return await resp.json()
+    except aiohttp.ClientError as e:
+        logger.error(f"Mobile API: Error setting schedule for {device_id} via AI Controller: {e}", exc_info=True)
+        if isinstance(e, aiohttp.ClientResponseError):
+            raise HTTPException(status_code=e.status, detail=f"AI Controller error: {e.message}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to set schedule: {e}")
+    except asyncio.TimeoutError:
+        logger.error(f"Mobile API: Timeout setting schedule for {device_id} via AI Controller.")
+        raise HTTPException(status_code=status.HTTP_504_GATEWAY_TIMEOUT, detail="AI Controller response timed out.")
+    except Exception as e:
+        logger.error(f"Mobile API: Unexpected error in set_schedule: {e}", exc_info=True)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An unexpected error occurred: {e}")
 
 @app.get("/maintenance/{device_id}", response_model=Dict[str, Any])
-async def get_maintenance_status(device_id: str, user: Dict = Depends(verify_token)):
+async def get_maintenance_status(device_id: str, 
+                                 user: Dict = Depends(verify_token),
+                                 authorization: Optional[str] = Header(None) # <--- ADDED to signature
+                                ):
     """
-    Retrieves predictive maintenance recommendations and status for a specific device.
-    In a full system, this would call the AI Controller's REST API.
-    For this phase, it returns mock data.
+    Retrieves predictive maintenance recommendations and status for a specific device from AI Controller.
     """
-    logger.info(f"Mobile API: User {user.get('sub')} requesting maintenance status for device {device_id}")
-    return {
-        "device_id": device_id,
-        "maintenance_score": random.randint(10, 80),
-        "priority": random.choice(["low", "medium", "high", "critical"]),
-        "last_service": (datetime.now() - timedelta(days=random.randint(30, 365))).isoformat().split('T')[0],
-        "next_recommended": (datetime.now() + timedelta(days=random.randint(30, 180))).isoformat().split('T')[0],
-        "recommendations": [
-            "Clean air filter",
-            "Check refrigerant levels",
-            "Inspect outdoor unit",
-            "Calibrate temperature sensor"
-        ],
-        "estimated_cost_usd": round(random.uniform(100, 500), 2)
-    }
+    logger.info(f"Mobile API: User {user.get('sub')} requesting maintenance status for device {device_id} from AI Controller.")
+    
+    headers = {}
+    if authorization:
+        headers["Authorization"] = authorization
+
+    try:
+        async with aiohttp.ClientSession(headers=headers) as session: # <--- PASS HEADERS HERE
+            async with session.get(f"{AI_CONTROLLER_API_BASE_URL}/maintenance/{device_id}", timeout=10) as resp:
+                resp.raise_for_status() 
+                return await resp.json()
+    except aiohttp.ClientError as e:
+        logger.error(f"Mobile API: Error fetching maintenance status for {device_id} from AI Controller: {e}", exc_info=True)
+        if isinstance(e, aiohttp.ClientResponseError):
+            raise HTTPException(status_code=e.status, detail=f"AI Controller error: {e.message}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to fetch maintenance status: {e}")
+    except asyncio.TimeoutError:
+        logger.error(f"Mobile API: Timeout fetching maintenance status for {device_id} from AI Controller.")
+        raise HTTPException(status_code=status.HTTP_504_GATEWAY_TIMEOUT, detail="AI Controller response timed out.")
+    except Exception as e:
+        logger.error(f"Mobile API: Unexpected error in get_maintenance_status: {e}", exc_info=True)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An unexpected error occurred: {e}")
 
 @app.post("/register-device", response_model=Dict[str, Any])
-async def register_mobile_device(device_data: DeviceRegistration, user: Dict = Depends(verify_token)):
+async def register_mobile_device(device_data: DeviceRegistration, 
+                                 user: Dict = Depends(verify_token),
+                                 authorization: Optional[str] = Header(None) # <--- ADDED to signature (even if not always needed)
+                                ):
     """
     Registers a mobile device for push notifications.
     Stores the device token (FCM/APN) associated with a user.
     """
-    user_id = user.get("sub") # Assuming 'sub' is the user_id from JWT payload
+    user_id = user.get("sub") 
     device_token = device_data.device_token
-    platform = device_data.platform  # "ios" or "android"
+    platform = device_data.platform  
     
     logger.info(f"Mobile API: User {user_id} registering device token: {device_token[:10]}... on platform: {platform}")
     success = await push_service.register_device(
@@ -235,44 +285,60 @@ async def register_mobile_device(device_data: DeviceRegistration, user: Dict = D
     
     return {"success": success, "message": "Device registration status."}
 
-@app.post("/send-push-test/{user_id}", response_model=Dict[str, Any])
-async def send_test_push_notification(user_id: str, user: Dict = Depends(verify_token)):
+@app.post("/send-push-test/{user_id_param}", response_model=Dict[str, Any])
+async def send_test_push_notification(user_id_param: str, 
+                                      user: Dict = Depends(verify_token),
+                                      authorization: Optional[str] = Header(None) # <--- ADDED to signature (even if not always needed)
+                                     ):
     """
     Sends a test push notification to a specific user's registered devices.
-    (Requires proper Firebase setup for `push_notifications.py` to work)
     """
     current_user_id = user.get("sub")
-    if current_user_id != user_id:
+    if current_user_id != user_id_param: 
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Cannot send test notification for another user.")
 
-    logger.info(f"Mobile API: User {user_id} requesting test push notification.")
+    logger.info(f"Mobile API: User {user_id_param} requesting test push notification.")
     success = await push_service.send_notification(
-        user_id=user_id,
+        user_id=user_id_param, # Use path parameter as recipient ID
         title="Thermostat Test Alert 🔔",
         body="This is a test notification from your Smart Thermostat System! Check your app.",
         data={"alert_type": "test_notification", "source": "mobile_api_test"}
     )
     return {"success": success, "message": "Test notification sent status."}
 
-# Placeholder for user login/token generation
-@app.post("/login", response_model=Dict[str, str])
-async def login(username: str, password: str):
-    """
-    Simulates a user login and generates a JWT token.
-    In a real app, this would verify credentials against a database.
-    """
-    
-    # Dummy credentials for demonstration
-    if username == "testuser" and password == "testpass":
-        token_payload = {
-            "sub": "testuser_id_123", # Subject (user ID)
-            "username": "testuser",
-            "exp": datetime.utcnow() + timedelta(hours=24) # Token expires in 24 hours
-        }
-        jwt_secret = get_jwt_secret() # <--- Use get_jwt_secret utility
 
-        token = jwt.encode(token_payload, jwt_secret, algorithm="HS256")
-        
-        logger.info(f"Generated JWT token for user: {username}")
-        return {"access_token": token, "token_type": "bearer"}
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+@app.post("/login", response_model=Dict[str, str])
+async def login(username: str = Form(...), password: str = Form(...)):
+    """
+    Authenticates a user by forwarding credentials to the AI Controller's authentication endpoint.
+    """
+    auth_service_url = f"{AI_CONTROLLER_API_BASE_URL}/auth/login" # AI Controller's auth endpoint
+    
+    try:
+        async with aiohttp.ClientSession() as session:
+            # Send credentials as JSON to the AI Controller's new authentication endpoint
+            # Note: AI Controller's /auth/login expects JSON body (LoginRequest Pydantic model)
+            async with session.post(auth_service_url, json={"username": username, "password": password}, timeout=10) as resp:
+                if resp.status == status.HTTP_200_OK:
+                    auth_response = await resp.json()
+                    jwt_token = auth_response.get("access_token") 
+                    if jwt_token:
+                        return {"access_token": jwt_token, "token_type": "bearer"}
+                    else:
+                        logger.error("Mobile API: AI Controller login response missing access_token.")
+                        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Authentication service error: Missing token.")
+                elif resp.status == status.HTTP_401_UNAUTHORIZED:
+                    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+                else:
+                    response_text = await resp.text()
+                    logger.error(f"Mobile API: AI Controller login failed with status {resp.status}: {response_text}")
+                    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Authentication service error: {response_text}")
+    except aiohttp.ClientError as e:
+        logger.error(f"Mobile API: Failed to connect to AI Controller auth service at {auth_service_url}: {e}", exc_info=True)
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Authentication service unreachable.")
+    except asyncio.TimeoutError:
+        logger.error(f"Mobile API: Timeout connecting to AI Controller auth service at {auth_service_url}.")
+        raise HTTPException(status_code=status.HTTP_504_GATEWAY_TIMEOUT, detail="Authentication service timed out.")
+    except Exception as e:
+        logger.error(f"Mobile API: Unexpected error during login process: {e}", exc_info=True)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Login process failed unexpectedly: {e}")

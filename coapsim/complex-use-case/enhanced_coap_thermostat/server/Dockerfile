@@ -25,10 +25,13 @@ COPY models /app/models
 
 # Expose ports that the server might use.
 # 8000 for FastAPI (REST API - to be implemented in later phases)
-# 8001 for WebSockets (Dashboard communication - to be implemented in later phases)
+# 8002 for WebSockets (Dashboard communication - to be implemented in later phases)
 EXPOSE 8000
-EXPOSE 8001
+EXPOSE 8092 
+
 
 # Command to run the AI controller application's main control loop.
 # For now, we'll run `app.main.py`. In later phases, this might switch to `uvicorn`.
-CMD ["python", "app/main.py"]
+#CMD ["python", "app/main.py"]
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "info"] 
