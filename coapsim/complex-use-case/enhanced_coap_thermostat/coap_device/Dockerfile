@@ -15,7 +15,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY ./client/app /app/app
+COPY ./coap_device/app /app/app
 
 # Ensure certs directory exists for DTLS PSK/Certificates (if used)
 # This directory should be mounted as a volume in docker-compose.yml

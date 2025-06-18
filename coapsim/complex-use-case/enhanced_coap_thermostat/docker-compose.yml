@@ -4,7 +4,7 @@ services:
   coap-device:
     build: 
       context: .
-      dockerfile: client/Dockerfile
+      dockerfile: coap_device/Dockerfile
     ports:
       - "5683:5683/udp"
       - "5684:5684/udp"  # Secure CoAP
@@ -51,6 +51,7 @@ services:
     volumes:
       - ./models:/app/models
       - ./logs:/app/logs
+      - ./firebase-service-account-key.json:/app/firebase-service-account-key.json
     networks:
       - thermostat-net
     restart: unless-stopped
@@ -199,7 +200,7 @@ services:
       context: ./client_fcm
       dockerfile: Dockerfile
     volumes:
-      - ./client:/usr/share/nginx/html
+      - ./client_fcm:/usr/share/nginx/html
     environment:
       - FCM_API_KEY=${FCM_API_KEY}
       - FCM_PROJECT_ID=${FCM_PROJECT_ID}
