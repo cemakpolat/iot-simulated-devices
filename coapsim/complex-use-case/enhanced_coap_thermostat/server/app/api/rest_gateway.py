@@ -1,15 +1,15 @@
 # server/app/api/rest_gateway.py
-from fastapi import FastAPI, HTTPException, Depends, status, Request, Form, Header, Response
+import jwt
+import time
+import json
+import logging
+from datetime import datetime
+from typing import List, Optional, Dict, Any
+
+from fastapi import FastAPI, HTTPException, Depends, status, Request, Form, Header, Response, Query
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
-from typing import List, Optional, Dict, Any
-import jwt
-import os
-import time
-import logging
-import json
-from ..utils.redis_client import RedisClient
-from prometheus_client import generate_latest # <--- ADD THIS
+from prometheus_client import generate_latest 
 
 # Import services and clients
 from ..services.thermostat_service import ThermostatControlService
@@ -19,11 +19,11 @@ from ..database.influxdb_client import InfluxDBClient
 from ..coap.client import EnhancedCoAPClient
 from ..config import ServerConfig
 
-# --- NEW: Imports for PostgreSQL and password hashing ---
 from sqlalchemy.orm import Session # For SQLAlchemy session type hint
 from ..database.postgres_client import PostgreSQLClient
 from ..security.password_hasher import PasswordHasher
 from ..database.models import User 
+from ..utils.redis_client import RedisClient
 
 logger = logging.getLogger(__name__)
 
@@ -169,8 +169,6 @@ async def get_device_status(device_id: str,
     full_data = {**sensor_data, **device_data} # Ensure sensor_data is first for structure
     await redis_client.set(f"latest_sensor_data:{device_id}", json.dumps(full_data), ex=30) # Cache it
     return full_data
-
-
 
 
 @app.post("/control/{device_id}", response_model=Dict[str, Any])
@@ -354,13 +352,7 @@ async def metrics():
 # Enhanced FCM routes with validation and better error handling
 # Add these to your main FastAPI app
 
-from fastapi import HTTPException, Request, Query
-from pydantic import BaseModel
-from typing import Dict, Any, List, Optional
-import logging
-from datetime import datetime
 
-logger = logging.getLogger(__name__)
 
 # Enhanced Pydantic models
 class FCMTokenRequest(BaseModel):

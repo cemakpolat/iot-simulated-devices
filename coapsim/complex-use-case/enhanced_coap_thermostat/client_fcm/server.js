@@ -35,6 +35,51 @@ app.get('/env.js', (req, res) => {
   })}`);
 });
 
+app.get('/firebase-messaging-sw.js', (req, res) => {
+  res.set('Content-Type', 'application/javascript');
+  res.send(`
+    importScripts('https://www.gstatic.com/firebasejs/11.9.0/firebase-app-compat.js');
+    importScripts('https://www.gstatic.com/firebasejs/11.9.0/firebase-messaging-compat.js');
+
+    const firebaseConfig = {
+      apiKey: "${process.env.FCM_API_KEY}",
+      authDomain: "${process.env.FCM_AUTH_DOMAIN}",
+      projectId: "${process.env.FCM_PROJECT_ID}",
+      storageBucket: "${process.env.FCM_STORAGE_BUCKET}",
+      messagingSenderId: "${process.env.FCM_SENDER_ID}",
+      appId: "${process.env.FCM_APP_ID}"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+
+    messaging.onBackgroundMessage((payload) => {
+      console.log('[firebase-messaging-sw.js] Received background message ', payload);
+      const notificationTitle = payload.notification.title || 'Background Message Title';
+      const notificationOptions = {
+        body: payload.notification.body,
+        icon: '/firebase-logo.png'
+      };
+      self.registration.showNotification(notificationTitle, notificationOptions);
+    });
+
+    self.addEventListener('notificationclick', (event) => {
+      event.notification.close();
+      const urlToOpen = new URL('/', self.location.origin).href;
+      event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+          for (let client of clientList) {
+            if (client.url === urlToOpen && 'focus' in client) {
+              return client.focus();
+            }
+          }
+          if (clients.openWindow) return clients.openWindow(urlToOpen);
+        })
+      );
+    });
+  `);
+});
+
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(STATIC_FILES_DIR, 'index.html'));
