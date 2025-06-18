@@ -1,6 +1,7 @@
 # server/app/config.py
 import os
 from pydantic_settings import BaseSettings
+from typing import Optional
 
 class ServerConfig(BaseSettings):
     # CoAP Device Connectivity Settings (how the server connects to the thermostat)
@@ -38,6 +39,18 @@ class ServerConfig(BaseSettings):
     ALERT_EMAIL: str = os.getenv("ALERT_EMAIL", "admin@example.com") # Recipient for critical alerts
     WEBHOOK_URLS: str = os.getenv("WEBHOOK_URLS", "") # Comma-separated list of webhook endpoints
     
+
+    # FCM Configuration
+    FCM_PROJECT_ID: Optional[str] = os.getenv("FCM_PROJECT_ID")
+    FCM_PRIVATE_KEY_ID: Optional[str] = os.getenv("FCM_PRIVATE_KEY_ID")
+    FCM_PRIVATE_KEY: Optional[str] = os.getenv("FCM_PRIVATE_KEY")
+    FCM_CLIENT_EMAIL: Optional[str] = os.getenv("FCM_CLIENT_EMAIL")
+    FCM_CLIENT_ID: Optional[str] = os.getenv("FCM_CLIENT_ID")
+    FCM_SERVICE_ACCOUNT_PATH: Optional[str] = os.getenv("FCM_SERVICE_ACCOUNT_PATH")
+    FCM_SERVER_PORT: int = int(os.getenv("FCM_SERVER_PORT", "5001"))
+    
+    
+
     # Logging Level
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO") # DEBUG, INFO, WARNING, ERROR, CRITICAL
     

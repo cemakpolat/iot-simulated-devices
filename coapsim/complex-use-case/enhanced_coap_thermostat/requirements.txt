@@ -46,5 +46,5 @@ schedule>=1.2.0
 
 
 # Mobile (for future phases)
-firebase-admin>=6.3.0 
+firebase-admin>=6.2.0 
 python-multipart

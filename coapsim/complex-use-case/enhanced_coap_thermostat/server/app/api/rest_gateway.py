@@ -346,3 +346,359 @@ async def metrics():
     Endpoint for Prometheus to scrape metrics.
     """
     return Response(generate_latest(), media_type="text/plain")
+
+# Add these routes to your main FastAPI app file (where you have your other routes)
+# This should go in your api/rest_gateway.py or wherever your main FastAPI routes are defined
+
+
+# Enhanced FCM routes with validation and better error handling
+# Add these to your main FastAPI app
+
+from fastapi import HTTPException, Request, Query
+from pydantic import BaseModel
+from typing import Dict, Any, List, Optional
+import logging
+from datetime import datetime
+
+logger = logging.getLogger(__name__)
+
+# Enhanced Pydantic models
+class FCMTokenRequest(BaseModel):
+    token: str
+    platform: str = "web"
+    userAgent: str = ""
+    timestamp: str = ""
+    userId: str = ""
+    username: str = "Anonymous"
+    email: str = ""
+    validate_immediately: bool = False  # Option to validate token immediately
+
+class FCMUnregisterRequest(BaseModel):
+    token: str
+    userId: str = ""
+    timestamp: str = ""
+
+class TestNotificationRequest(BaseModel):
+    title: str = "Test Notification"
+    body: str = "This is a test notification"
+    validate_tokens: bool = True  # Validate tokens before sending
+
+class TokenValidationRequest(BaseModel):
+    tokens: Optional[List[str]] = None  # If None, validate all tokens
+    force: bool = False
+
+# Enhanced FCM Routes
+@app.post("/register")
+async def register_fcm_token(request: FCMTokenRequest):
+    """Register FCM token with enhanced validation"""
+    try:
+        logger.info(f"FCM token registration request: User={request.username} ({request.userId}), Token={request.token[:20]}...")
+        
+        # Get notification service from app state
+        notification_service = app.state.notification_service
+        
+        # Prepare user info
+        user_info = {
+            "username": request.username,
+            "userId": request.userId,
+            "email": request.email,
+            "platform": request.platform,
+            "userAgent": request.userAgent,
+            "registeredAt": request.timestamp or datetime.now().isoformat()
+        }
+        
+        # Add token with metadata
+        is_new = await notification_service.fcm_token_manager.add_token(request.token, user_info)
+        
+        # Optionally validate immediately
+        validation_result = None
+        if request.validate_immediately:
+            try:
+                is_valid, error_msg = await notification_service.fcm_token_manager.validator.validate_token(request.token)
+                validation_result = {
+                    "is_valid": is_valid,
+                    "error": error_msg if not is_valid else None
+                }
+                if not is_valid:
+                    logger.warning(f"Newly registered token failed validation: {request.token[:20]}... - {error_msg}")
+            except Exception as e:
+                logger.error(f"Error validating newly registered token: {e}")
+                validation_result = {"is_valid": False, "error": f"Validation error: {str(e)}"}
+        
+        # Get current statistics
+        stats = await notification_service.fcm_token_manager.get_statistics()
+        
+        response = {
+            "success": True,
+            "message": f"Token {'registered' if is_new else 'updated'} successfully for {request.username}",
+            "userId": request.userId,
+            "isNew": is_new,
+            "statistics": stats
+        }
+        
+        if validation_result:
+            response["validation"] = validation_result
+        
+        logger.info(f"✅ FCM token {'registered' if is_new else 'updated'} for {request.username}")
+        return response
+            
+    except Exception as e:
+        logger.error(f"❌ Error registering FCM token: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to register token: {str(e)}")
+
+@app.post("/unregister")
+async def unregister_fcm_token(request: FCMUnregisterRequest):
+    """Unregister FCM token"""
+    try:
+        logger.info(f"FCM token unregistration request: User={request.userId}, Token={request.token[:20]}...")
+        
+        # Get notification service from app state
+        notification_service = app.state.notification_service
+        
+        # Remove token
+        success = await notification_service.fcm_token_manager.remove_token(request.token)
+        
+        # Get current statistics
+        stats = await notification_service.fcm_token_manager.get_statistics()
+        
+        return {
+            "success": True,
+            "message": "Token unregistered successfully" if success else "Token not found (may have been already removed)",
+            "removed": success,
+            "statistics": stats
+        }
+            
+    except Exception as e:
+        logger.error(f"❌ Error unregistering FCM token: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to unregister token: {str(e)}")
+
+@app.get("/fcm/health")
+async def fcm_health_check():
+    """Enhanced health check for FCM service"""
+    try:
+        notification_service = app.state.notification_service
+        
+        # Get token statistics
+        stats = await notification_service.fcm_token_manager.get_statistics()
+        token_info = await notification_service.fcm_token_manager.get_token_info()
+        
+        # Check Firebase status
+        firebase_initialized = False
+        try:
+            import firebase_admin
+            firebase_initialized = len(firebase_admin._apps) > 0
+        except ImportError:
+            pass
+        
+        return {
+            "status": "FCM service running",
+            "timestamp": datetime.now().isoformat(),
+            "firebase_initialized": firebase_initialized,
+            "statistics": stats,
+            "last_validation": notification_service.fcm_token_manager.last_validation.isoformat() if notification_service.fcm_token_manager.last_validation else None
+        }
+    except Exception as e:
+        logger.error(f"FCM health check failed: {e}")
+        raise HTTPException(status_code=500, detail="FCM service unavailable")
+
+@app.post("/fcm/validate-tokens")
+async def validate_tokens(request: TokenValidationRequest):
+    """Validate FCM tokens on demand"""
+    try:
+        notification_service = app.state.notification_service
+        
+        if request.tokens:
+            # Validate specific tokens
+            logger.info(f"Validating {len(request.tokens)} specific FCM tokens...")
+            validation_results = await notification_service.fcm_token_manager.validator.validate_tokens_batch(request.tokens)
+            
+            valid_count = sum(1 for is_valid, _ in validation_results.values() if is_valid)
+            invalid_count = len(validation_results) - valid_count
+            
+            return {
+                "success": True,
+                "message": f"Validated {len(request.tokens)} tokens",
+                "results": {
+                    token[:20] + "...": {"valid": is_valid, "error": error_msg if not is_valid else None}
+                    for token, (is_valid, error_msg) in validation_results.items()
+                },
+                "summary": {
+                    "total": len(validation_results),
+                    "valid": valid_count,
+                    "invalid": invalid_count
+                }
+            }
+        else:
+            # Validate all tokens
+            logger.info("Validating all FCM tokens...")
+            await notification_service.fcm_token_manager.validate_all_tokens(force=request.force)
+            
+            stats = await notification_service.fcm_token_manager.get_statistics()
+            
+            return {
+                "success": True,
+                "message": "All tokens validated",
+                "statistics": stats
+            }
+            
+    except Exception as e:
+        logger.error(f"Error validating FCM tokens: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to validate tokens: {str(e)}")
+
+@app.post("/fcm/test-notification")
+async def send_test_fcm_notification(request: TestNotificationRequest):
+    """Send a test FCM notification with enhanced error handling"""
+    try:
+        logger.info(f"Sending test FCM notification: {request.title}")
+        
+        # Get notification service from app state
+        notification_service = app.state.notification_service
+        
+        # Optionally validate tokens before sending
+        if request.validate_tokens:
+            logger.info("Validating tokens before sending test notification...")
+            await notification_service.fcm_token_manager.validate_all_tokens(force=True)
+        
+        # Get valid tokens
+        tokens = await notification_service.fcm_token_manager.get_valid_tokens()
+        
+        if not tokens:
+            return {
+                "success": False,
+                "message": "No valid FCM tokens available",
+                "details": "Register some tokens first or check token validity"
+            }
+        
+        # Send test alert through notification service
+        await notification_service.send_alert(
+            alert_type="test_notification",
+            message=request.body,
+            data={"title": request.title, "test": True, "timestamp": datetime.now().isoformat()}
+        )
+        
+        # Get updated statistics
+        stats = await notification_service.fcm_token_manager.get_statistics()
+        
+        return {
+            "success": True,
+            "message": f"Test notification sent to {len(tokens)} registered devices",
+            "title": request.title,
+            "body": request.body,
+            "target_tokens": len(tokens),
+            "statistics": stats
+        }
+        
+    except Exception as e:
+        logger.error(f"❌ Error sending test FCM notification: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to send test notification: {str(e)}")
+
+@app.get("/fcm/tokens")
+async def get_registered_tokens(
+    include_details: bool = Query(False, description="Include detailed token information"),
+    status_filter: Optional[str] = Query(None, description="Filter by status: active, invalid")
+):
+    """Get list of registered FCM tokens with optional filtering"""
+    try:
+        notification_service = app.state.notification_service
+        
+        if include_details:
+            token_info = await notification_service.fcm_token_manager.get_token_info()
+            
+            # Apply status filter if provided
+            if status_filter:
+                if status_filter == "active":
+                    token_info = [t for t in token_info if t["is_valid"]]
+                elif status_filter == "invalid":
+                    token_info = [t for t in token_info if not t["is_valid"]]
+            
+            return {
+                "success": True,
+                "tokens": token_info,
+                "statistics": await notification_service.fcm_token_manager.get_statistics()
+            }
+        else:
+            # Simple token list
+            if status_filter == "active":
+                tokens = await notification_service.fcm_token_manager.get_valid_tokens()
+            else:
+                tokens = [t["token"] for t in notification_service.fcm_token_manager.tokens]
+                if status_filter == "invalid":
+                    valid_tokens = await notification_service.fcm_token_manager.get_valid_tokens()
+                    tokens = [t for t in tokens if t not in valid_tokens]
+            
+            # Only return partial tokens for security
+            partial_tokens = [f"{token[:20]}..." for token in tokens]
+            
+            return {
+                "success": True,
+                "token_count": len(tokens),
+                "tokens": partial_tokens,
+                "statistics": await notification_service.fcm_token_manager.get_statistics()
+            }
+    except Exception as e:
+        logger.error(f"Error getting FCM tokens: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get tokens")
+
+@app.post("/fcm/cleanup")
+async def cleanup_tokens(max_age_days: int = Query(30, description="Maximum age in days for tokens to keep")):
+    """Clean up old and invalid FCM tokens"""
+    try:
+        notification_service = app.state.notification_service
+        
+        # Get stats before cleanup
+        stats_before = await notification_service.fcm_token_manager.get_statistics()
+        
+        # Perform cleanup
+        await notification_service.fcm_token_manager.cleanup_old_tokens(max_age_days)
+        
+        # Get stats after cleanup
+        stats_after = await notification_service.fcm_token_manager.get_statistics()
+        
+        removed_count = stats_before["total"] - stats_after["total"]
+        
+        return {
+            "success": True,
+            "message": f"Cleanup completed. Removed {removed_count} old tokens",
+            "removed_count": removed_count,
+            "statistics_before": stats_before,
+            "statistics_after": stats_after
+        }
+        
+    except Exception as e:
+        logger.error(f"Error during token cleanup: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to cleanup tokens: {str(e)}")
+
+@app.post("/alert/test")
+async def send_test_alert(
+    alert_type: str = Query("test_notification", description="Type of alert to send"),
+    message: str = Query("Test alert message", description="Alert message"),
+    validate_tokens: bool = Query(True, description="Validate tokens before sending")
+):
+    """Send a test alert through all notification channels"""
+    try:
+        notification_service = app.state.notification_service
+        
+        # Optionally validate tokens before sending
+        if validate_tokens:
+            await notification_service.fcm_token_manager.validate_all_tokens(force=True)
+        
+        # Send the alert
+        await notification_service.send_alert(
+            alert_type=alert_type,
+            message=message,
+            data={"test": True, "manual_trigger": True, "timestamp": datetime.now().isoformat()}
+        )
+        
+        # Get token statistics
+        stats = await notification_service.fcm_token_manager.get_statistics()
+        
+        return {
+            "success": True,
+            "message": f"Test alert '{alert_type}' sent successfully",
+            "alert_type": alert_type,
+            "alert_message": message,
+            "statistics": stats
+        }
+    except Exception as e:
+        logger.error(f"Error sending test alert: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to send test alert: {str(e)}")

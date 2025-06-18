@@ -213,8 +213,18 @@ async def shutdown_event():
     logger.info("AI Controller application shut down completely.")
 
 # Expose the FastAPI app instance for Uvicorn to load.
+from fastapi.middleware.cors import CORSMiddleware
+
 app = fastapi_app 
 
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, replace with specific domains like ["http://localhost:3011", "https://yourdomain.com"]
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
+)
 
 
 async def main():
