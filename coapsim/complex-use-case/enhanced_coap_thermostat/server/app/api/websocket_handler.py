@@ -6,6 +6,8 @@ import logging
 from typing import Dict, Any, Set, Optional, List
 from ..services.thermostat_service import ThermostatControlService
 from ..config import ServerConfig
+from fastapi import  Request # This  should be tested. 
+
 
 logger = logging.getLogger(__name__)
 

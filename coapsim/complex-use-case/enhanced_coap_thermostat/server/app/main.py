@@ -3,6 +3,8 @@ import logging
 import os
 from datetime import datetime, timedelta
 from fastapi import  Depends
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
 
 # Setup basic logging for the server process (before importing other modules)
 # This will log to console and potentially to a file defined by basicConfig.
@@ -41,7 +43,7 @@ postgres_client = PostgreSQLClient(os.getenv("DATABASE_URL", "postgresql://therm
 # --- Inject get_db dependency into FastAPI app ---
 fastapi_app.dependency_overrides[Depends(postgres_client.get_db)] = postgres_client.get_db
 
-from dotenv import load_dotenv
+
 load_dotenv()
 
 # Load configuration
@@ -93,8 +95,6 @@ thermostat_service = ThermostatControlService(
     maintenance_service=maintenance_service,  # Pass the maintenance service instance
     redis_client = redis_client # <--- NEW injection
 )
-
-
 
 websocket_manager = WebSocketManager(thermostat_service, config)
 
@@ -173,8 +173,6 @@ async def startup_event():
     fastapi_app.state.config = config
     fastapi_app.state.redis_client = redis_client
 
-
-
     # Start background tasks
     fastapi_app.state.control_loop_task = asyncio.create_task(control_loop())
     fastapi_app.state.websocket_server_task = asyncio.create_task(websocket_manager.start_server(host="0.0.0.0", port=8092))
@@ -212,11 +210,8 @@ async def shutdown_event():
     
     logger.info("AI Controller application shut down completely.")
 
-# Expose the FastAPI app instance for Uvicorn to load.
-from fastapi.middleware.cors import CORSMiddleware
 
 app = fastapi_app 
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -265,8 +260,6 @@ async def main():
 if __name__ == "__main__":
     # Load environment variables from .env file if `python-dotenv` is installed.
     try:
-        from dotenv import load_dotenv
-        load_dotenv()
         
         logger.info("Environment variables loaded from .env file.")
     except ImportError:

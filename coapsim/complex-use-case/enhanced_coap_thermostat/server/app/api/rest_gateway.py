@@ -3,7 +3,7 @@ import jwt
 import time
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import List, Optional, Dict, Any
 
 from fastapi import FastAPI, HTTPException, Depends, status, Request, Form, Header, Response, Query
@@ -287,9 +287,8 @@ async def authenticate_user(login_data: LoginRequest,
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
     # Generate JWT Token
-    #config_instance = app.state.get('config', ServerConfig()) # Use injected config or fallback
     jwt_secret = app.state.config.JWT_SECRET 
-    from datetime import datetime, timedelta, timezone # <--- ADD timezone
+    
 
     token_payload = {
         "sub": str(user.id), # Ensure UUID is converted to string for JWT payload
