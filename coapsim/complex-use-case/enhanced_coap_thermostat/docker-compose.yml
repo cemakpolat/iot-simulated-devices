@@ -1,0 +1,215 @@
+# docker-compose.yml
+services:
+  # CoAP Device
+  coap-device:
+    build: 
+      context: .
+      dockerfile: coap_device/Dockerfile
+    ports:
+      - "5683:5683/udp"
+      - "5684:5684/udp"  # Secure CoAP
+    env_file:
+      - .env
+    volumes:
+      - ./certs:/app/certs
+    networks:
+      - thermostat-net
+    restart: unless-stopped
+
+  # AI Controller
+  ai-controller:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "8092:8092"
+      - "8000:8000"
+    dns:
+      - 8.8.8.8          # Google DNS
+      - 8.8.4.4          # Google DNS secondary
+      - 1.1.1.1          # Cloudflare DNS
+    extra_hosts:
+      - "fcm.googleapis.com:142.250.191.106"
+      - "oauth2.googleapis.com:142.250.191.106"
+    depends_on:
+      - coap-device
+      - influxdb
+      - redis
+      - postgres
+    volumes:
+      - ./models:/app/models
+      - ./logs:/app/logs
+      - ./firebase-service-account-key.json:/app/firebase-service-account-key.json
+    networks:
+      - thermostat-net
+    restart: unless-stopped
+
+  # Real-time Dashboard
+  dashboard:
+    build:
+      context: .
+      dockerfile: dashboard/Dockerfile
+    ports:
+      - "5005:5000"
+    depends_on:
+      - ai-controller
+    environment:
+      - FLASK_ENV=production
+    networks:
+      - thermostat-net
+    restart: unless-stopped
+
+  # Time Series Database
+  influxdb:
+    image: influxdb:2.7
+    ports:
+      - "8086:8086"
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=${INFLUXDB_INIT_MODE}
+      - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_INIT_USERNAME}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_INIT_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_INIT_ORG}
+      - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_INIT_BUCKET}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_INIT_ADMIN_TOKEN}
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+      - ./database/init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - thermostat-net
+    restart: unless-stopped
+
+  # Redis for Caching
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - thermostat-net
+    restart: unless-stopped
+
+  # PostgreSQL for User Data
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - thermostat-net
+    restart: unless-stopped
+
+  # Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - dashboard
+      - ai-controller
+      - mobile-app
+    networks:
+      - thermostat-net
+    restart: unless-stopped
+
+  redisinsight:
+    image: redislabs/redisinsight:1.14.0
+    ports:
+      - "8003:8001"
+    volumes:
+      - redisinsight_data:/db
+    environment:
+      - RIPORT=${RIPORT}
+      - RIHOST=${RIHOST}
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - thermostat-net
+  # Monitoring
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    depends_on:
+      - influxdb
+      - ai-controller
+    networks:
+      - thermostat-net
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+      - GF_SECURITY_ANONYMOUS_USER=${GF_SECURITY_ANONYMOUS_USER}
+      - GF_SECURITY_ANONYMOUS_USER_PASSWORD=${GF_SECURITY_ANONYMOUS_USER_PASSWORD}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/etc/grafana/dashboards:ro # Mount dashboards JSONs
+    depends_on:
+      - prometheus
+      - influxdb
+    networks:
+      - thermostat-net
+    restart: unless-stopped
+
+
+  
+  mobile-app:
+    container_name: mobile-app
+    build: 
+      context: ./mobile_app
+      dockerfile: Dockerfile
+    volumes:
+      - ./mobile_app:/usr/share/nginx/html
+    environment:
+      - FCM_API_KEY=${FCM_API_KEY}
+      - FCM_PROJECT_ID=${FCM_PROJECT_ID}
+      - FCM_AUTH_DOMAIN=${FCM_AUTH_DOMAIN}
+      - FCM_STORAGE_BUCKET=${FCM_STORAGE_BUCKET}
+      - FCM_SENDER_ID=${FCM_SENDER_ID}
+      - FCM_APP_ID=${FCM_APP_ID}
+      - FCM_VAPID_KEY=${FCM_VAPID_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - AI_CONTROLLER_API_URL=http://ai-controller:8000 
+      - BACKEND_URL=http://localhost:3000
+    ports:
+      - "3012:3000"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    networks:
+      - thermostat-net
+    
+networks:
+  thermostat-net:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+      com.docker.network.driver.mtu: 1500
+
+
+volumes:
+  influxdb_data:
+  redis_data:
+  postgres_data:
+  prometheus_data:
+  grafana_data:
+  redisinsight_data:

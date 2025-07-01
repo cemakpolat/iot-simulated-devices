@@ -1,0 +1,51 @@
+# Core CoAP
+aiocoap==0.4.10
+cbor2>=5.4.0
+
+# ML & AI
+scikit-learn>=1.3.0
+tensorflow>=2.13.0
+numpy>=1.24.0
+pandas>=2.0.0
+joblib>=1.3.0
+
+# Database
+influxdb-client>=1.37.0
+redis>=4.6.0
+
+# For password hashing
+passlib[bcrypt]>=1.7.4 # bcrypt is the recommended scheme
+
+# For PostgreSQL ORM
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0 # PostgreSQL adapter
+asyncpg
+
+# Web & API
+fastapi>=0.100.0
+uvicorn>=0.23.0 # For FastAPI server, will be used later
+websockets>=11.0 # For future dashboard/server WS communication
+flask>=2.3.0 # For dashboard (future phase)
+flask-socketio>=5.3.0 # For dashboard (future phase)
+python-socketio>=5.10.0 # Dependency of flask-socketio (future phase)
+aiohttp>=3.9.0 # <--- ADD THIS (for server/app/services/notification_service.py)
+eventlet
+# Security
+cryptography>=41.0.0
+pyjwt>=2.8.0
+
+# Monitoring
+prometheus-client>=0.17.0
+psutil>=5.9.0
+
+# Utilities
+pydantic>=2.0.0
+pydantic-settings
+python-dotenv>=1.0.0
+schedule>=1.2.0
+
+
+
+# Mobile (for future phases)
+firebase-admin>=6.2.0 
+python-multipart

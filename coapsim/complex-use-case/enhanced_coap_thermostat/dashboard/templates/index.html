@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Control Dashboard</title> <!-- More conventional title -->
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <!-- Tailwind CSS with Inter font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Socket.IO client library -->
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <!-- Chart.js library for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts: Roboto and Material Symbols -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link href="css/dashboard.css" rel="stylesheet">
+</head>
+<body class="h-full min-h-screen bg-gray-100 text-gray-800">
+    <div class="min-h-screen flex flex-col">
+
+        <header class="bg-white py-3 px-6 shadow-sm border-b border-gray-200 sticky top-0 z-10">
+            <div class="container mx-auto flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <span class="material-symbols-outlined text-blue-600 text-3xl">thermostat</span>
+                    <h1 class="text-xl font-medium text-gray-900">Climate Control Dashboard</h1>
+                </div>
+                <div id="status-indicator" class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 text-sm">
+                    <span class="h-2.5 w-2.5 rounded-full bg-yellow-500 status-pulse"></span>
+                    <span id="status-text">Connecting...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow container mx-auto px-4 sm:px-6 py-8">
+            <!-- Current Stats Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Temperature Card -->
+                <div class="bg-white rounded-lg p-5 shadow-sm border border-gray-200">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Temperature</p>
+                            <p id="current-temperature" class="text-3xl font-bold text-gray-900 mt-1">--°C</p>
+                        </div>
+                        <div class="p-2.5 rounded-full bg-blue-100">
+                            <span class="material-symbols-outlined text-blue-600">device_thermostat</span>
+                        </div>
+                    </div>
+                    <p id="temperature-status" class="text-xs text-gray-500 mt-3">Status: <span class="font-medium text-green-600">Optimal</span></p>
+                </div>
+
+                <!-- Humidity Card -->
+                <div class="bg-white rounded-lg p-5 shadow-sm border border-gray-200">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Humidity</p>
+                            <p id="current-humidity" class="text-3xl font-bold text-gray-900 mt-1">--%</p>
+                        </div>
+                        <div class="p-2.5 rounded-full bg-blue-100">
+                            <span class="material-symbols-outlined text-blue-600">humidity_percentage</span>
+                        </div>
+                    </div>
+                    <p id="humidity-status" class="text-xs text-gray-500 mt-3">Status: <span class="font-medium text-green-600">Stable</span></p>
+                </div>
+
+                <!-- Air Quality Card -->
+                <div class="bg-white rounded-lg p-5 shadow-sm border border-gray-200">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Air Quality</p>
+                            <p id="current-aqi" class="text-3xl font-bold text-gray-900 mt-1">-- AQI</p>
+                        </div>
+                        <div class="p-2.5 rounded-full bg-blue-100">
+                           <span class="material-symbols-outlined text-blue-600">air</span>
+                        </div>
+                    </div>
+                    <p id="air-quality-status" class="text-xs text-gray-500 mt-3">Quality: <span class="font-medium text-green-600">Excellent</span></p>
+                </div>
+
+                <!-- Occupancy Card -->
+                <div class="bg-white rounded-lg p-5 shadow-sm border border-gray-200">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Occupancy</p>
+                            <p id="current-occupancy" class="text-3xl font-bold text-gray-900 mt-1">--</p>
+                        </div>
+                        <div class="p-2.5 rounded-full bg-blue-100">
+                            <span class="material-symbols-outlined text-blue-600">group</span>
+                        </div>
+                    </div>
+                    <p id="occupancy-status" class="text-xs text-gray-500 mt-3">Confidence: <span class="font-medium text-green-600">High</span></p>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left Column -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Temperature Chart -->
+                    <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-5 gap-4">
+                            <h2 class="text-lg font-medium text-gray-900">Climate History</h2>
+
+                        </div>
+                        <div class="h-72">
+                            <canvas id="temperatureChart"></canvas>
+                            <!-- Note: You'll need to update Chart.js options in dashboard.js to use lighter grid lines and font colors (e.g., 'gray' or '#6b7280') to match the light theme. -->
+                        </div>
+                    </div>
+
+                    <!-- HVAC Status & Controls -->
+                    <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                        <h2 class="text-lg font-medium text-gray-900 mb-5">HVAC Controls & Status</h2>
+                        <!-- Status Section -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 flex items-center space-x-3">
+                                <span class="material-symbols-outlined text-gray-500">power_settings_new</span>
+                                <div>
+                                    <p class="text-xs text-gray-500">Mode</p>
+                                    <p id="hvac-state" class="font-medium text-gray-800 text-base">--</p>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 flex items-center space-x-3">
+                                <span class="material-symbols-outlined text-gray-500">thermostat</span>
+                                <div>
+                                    <p class="text-xs text-gray-500">Target Temp</p>
+                                    <p id="target-temperature" class="font-medium text-gray-800 text-base">--°C</p>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 flex items-center space-x-3">
+                                <span class="material-symbols-outlined text-gray-500">bolt</span>
+                                <div>
+                                    <p class="text-xs text-gray-500">Energy Usage</p>
+                                    <p id="energy-consumption" class="font-medium text-gray-800 text-base">-- kWh</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Manual Controls -->
+                        <div>
+                            <h3 class="text-base font-medium text-gray-700 mb-4 border-b border-gray-200 pb-2">Manual Override</h3>
+                            <div class="flex flex-col sm:flex-row gap-4 items-end">
+                                <div class="flex-1 w-full">
+                                    <label for="temp-input" class="block text-sm font-medium text-gray-700 mb-1">Set Target Temperature (°C)</label>
+                                    <input type="number" id="temp-input" value="22" step="0.5" min="15" max="30" 
+                                           class="form-input w-full rounded-md shadow-sm">
+                                </div>
+                                <button id="set-target-btn" class="w-full sm:w-auto px-5 py-2.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 font-medium text-sm transition-colors">
+                                    Set Temp
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3 mt-4">
+                                <button id="heat-btn" class="px-5 py-2.5 bg-orange-500 text-white rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors font-medium text-sm">HEAT</button>
+                                <button id="cool-btn" class="px-5 py-2.5 bg-sky-500 text-white rounded-md hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 transition-colors font-medium text-sm">COOL</button>
+                                <button id="off-btn" class="px-5 py-2.5 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors font-medium text-sm">OFF</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="space-y-6">
+                    <!-- System Alerts -->
+                    <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200 h-full flex flex-col">
+                        <div class="flex justify-between items-center mb-5">
+                            <h2 class="text-lg font-medium text-gray-900">System Alerts</h2>
+                        </div>
+                        <div id="alerts-list" class="space-y-3 flex-grow overflow-y-auto -mr-2 pr-2">
+                             <!-- Alerts will be inserted here. Example structure: -->
+                            <div class="p-3 rounded-md border-l-4 border-red-500 bg-red-50">
+                                <p class="font-semibold text-red-800 text-sm flex items-center"><span class="material-symbols-outlined text-base mr-2">error</span>Sensor Drift Detected</p>
+                                <p class="text-xs text-red-700 mt-1 pl-6">Unit 7 readings are abnormal. Calibration recommended.</p>
+                                <span class="block text-right text-xs text-gray-500 mt-1.5">2024-06-08 14:30</span>
+                            </div>
+                             <div class="p-3 rounded-md border-l-4 border-yellow-500 bg-yellow-50">
+                                <p class="font-semibold text-yellow-800 text-sm flex items-center"><span class="material-symbols-outlined text-base mr-2">warning</span>High Particulate Levels</p>
+                                <p class="text-xs text-yellow-700 mt-1 pl-6">Air quality is temporarily poor. Increasing filtration.</p>
+                                <span class="block text-right text-xs text-gray-500 mt-1.5">2024-06-08 14:15</span>
+                            </div>
+                            <div class="text-center py-4 text-gray-500 no-alerts-message hidden">No active alerts.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="py-4 px-6 text-center text-gray-500 text-sm">
+            <p>© 2024 Climate Solutions Inc. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <!-- This path assumes dashboard.js is in a 'static/js' directory. -->
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

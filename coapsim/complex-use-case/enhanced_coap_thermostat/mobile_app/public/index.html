@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Thermostat</title>
+    <link href="favicon.ico" rel="icon">
+    
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js';
+        import { getMessaging, getToken, onMessage } from 'https://www.gstatic.com/firebasejs/11.9.0/firebase-messaging.js';
+        
+        window.firebaseApp = { initializeApp };
+        window.firebaseMessaging = { getMessaging, getToken, onMessage };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'google': ['Google Sans', 'Roboto', 'Arial', 'sans-serif'],
+                    },
+                    colors: {
+                        'google-blue': {
+                            50: '#E8F0FE', 100: '#D2E3FC', 200: '#AECBFA', 300: '#8AB4F8', 400: '#669DF6',
+                            500: '#4285F4', 600: '#1A73E8', 700: '#1557B0', 800: '#0F3C78', 900: '#0A2540'
+                        },
+                        'google-red': {
+                            50: '#FCE8E6', 100: '#F9DEDC', 200: '#F2B8B5', 300: '#EB9692', 400: '#E37368',
+                            500: '#DB4437', 600: '#C5221F', 700: '#A50E0E', 800: '#8C0009', 900: '#6B0000'
+                        },
+                        'google-yellow': {
+                            50: '#FEF7E0', 100: '#FEEFC3', 200: '#FDDC69', 300: '#FCC934', 400: '#FBBC04',
+                            500: '#F9AB00', 600: '#E37400', 700: '#C65100', 800: '#A33B00', 900: '#7F2A00'
+                        },
+                        'google-green': {
+                            50: '#E6F4EA', 100: '#CEEAD6', 200: '#A8DAB5', 300: '#81C995', 400: '#5BB974',
+                            500: '#34A853', 600: '#137333', 700: '#0D652D', 800: '#0B5335', 900: '#063D1E'
+                        },
+                        'google-grey': {
+                            50: '#F8F9FA', 100: '#F1F3F4', 200: '#E8EAED', 300: '#DADCE0', 400: '#BDC1C6',
+                            500: '#9AA0A6', 600: '#80868B', 700: '#5F6368', 800: '#3C4043', 900: '#202124'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body class="bg-google-grey-50 font-google min-h-screen">
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="fixed top-4 right-4 z-50 w-80 max-w-[calc(100vw-2rem)]"></div>
+    
+    <!-- Auth Modal -->
+    <div id="authModal" class="auth-modal fixed inset-0 z-50 items-center justify-center p-4">
+        <div class="material-card w-full max-w-md p-8">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-google-blue-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <span class="material-icons text-white text-2xl">thermostat</span>
+                </div>
+                <h2 class="text-2xl font-semibold text-google-grey-900 mb-2">Smart Thermostat</h2>
+                <p class="text-google-grey-600">Sign in to control your devices</p>
+            </div>
+            
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label class="block text-google-grey-700 text-sm font-medium mb-2">Username</label>
+                    <input type="text" id="username" required
+                           class="w-full px-4 py-3 border border-google-grey-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-google-blue-500 focus:border-transparent transition-all bg-white"
+                           placeholder="Enter your username">
+                </div>
+                
+                <div>
+                    <label class="block text-google-grey-700 text-sm font-medium mb-2">Password</label>
+                    <input type="password" id="password" required
+                           class="w-full px-4 py-3 border border-google-grey-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-google-blue-500 focus:border-transparent transition-all bg-white"
+                           placeholder="Enter your password">
+                </div>
+                
+                <button type="submit" id="loginBtn"
+                        class="w-full bg-google-blue-500 hover:bg-google-blue-600 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-google-blue-500 focus:ring-offset-2">
+                    Sign In
+                </button>
+                
+                <div id="loginError" class="hidden text-google-red-600 text-sm text-center bg-google-red-50 p-3 rounded-lg border border-google-red-200"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="mainApp" class="hidden min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-google-grey-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-google-blue-500 rounded-full flex items-center justify-center">
+                            <span class="material-icons text-white text-xl">thermostat</span>
+                        </div>
+                        <div>
+                            <h1 class="text-google-grey-900 text-xl font-semibold">Smart Thermostat</h1>
+                            <p class="text-google-grey-600 text-sm">Climate Control System</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <div id="connectionStatus" class="w-2 h-2 bg-google-grey-400 rounded-full"></div>
+                            <span id="connectionText" class="text-google-grey-600 text-sm">Connecting...</span>
+                        </div>
+                        <button id="logoutBtn" class="text-google-grey-600 hover:text-google-grey-900 transition-colors p-2 rounded-full hover:bg-google-grey-100">
+                            <span class="material-icons text-xl">logout</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="space-y-6">
+                <!-- Device Selection -->
+                <div class="material-card p-6">
+                    <h3 class="text-google-grey-900 font-semibold mb-4 flex items-center">
+                        <span class="material-icons text-google-grey-700 mr-2">devices</span>
+                        Select Device
+                    </h3>
+                    <select id="deviceSelect" class="w-full px-4 py-3 border border-google-grey-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-google-blue-500 bg-white">
+                        <option value="">Choose a device...</option>
+                        <option value="smart-thermostat-01">Smart Thermostat 01</option>
+                        <option value="smart-thermostat-02">Smart Thermostat 02</option>
+                        <option value="smart-thermostat-03">Smart Thermostat 03</option>
+                    </select>
+                </div>
+
+                <!-- Current Status -->
+                <div id="statusCard" class="material-card p-6 hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-google-grey-900 font-semibold flex items-center">
+                            <span class="material-icons text-google-grey-700 mr-2">dashboard</span>
+                            Device Status
+                        </h3>
+                        <div class="flex items-center space-x-2">
+                            <span id="deviceStatus" class="status-badge status-online">Online</span>
+                            <span id="hvacStatus" class="status-badge hvac-off">Off</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Temperature Display -->
+                        <div class="text-center">
+                            <div class="temp-circle w-40 h-40 mx-auto mb-6">
+                                <div class="temp-inner w-full h-full">
+                                    <div id="currentTemp" class="text-3xl font-semibold text-google-grey-900">22°</div>
+                                    <div class="text-sm text-google-grey-600">Current</div>
+                                </div>
+                            </div>
+                            <div class="flex justify-center space-x-4">
+                                <button id="tempDown" class="w-12 h-12 bg-google-grey-100 hover:bg-google-grey-200 rounded-full flex items-center justify-center text-google-grey-700 transition-all">
+                                    <span class="material-icons">remove</span>
+                                </button>
+                                <button id="tempUp" class="w-12 h-12 bg-google-blue-500 hover:bg-google-blue-600 rounded-full flex items-center justify-center text-white transition-all">
+                                    <span class="material-icons">add</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Status Info -->
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center py-3 border-b border-google-grey-200">
+                                <span class="text-google-grey-600">Target Temperature</span>
+                                <span id="targetTemp" class="text-google-grey-900 font-semibold">22°C</span>
+                            </div>
+                            <div class="flex justify-between items-center py-3 border-b border-google-grey-200">
+                                <span class="text-google-grey-600">Humidity</span>
+                                <span id="humidity" class="text-google-grey-900 font-semibold">45%</span>
+                            </div>
+                            <div class="flex justify-between items-center py-3 border-b border-google-grey-200">
+                                <span class="text-google-grey-600">Air Quality (AQI)</span>
+                                <span id="airQuality" class="text-google-grey-900 font-semibold">Good (71)</span>
+                            </div>
+                            <div class="flex justify-between items-center py-3 border-b border-google-grey-200">
+                                <span class="text-google-grey-600">Occupancy</span>
+                                <span id="occupancy" class="text-google-grey-900 font-semibold">Not Detected</span>
+                            </div>
+                            <div class="flex justify-between items-center py-3">
+                                <span class="text-google-grey-600">Energy Consumption</span>
+                                <span id="energyConsumption" class="text-google-grey-900 font-semibold">2.3 kW</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Controls -->
+                <div class="material-card p-6">
+                    <h3 class="text-google-grey-900 font-semibold mb-4 flex items-center">
+                        <span class="material-icons text-google-grey-700 mr-2">settings</span>
+                        Quick Controls
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+                        <button class="mode-btn bg-google-red-50 hover:bg-google-red-100 border-2 border-google-red-200 hover:border-google-red-300 p-4 rounded-lg text-google-red-700 transition-all" data-mode="heat">
+                            <span class="material-icons text-2xl mb-2">local_fire_department</span>
+                            <div class="text-sm font-medium">Heat</div>
+                        </button>
+                        
+                        <button class="mode-btn bg-google-blue-50 hover:bg-google-blue-100 border-2 border-google-blue-200 hover:border-google-blue-300 p-4 rounded-lg text-google-blue-700 transition-all" data-mode="cool">
+                            <span class="material-icons text-2xl mb-2">ac_unit</span>
+                            <div class="text-sm font-medium">Cool</div>
+                        </button>
+                        
+                        <button class="mode-btn bg-google-grey-50 hover:bg-google-grey-100 border-2 border-google-grey-200 hover:border-google-grey-300 p-4 rounded-lg text-google-grey-700 transition-all" data-mode="off">
+                            <span class="material-icons text-2xl mb-2">power_settings_new</span>
+                            <div class="text-sm font-medium">Off</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Device Information -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Sensor Data -->
+                    <div class="material-card p-6">
+                        <h3 class="text-google-grey-900 font-semibold mb-4 flex items-center">
+                            <span class="material-icons text-google-grey-700 mr-2">sensors</span>
+                            Sensor Data
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-google-grey-600">CO2 Level</span>
+                                <span id="co2Level" class="text-google-grey-900 font-semibold">760 ppm</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-google-grey-600">PM2.5</span>
+                                <span id="pm25" class="text-google-grey-900 font-semibold">15 μg/m³</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-google-grey-600">PM10</span>
+                                <span id="pm10" class="text-google-grey-900 font-semibold">18.8 μg/m³</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-google-grey-600">Motion Detection</span>
+                                <span id="motionDetection" class="text-google-grey-900 font-semibold">No Motion</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Device Information -->
+                    <div class="material-card p-6">
+                        <h3 class="text-google-grey-900 font-semibold mb-4 flex items-center">
+                            <span class="material-icons text-google-grey-700 mr-2">info</span>
+                            Device Information
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-google-grey-600">Firmware Version</span>
+                                <span id="firmwareVersion" class="text-google-grey-900 font-semibold">2.1.0</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-google-grey-600">Uptime</span>
+                                <span id="uptime" class="text-google-grey-900 font-semibold">45 seconds</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-google-grey-600">Last Maintenance</span>
+                                <span id="lastMaintenance" class="text-google-grey-900 font-semibold">N/A</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-google-grey-600">Device ID</span>
+                                <span id="deviceId" class="text-google-grey-900 font-semibold text-sm">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification Settings -->
+                <div class="material-card p-6">
+                    <h3 class="text-google-grey-900 font-semibold mb-4 flex items-center">
+                        <span class="material-icons text-google-grey-700 mr-2">notifications</span>
+                        Push Notifications
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button id="connectNotificationsBtn" class="bg-google-blue-500 hover:bg-google-blue-600 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-google-blue-500 focus:ring-offset-2 flex items-center justify-center space-x-2">
+                            <span class="material-icons">notifications_active</span>
+                            <span>Enable Notifications</span>
+                        </button>
+                        
+                        <button id="testNotificationBtn" class="bg-white text-google-grey-700 border border-google-grey-300 hover:bg-google-grey-50 font-medium py-3 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-google-blue-500 hidden">
+                            Send Test
+                        </button>
+                        
+                        <button id="disconnectNotificationsBtn" class="bg-google-red-50 text-google-red-600 border border-google-red-200 hover:bg-google-red-100 font-medium py-3 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-google-red-500 hidden">
+                            Disconnect
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="mobile/env.js"></script>
+    <script src="js/app.js"></script>
+    <script> 
+    </script>
+</body>
+</html>

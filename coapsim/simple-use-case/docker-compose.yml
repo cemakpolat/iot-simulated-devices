@@ -1,0 +1,17 @@
+services:
+  coap-device:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    environment:
+      - DEVICE_ID=thermostat-01
+
+  ai-controller:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    depends_on:
+      - coap-device
+    environment:
+      - COAP_DEVICE_HOST=coap-device
+      - POLL_INTERVAL=2

@@ -1,0 +1,106 @@
+services:
+  opcua-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: opcua-server
+    ports:
+      - "4840:4840"
+    environment:
+      - OPC_HOST=0.0.0.0
+      - OPC_PORT=4840
+      - OPC_ENDPOINT_PATH=/freeopcua/server/
+      - OPC_SERVER_NAME=Dockerized Industrial Server
+      - UPDATE_INTERVAL=2.0
+      - TEMP_BASE_1=20.0
+      - TEMP_BASE_2=25.0
+      - TEMP_BASE_3=22.0
+      - TEMP_VARIATION=5.0
+    networks:
+      - opcua-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import socket; s=socket.socket(); s.connect((\"localhost\", 4840)); s.close()'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  opcua-client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: opcua-client
+    depends_on:
+      opcua-server:
+        condition: service_healthy
+    environment:
+      - OPC_SERVER_HOST=opcua-server
+      - OPC_SERVER_PORT=4840
+      - OPC_ENDPOINT_PATH=/freeopcua/server/
+      - OPC_USERNAME=admin
+      - OPC_PASSWORD=admin
+      - MONITOR_INTERVAL=10.0
+      - MONITOR_DURATION=3600  # 1 hour
+    networks:
+      - opcua-network
+    restart: unless-stopped
+
+  telegraf:
+    image: telegraf:1.28-alpine
+    container_name: telegraf-opcua
+    depends_on:
+      opcua-server:
+        condition: service_healthy
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - ./logs:/var/log/telegraf
+    networks:
+      - opcua-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "telegraf --test --config /etc/telegraf/telegraf.conf"]
+      interval: 60s
+      timeout: 30s
+      retries: 3
+
+  # Optional: Add InfluxDB for time-series storage
+  # influxdb:
+  #   image: influxdb:1.8-alpine
+  #   container_name: influxdb-opcua
+  #   ports:
+  #     - "8086:8086"
+  #   environment:
+  #     - INFLUXDB_DB=opcua_factory
+  #     - INFLUXDB_ADMIN_USER=admin
+  #     - INFLUXDB_ADMIN_PASSWORD=admin
+  #     - INFLUXDB_USER=telegraf
+  #     - INFLUXDB_USER_PASSWORD=telegraf
+  #   volumes:
+  #     - influxdb-data:/var/lib/influxdb
+  #   networks:
+  #     - opcua-network
+  #   restart: unless-stopped
+
+  # Optional: Add Grafana for visualization
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: grafana-opcua
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #   volumes:
+  #     - grafana-data:/var/lib/grafana
+  #   networks:
+  #     - opcua-network
+  #   restart: unless-stopped
+
+networks:
+  opcua-network:
+    driver: bridge
+
+volumes:
+  # influxdb-data:
+  # grafana-data:
+  logs:
+    driver: local
