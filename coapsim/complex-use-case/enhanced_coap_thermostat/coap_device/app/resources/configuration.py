@@ -34,7 +34,6 @@ class ConfigurationResource(Resource):
             config_update = json.loads(request.payload.decode('utf-8'))
             response_data = {"status": "success", "message": "Configuration updated", "changes": []}
 
-            # Example: Update sensor interval
             if "sensor_update_interval" in config_update:
                 new_interval = int(config_update["sensor_update_interval"])
                 if 1 <= new_interval <= 300: # Sanity check
@@ -45,15 +44,12 @@ class ConfigurationResource(Resource):
                 else:
                     raise ValueError("Sensor interval out of range (1-300).")
             
-            # Example: Update sensor enable/disable flags
             if "enable_occupancy_sensor" in config_update:
                 old_status = self.device_config.ENABLE_OCCUPANCY_SENSOR
                 self.device_config.ENABLE_OCCUPANCY_SENSOR = bool(config_update["enable_occupancy_sensor"])
                 response_data["changes"].append(f"Occupancy sensor enabled: {old_status} -> {self.device_config.ENABLE_OCCUPANCY_SENSOR}")
                 logger.info(f"Updated enable_occupancy_sensor to {self.device_config.ENABLE_OCCUPANCY_SENSOR}")
 
-            # Persist configuration (if applicable, e.g., write to a file or database)
-            # self.device_config.save() # Placeholder for persistence
 
             payload = json.dumps(response_data).encode('utf-8')
             return aiocoap.Message(payload=payload, content_format=50)

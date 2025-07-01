@@ -298,12 +298,6 @@ class DashboardController {
     }
 
     _setupCommandListeners() {
-        // --- FIX START: Target buttons by their new IDs ---
-        // Ensure you have these IDs in your index.html:
-        // <button id="set-target-btn">Set</button>
-        // <button id="heat-btn">Heat</button>
-        // <button id="cool-btn">Cool</button>
-        // <button id="off-btn">Off</button>
 
         const setTargetBtn = document.getElementById('set-target-btn');
         const heatBtn = document.getElementById('heat-btn');
@@ -373,7 +367,7 @@ class DashboardController {
     }
 
     _fetchInitialAlerts() {
-        fetch('/api/alerts')
+        fetch('/dashboard/api/alerts')
             .then(response => response.json())
             .then(alerts => {
                 this.alertsManager.loadInitialAlerts(alerts);

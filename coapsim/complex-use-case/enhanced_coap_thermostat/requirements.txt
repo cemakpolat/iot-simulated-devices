@@ -19,6 +19,7 @@ passlib[bcrypt]>=1.7.4 # bcrypt is the recommended scheme
 # For PostgreSQL ORM
 sqlalchemy>=2.0.0
 psycopg2-binary>=2.9.0 # PostgreSQL adapter
+asyncpg
 
 # Web & API
 fastapi>=0.100.0

@@ -1,3 +1,5 @@
+# """InfluxDB client for time-series sensor data"""
+
 from influxdb_client import InfluxDBClient as InfluxClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 import pandas as pd
