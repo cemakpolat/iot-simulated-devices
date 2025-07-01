@@ -1,3 +1,7 @@
+# server/app/utils/validators.py
+"""
+Data validation utilities
+"""
 import logging
 
 logger = logging.getLogger(__name__)

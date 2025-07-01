@@ -15,7 +15,7 @@ def setup_logger(name, level=logging.INFO):
         console_handler.setFormatter(formatter)
         logger.addHandler(console_handler)
 
-        # File Handler (optional)
+        # File Handler
         log_dir = "logs"
         os.makedirs(log_dir, exist_ok=True)
         file_handler = logging.FileHandler(os.path.join(log_dir, "client.log"))
@@ -23,7 +23,3 @@ def setup_logger(name, level=logging.INFO):
         logger.addHandler(file_handler)
         
     return logger
-
-# Example usage within a module:
-# from .utils.logger import setup_logger
-# logger = setup_logger(__name__)

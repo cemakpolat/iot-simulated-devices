@@ -20,11 +20,24 @@ class ServerConfig(BaseSettings):
     
     # Redis Configuration (for caching, session management - to be implemented later)
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://redis:6379")
+
+    # Postgresql configuration
+    DATABASE_URL:str =  os.getenv("DATABASE_URL", "postgresql://thermostat:password@postgres:5432/thermostat")
     
+    # WebSocket server 
+    WEBSOCKET_SERVER: str = os.getenv("WEBSOCKET_SERVER", "0.0.0.0")
+    WEBSOCKET_PORT: int = int(os.getenv("WEBSOCKET_PORT", 8092))
+    
+    # JWT and token expiration settings
+    JWT_SECRET: Optional[str] = os.getenv("JWT_SECRET", None)
+    JWT_ALGORITHM: str= os.getenv("JWT_SECRET", "HS256")
+    
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30)  # 30 minutes
+    REFRESH_TOKEN_EXPIRE_DAYS: int = os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", 7)     # 7 days
+
     # API Configuration (for FastAPI REST API - to be implemented later)
     API_HOST: str = os.getenv("API_HOST", "0.0.0.0")
     API_PORT: int = int(os.getenv("API_PORT", 8000))
-    JWT_SECRET: str = os.getenv("JWT_SECRET", "your-secret-key") # For mobile API JWT authentication
 
     # Control Loop & ML Settings
     POLL_INTERVAL: int = int(os.getenv("POLL_INTERVAL", 3)) # Interval for the server to poll the device (seconds)
@@ -41,16 +54,10 @@ class ServerConfig(BaseSettings):
     
 
     # FCM Configuration
-    FCM_PROJECT_ID: Optional[str] = os.getenv("FCM_PROJECT_ID")
-    FCM_PRIVATE_KEY_ID: Optional[str] = os.getenv("FCM_PRIVATE_KEY_ID")
-    FCM_PRIVATE_KEY: Optional[str] = os.getenv("FCM_PRIVATE_KEY")
-    FCM_CLIENT_EMAIL: Optional[str] = os.getenv("FCM_CLIENT_EMAIL")
-    FCM_CLIENT_ID: Optional[str] = os.getenv("FCM_CLIENT_ID")
-    FCM_SERVICE_ACCOUNT_PATH: Optional[str] = os.getenv("FCM_SERVICE_ACCOUNT_PATH")
-    FCM_SERVER_PORT: int = int(os.getenv("FCM_SERVER_PORT", "5001"))
-    
-    
 
+    FCM_SERVICE_ACCOUNT_PATH: Optional[str] = os.getenv("FCM_SERVICE_ACCOUNT_PATH")
+    # FCM_SERVER_PORT: int = int(os.getenv("FCM_SERVER_PORT", "5001"))
+    
     # Logging Level
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO") # DEBUG, INFO, WARNING, ERROR, CRITICAL
     

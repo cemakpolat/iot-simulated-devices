@@ -1,269 +1,230 @@
+# server/app/main.py
 import asyncio
 import logging
-import os
-from datetime import datetime, timedelta
-from fastapi import  Depends
-from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime
 from dotenv import load_dotenv
+from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from prometheus_client import generate_latest
+from fastapi import Response
 
-# Setup basic logging for the server process (before importing other modules)
-# This will log to console and potentially to a file defined by basicConfig.
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+from .config import ServerConfig
+from .core.service_factory import ServiceFactory
+from .core.background_tasks import BackgroundTaskManager
+from .api.auth.jqt_handler import set_jwt_global_config
+from .api.router import register_routes
+
+
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO, 
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger(__name__)
 
-# Import configuration from this server's app folder
-from .config import ServerConfig
-
-# Import core components and services
-from .database.influxdb_client import InfluxDBClient
-from .database.postgres_client import PostgreSQLClient 
-from .security.password_hasher import PasswordHasher 
-
-from .coap.client import EnhancedCoAPClient
-
-# Import ML Models (will be fully implemented in Phase 3/4)
-from .models.lstm_predictor import LSTMTemperaturePredictor
-from .models.anomaly_detector import AnomalyDetector
-from .models.energy_optimizer import EnergyOptimizer
-from .models.ensemble_model import EnsemblePredictor
-
-# Import Services (will be fully implemented in Phase 3/4)
-from .services.thermostat_service import ThermostatControlService
-from .services.prediction_service import PredictionService
-from .services.maintenance_service import MaintenanceService
-from .services.notification_service import NotificationService 
-
-from .api.websocket_handler import WebSocketManager
-from .utils.redis_client import RedisClient # <--- NEW import
-from .api.rest_gateway import app as fastapi_app 
-
-# --- Initialize PostgreSQL Client ---
-postgres_client = PostgreSQLClient(os.getenv("DATABASE_URL", "postgresql://thermostat:password@postgres:5432/thermostat"))
-
-# --- Inject get_db dependency into FastAPI app ---
-fastapi_app.dependency_overrides[Depends(postgres_client.get_db)] = postgres_client.get_db
-
-
+# Load environment variables
 load_dotenv()
 
-# Load configuration
-config = ServerConfig()
-# Set global log level based on config
-logging.getLogger().setLevel(getattr(logging, config.LOG_LEVEL.upper(), logging.INFO))
-logger.info(f"Server starting with log level: {config.LOG_LEVEL.upper()}")
-
-
-# --- Initialize Core Dependencies (Singletons) ---
-# These instances will be passed to other services as dependencies.
-influx_client = InfluxDBClient()
-coap_client = EnhancedCoAPClient(config)
-notification_service = NotificationService(config) # Pass config for email/webhook settings
-
-
-# --- Initialize ML Models ---
-# Models are initialized first, then passed to services that use them.
-lstm_predictor = LSTMTemperaturePredictor()
-anomaly_detector = AnomalyDetector() 
-energy_optimizer = EnergyOptimizer()
-# Ensemble model combines the decisions of individual models
-ensemble_predictor = EnsemblePredictor(
-    lstm_model=lstm_predictor,
-    anomaly_detector=anomaly_detector,
-    energy_optimizer=energy_optimizer 
-)
-
-
-# --- Initialize Services ---
-# Services take the core dependencies and other services as arguments.
-# This pattern is called Dependency Injection.
-prediction_service = PredictionService(
-    db_client=influx_client, 
-    lstm_predictor=lstm_predictor, 
-    anomaly_detector=anomaly_detector
-)
-maintenance_service = MaintenanceService(
-    db_client=influx_client, 
-    notification_service=notification_service
-)
-redis_client = RedisClient(os.getenv("REDIS_URL", "redis://redis:6379")) # <--- NEW instantiation
-thermostat_service = ThermostatControlService(
-    ensemble_model_instance=ensemble_predictor,
-    db_client=influx_client,
-    coap_client=coap_client,
-    notification_service=notification_service,
-    prediction_service=prediction_service,  # Pass the prediction service instance
-    maintenance_service=maintenance_service,  # Pass the maintenance service instance
-    redis_client = redis_client # <--- NEW injection
-)
-
-websocket_manager = WebSocketManager(thermostat_service, config)
-
-notification_service.set_websocket_manager(websocket_manager)
-
-
-# --- Main Control Loop for the AI Controller ---
-async def control_loop():
-    """
-    This asynchronous loop continuously runs the core logic of the AI Controller:
-    1. Fetches sensor data from the device.
-    2. Stores data in the database.
-    3. Triggers ML models for predictions and decisions.
-    4. Sends control commands back to the device.
-    5. Checks for maintenance needs and alerts.
-    6. Periodically retrains ML models.
-    """
-    logger.info("Starting AI Controller background control loop...")
+def create_app() -> FastAPI:
+    """Create and configure the FastAPI application."""
+    app = FastAPI(title="Smart Thermostat AI API", version="2.0.0")
     
-    # Attempt to pre-train models on startup.
-    # This ensures models are ready if historical data exists.
-    logger.info("Attempting initial ML model training...")
-    await prediction_service.retrain_models()
+    # Add CORS middleware
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],  # In production, replace with specific domains
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allow_headers=["*"],
+    )
+    
+    # Register all API routes
+    register_routes(app)
+    
+    return app
 
-    while True:
-        try:
-            # 1. Execute the main thermostat control cycle
-            # This involves fetching data, making AI decisions, and sending commands.
-            await thermostat_service.process_control_cycle()
+# Create FastAPI app
+app = create_app()
 
-            # 2. Check for predictive maintenance needs after processing current device status
-            # The `process_control_cycle` within `thermostat_service` already fetches device status
-            # and merges it into sensor_data. We can retrieve the last processed data.
-            last_device_data = thermostat_service.get_last_processed_data()
-            if last_device_data:
-                await maintenance_service.check_maintenance_needs(last_device_data)
-            else:
-                logger.warning("No recent device data available for maintenance check.")
+# Global variables
+service_factory: ServiceFactory = None
+background_task_manager: BackgroundTaskManager = None
 
-            # 3. Periodically retrain ML models
-            # Check if retraining interval has passed since last training
-            if (prediction_service.last_training is None or 
-                (datetime.now() - prediction_service.last_training).total_seconds() / 3600 >= config.ML_RETRAIN_INTERVAL_HOURS):
-                logger.info(f"Retraining interval reached ({config.ML_RETRAIN_INTERVAL_HOURS} hours). Initiating model retraining.")
-                await prediction_service.retrain_models()
+@app.get("/")
+async def root():
+    """Root endpoint with API information."""
+    from .api.router import get_route_summary
+    return {
+        "message": "Smart Thermostat AI API",
+        "version": "2.0.0",
+        "status": "running",
+        "documentation": "/docs",
+        "routes": get_route_summary()
+    }
 
-            # Wait for the next poll interval
-            await asyncio.sleep(config.POLL_INTERVAL)
+@app.get("/health")
+async def health_check():
+    """Health check endpoint."""
+    return {
+        "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
+        "version": "2.0.0"
+    }
+
+@app.get("/metrics")
+async def metrics():
+    """Endpoint for Prometheus to scrape metrics."""
+    return Response(generate_latest(), media_type="text/plain")
+
+class ApplicationManager:
+    """Manages the complete application lifecycle for both modes."""
+    
+    def __init__(self, config: ServerConfig = None):
+        self.config = config or ServerConfig()
+        self.service_factory: ServiceFactory = None
+        self.background_task_manager: BackgroundTaskManager = None
+    
+    async def initialize(self, setup_fastapi_state: bool = False) -> None:
+        """Initialize all services and dependencies."""
+        logger.info("Initializing Smart Thermostat AI application...")
+        
+        # Set logging level
+        logging.getLogger().setLevel(getattr(logging, self.config.LOG_LEVEL.upper(), logging.INFO))
+        logger.info(f"Application starting with log level: {self.config.LOG_LEVEL.upper()}")
+        
+        # Initialize service factory (includes refactored notification service)
+        self.service_factory = ServiceFactory(self.config)
+        await self.service_factory.initialize()
+        
+        # Get background task manager from service factory
+        self.background_task_manager = self.service_factory.background_task_manager
+        
+        # Setup FastAPI state if needed (for web API mode)
+        if setup_fastapi_state:
+            services = self.service_factory.get_all_services()
+            for key, value in services.items():
+                setattr(app.state, key, value)
             
-        except asyncio.CancelledError:
-            logger.info("Control loop cancelled (e.g., due to shutdown signal).")
-            break # Exit the loop cleanly
-        except Exception as e:
-            logger.error(f"An unexpected error occurred in the control loop: {e}", exc_info=True)
-            # Log the error and wait for a longer period before retrying to prevent rapid error loops
-            await asyncio.sleep(config.POLL_INTERVAL * 5) 
+            # Set JWT secret for API authentication
+            set_jwt_global_config(self.config)
+            
+            logger.info("FastAPI state setup completed")
+        
+        logger.info("Application initialization completed successfully")
+    
+    async def start_background_tasks(self) -> None:
+        """Start all background tasks."""
+        if self.background_task_manager:
+            await self.background_task_manager.start_all_tasks()
+            logger.info("Background tasks started")
+    
+    async def shutdown(self) -> None:
+        """Gracefully shutdown the application."""
+        logger.info("Initiating application shutdown...")
+        
+        # Stop background tasks
+        if self.background_task_manager:
+            await self.background_task_manager.stop_all_tasks()
+            logger.info("Background tasks stopped")
+        
+        # Shutdown services (includes notification service cleanup)
+        if self.service_factory:
+            await self.service_factory.shutdown()
+            logger.info("Services shutdown completed")
+        
+        logger.info("Application shutdown completed")
 
-# --- FastAPI Lifespan Events ---
-@fastapi_app.on_event("startup")
+# Global application manager
+app_manager: ApplicationManager = None
+
+@app.on_event("startup")
 async def startup_event():
     """
-    FastAPI startup event. This is where we start background tasks
-    and inject instantiated services into the FastAPI app state.
+    FastAPI startup event handler.
+    
+    Use this mode when you want:
+    - Web API + Background tasks
+    - Development with hot reload
+    - Production web service
     """
-    logger.info("FastAPI startup event triggered. Initializing services and background tasks.")
+    global app_manager
     
-    # Inject service instances into FastAPI app state
-    fastapi_app.state.thermostat_service = thermostat_service
-    fastapi_app.state.prediction_service = prediction_service
-    fastapi_app.state.maintenance_service = maintenance_service
-    fastapi_app.state.influx_client = influx_client
-    fastapi_app.state.coap_client = coap_client
-    fastapi_app.state.notification_service = notification_service # Also inject notification service
-    fastapi_app.state.postgres_client = postgres_client 
-    fastapi_app.state.websocket_manager = websocket_manager
-    fastapi_app.state.config = config
-    fastapi_app.state.redis_client = redis_client
-
-    # Start background tasks
-    fastapi_app.state.control_loop_task = asyncio.create_task(control_loop())
-    fastapi_app.state.websocket_server_task = asyncio.create_task(websocket_manager.start_server(host="0.0.0.0", port=8092))
+    logger.info("🌐 Starting FastAPI mode (Web API + Background Tasks)")
     
-    logger.info("Background control loop and WebSocket server tasks started.")
+    try:
+        # Initialize application with FastAPI state setup
+        app_manager = ApplicationManager()
+        await app_manager.initialize(setup_fastapi_state=True)
+        
+        # Start background tasks
+        await app_manager.start_background_tasks()
+        
+        logger.info("🚀 FastAPI application ready - API and background tasks running")
+        
+    except Exception as e:
+        logger.error(f"Failed to start FastAPI application: {e}", exc_info=True)
+        raise
 
-@fastapi_app.on_event("shutdown")
+@app.on_event("shutdown")
 async def shutdown_event():
-    """
-    FastAPI shutdown event. This is where we gracefully stop background tasks
-    and clean up resources.
-    """
-    logger.info("FastAPI shutdown event triggered. Initiating graceful shutdown.")
+    """FastAPI shutdown event handler."""
+    global app_manager
     
-    # Cancel and await background tasks
-    if hasattr(fastapi_app.state, 'control_loop_task') and fastapi_app.state.control_loop_task:
-        fastapi_app.state.control_loop_task.cancel()
-        try:
-            await fastapi_app.state.control_loop_task
-        except asyncio.CancelledError:
-            pass
-    if hasattr(fastapi_app.state, 'websocket_server_task') and fastapi_app.state.websocket_server_task:
-        fastapi_app.state.websocket_server_task.cancel()
-        try:
-            await fastapi_app.state.websocket_server_task
-        except asyncio.CancelledError:
-            pass
+    logger.info("🛑 FastAPI shutdown initiated")
     
-    # Perform clean shutdown of services
-    await websocket_manager.stop()
-    await coap_client.shutdown()
-    await redis_client.close() # <--- NEW: Close Redis client on shutdown
-
-    # If InfluxDB client needs explicit closing: influx_client.client.close()
+    if app_manager:
+        await app_manager.shutdown()
     
-    logger.info("AI Controller application shut down completely.")
-
-
-app = fastapi_app 
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with specific domains like ["http://localhost:3011", "https://yourdomain.com"]
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["*"],
-)
-
+    logger.info("✅ FastAPI shutdown completed")
 
 async def main():
-    """Main entry point function for the AI Controller application."""
-    logger.info("Smart Thermostat AI Controller application is starting...")
-
-    # Start the core control loop as a background asyncio task.
-    control_loop_task = asyncio.create_task(control_loop())
+    """
+    Standalone mode entry point.
     
-    # --- NEW: Start the WebSocket server as a background asyncio task ---
-    # The WebSocket server listens on a different port (8001) for dashboard connections.
-    websocket_server_task = asyncio.create_task(websocket_manager.start_server(host="0.0.0.0", port=8092))
-
-    # Keep the main event loop running indefinitely, awaiting all tasks.
+    Use this mode when you want:
+    - Background tasks only (no web API)
+    Run with: python -m app.main
+    """
+    logger.info("⚙️  Starting Standalone mode (Background Tasks Only)")
+    
+    app_manager = None
+    
     try:
-        await asyncio.gather(control_loop_task, websocket_server_task)
-    except asyncio.CancelledError:
-        logger.info("AI Controller application main tasks cancelled.")
+        # Initialize application without FastAPI state
+        app_manager = ApplicationManager()
+        await app_manager.initialize(setup_fastapi_state=False)
+        
+        # Start background tasks
+        await app_manager.start_background_tasks()
+        
+        logger.info("🔄 Standalone application running - Background tasks active")
+        logger.info("Press Ctrl+C to stop...")
+        
+        # Keep running until interrupted
+        while True:
+            await asyncio.sleep(1)
+            
+    except KeyboardInterrupt:
+        logger.info("⏹️  Shutdown signal received")
     except Exception as e:
-        logger.critical(f"Unhandled error in AI Controller application main execution: {e}", exc_info=True)
+        logger.critical(f"💥 Critical error in standalone mode: {e}", exc_info=True)
     finally:
-        logger.info("Initiating graceful shutdown of AI Controller components...")
-        # Ensure all tasks are cancelled and awaited
-        control_loop_task.cancel()
-        websocket_server_task.cancel()
-        try:
-            await control_loop_task
-            await websocket_server_task
-        except asyncio.CancelledError:
-            pass # Expected
-        
-        await websocket_manager.stop() # Stop WebSocket manager cleanly
-        await coap_client.shutdown() # Shut down CoAP client connections
-        influx_client.client.close() # If InfluxDB client needs explicit closing
-        logger.info("AI Controller application shut down completely.")
+        if app_manager:
+            await app_manager.shutdown()
+        logger.info("✅ Standalone mode shutdown completed")
 
-# Standard Python entry point for running the asynchronous main function.
 if __name__ == "__main__":
-    # Load environment variables from .env file if `python-dotenv` is installed.
-    try:
-        
-        logger.info("Environment variables loaded from .env file.")
-    except ImportError:
-        logger.warning("python-dotenv not installed. Environment variables must be set manually for ServerConfig.")
+    """
+    Entry point for standalone execution.
     
-    # Run the main asynchronous function
-    asyncio.run(main())
+    This allows you to run the application in different ways:
+    1. uvicorn app.main:app           # FastAPI mode (recommended for production)
+    2. python -m app.main             # Standalone mode (background tasks only)
+    """
+    try:
+        logger.info("🎯 Starting Smart Thermostat AI in standalone mode")
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("👋 Application interrupted by user")
+    except Exception as e:
+        logger.critical(f"💥 Failed to start application: {e}", exc_info=True)

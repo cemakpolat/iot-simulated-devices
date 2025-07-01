@@ -1,0 +1,30 @@
+/* Use Roboto as the default font */
+        body {
+            font-family: 'Roboto', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Style for Material Symbols */
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle; /* Better alignment with text */
+        }
+        
+        /* A simpler status pulse animation */
+        .status-pulse {
+            animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Ensure form inputs have a consistent look */
+        .form-input, .form-select, .form-textarea, .form-multiselect {
+             border-color: #d1d5db; /* border-gray-300 */
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus, .form-multiselect:focus {
+            --tw-ring-color: #2563eb; /* ring-blue-600 */
+            border-color: #2563eb; /* border-blue-600 */
+        }

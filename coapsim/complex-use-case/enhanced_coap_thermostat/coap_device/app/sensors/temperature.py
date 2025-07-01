@@ -1,6 +1,5 @@
 import random
 import time
-from typing import Dict, Optional
 from dataclasses import dataclass
 import math
 
@@ -115,34 +114,3 @@ class AdvancedTemperatureSensor:
         self._last_reading = reading
         self._last_update_time = current_time # Update last update time for next reading
         return reading
-
-# --- Example Usage ---
-if __name__ == "__main__":
-    sensor = AdvancedTemperatureSensor(device_id="living_room_1", initial_temp=20.5)
-    
-    print("Simulating temperature readings for 24 hours (1 reading every 10 minutes)...")
-    num_readings = int((24 * 3600) / 600) # Total readings in 24 hours at 1 reading every 10 minutes (600 seconds)
-    
-    # Store readings for analysis/plotting
-    readings_history = []
-
-    for i in range(num_readings):
-        reading = sensor.read()
-        readings_history.append(reading)
-        
-        # Print a subset of readings to avoid overwhelming the console
-        if i % (num_readings // 10) == 0 or i == num_readings - 1: # Print ~10 times plus the last one
-             print(f"[{i+1:03d}/{num_readings}] Time: {time.strftime('%H:%M:%S', time.localtime(reading.timestamp))}, Temp: {reading.value:.2f}°C, Accuracy: {reading.accuracy:.2f}")
-        
-        time.sleep(600) # Pause for 10 minutes to simulate real-time intervals
-
-    print("\nSimulation complete.")
-    
-    # Basic analysis of the simulated data
-    if readings_history:
-        values = [r.value for r in readings_history]
-        timestamps = [r.timestamp for r in readings_history]
-        
-        print(f"Min Recorded Temp: {min(values):.2f}°C")
-        print(f"Max Recorded Temp: {max(values):.2f}°C")
-        print(f"Avg Recorded Temp: {sum(values)/len(values):.2f}°C")

@@ -8,8 +8,8 @@ services:
     ports:
       - "5683:5683/udp"
       - "5684:5684/udp"  # Secure CoAP
-    environment:
-      - DEVICE_ID=smart-thermostat-01
+    env_file:
+      - .env
     volumes:
       - ./certs:/app/certs
     networks:
@@ -21,33 +21,25 @@ services:
     build:
       context: .
       dockerfile: server/Dockerfile
+    env_file:
+      - .env
     environment:
-      # Email Configuration
-      - SMTP_SERVER=${SMTP_SERVER:-smtp.gmail.com}
-      - SMTP_PORT=${SMTP_PORT:-587}
-      - EMAIL_USERNAME=${EMAIL_USERNAME}
-      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
-      - FROM_EMAIL=${FROM_EMAIL}
-      - ALERT_EMAIL=${ALERT_EMAIL}
-      
-      # Webhook Configuration
-      - WEBHOOK_URLS=${WEBHOOK_URLS:-}
-      
-      # FCM Configuration
-      - FCM_PROJECT_ID=${FCM_PROJECT_ID}
-      - FCM_PRIVATE_KEY_ID=${FCM_PRIVATE_KEY_ID}
-      - FCM_PRIVATE_KEY=${FCM_PRIVATE_KEY}
-      - FCM_CLIENT_EMAIL=${FCM_CLIENT_EMAIL}
-      - FCM_CLIENT_ID=${FCM_CLIENT_ID}
-      - FCM_SERVICE_ACCOUNT_PATH=${FCM_SERVICE_ACCOUNT_PATH:-}
-      - FCM_SERVER_PORT=${FCM_SERVER_PORT:-5001}
+      - PYTHONUNBUFFERED=1
     ports:
       - "8092:8092"
       - "8000:8000"
+    dns:
+      - 8.8.8.8          # Google DNS
+      - 8.8.4.4          # Google DNS secondary
+      - 1.1.1.1          # Cloudflare DNS
+    extra_hosts:
+      - "fcm.googleapis.com:142.250.191.106"
+      - "oauth2.googleapis.com:142.250.191.106"
     depends_on:
       - coap-device
       - influxdb
       - redis
+      - postgres
     volumes:
       - ./models:/app/models
       - ./logs:/app/logs
@@ -56,7 +48,7 @@ services:
       - thermostat-net
     restart: unless-stopped
 
-  # # Real-time Dashboard
+  # Real-time Dashboard
   dashboard:
     build:
       context: .
@@ -71,38 +63,18 @@ services:
       - thermostat-net
     restart: unless-stopped
 
-  # # Mobile API
-  mobile-api:
-    build:
-      context: .
-      dockerfile: mobile/Dockerfile
-    ports:
-      - "8001:8001"
-    depends_on:
-      - ai-controller
-      - postgres
-    environment:
-      - DATABASE_URL=postgresql://thermostat:password@postgres:5432/thermostat
-      - JWT_SECRET=your-secret-key
-      - AI_CONTROLLER_API_URL=http://ai-controller:8000
-
-    networks:
-      - thermostat-net
-    restart: unless-stopped
-
-  # # Time Series Database
+  # Time Series Database
   influxdb:
     image: influxdb:2.7
     ports:
       - "8086:8086"
     environment:
-      - DOCKER_INFLUXDB_INIT_MODE=setup
-      - DOCKER_INFLUXDB_INIT_USERNAME=admin
-      - DOCKER_INFLUXDB_INIT_PASSWORD=adminpassword123
-      - DOCKER_INFLUXDB_INIT_ORG=coap-data-org
-      - DOCKER_INFLUXDB_INIT_BUCKET=coap-data-bucket
-      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=coap-token-1234567890
-  
+      - DOCKER_INFLUXDB_INIT_MODE=${INFLUXDB_INIT_MODE}
+      - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_INIT_USERNAME}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_INIT_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_INIT_ORG}
+      - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_INIT_BUCKET}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_INIT_ADMIN_TOKEN}
     volumes:
       - influxdb_data:/var/lib/influxdb2
       - ./database/init-scripts:/docker-entrypoint-initdb.d
@@ -110,25 +82,24 @@ services:
       - thermostat-net
     restart: unless-stopped
 
-  # # Redis for Caching
+  # Redis for Caching
   redis:
     image: redis:7-alpine
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
-    #command: redis-server --requirepass redispassword123
     networks:
       - thermostat-net
     restart: unless-stopped
 
-  # # PostgreSQL for User Data
+  # PostgreSQL for User Data
   postgres:
     image: postgres:15
     environment:
-      - POSTGRES_DB=thermostat
-      - POSTGRES_USER=thermostat
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -145,7 +116,8 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - dashboard
-      - mobile-api
+      - ai-controller
+      - mobile-app
     networks:
       - thermostat-net
     restart: unless-stopped
@@ -157,14 +129,14 @@ services:
     volumes:
       - redisinsight_data:/db
     environment:
-      - RIPORT=8001
-      - RIHOST=0.0.0.0
+      - RIPORT=${RIPORT}
+      - RIHOST=${RIHOST}
     depends_on:
       - redis
     restart: unless-stopped
     networks:
       - thermostat-net
-  # # Monitoring
+  # Monitoring
   prometheus:
     image: prom/prometheus
     ports:
@@ -172,6 +144,9 @@ services:
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
+    depends_on:
+      - influxdb
+      - ai-controller
     networks:
       - thermostat-net
     restart: unless-stopped
@@ -181,9 +156,9 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_AUTH_ANONYMOUS_ENABLED=true # Optional: Allow anonymous access to dashboards
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer # Optional: Role for anonymous users
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+      - GF_SECURITY_ANONYMOUS_USER=${GF_SECURITY_ANONYMOUS_USER}
+      - GF_SECURITY_ANONYMOUS_USER_PASSWORD=${GF_SECURITY_ANONYMOUS_USER_PASSWORD}
     volumes:
       - grafana_data:/var/lib/grafana
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
@@ -195,12 +170,15 @@ services:
       - thermostat-net
     restart: unless-stopped
 
-  client_fcm:
+
+  
+  mobile-app:
+    container_name: mobile-app
     build: 
-      context: ./client_fcm
+      context: ./mobile_app
       dockerfile: Dockerfile
     volumes:
-      - ./client_fcm:/usr/share/nginx/html
+      - ./mobile_app:/usr/share/nginx/html
     environment:
       - FCM_API_KEY=${FCM_API_KEY}
       - FCM_PROJECT_ID=${FCM_PROJECT_ID}
@@ -209,14 +187,24 @@ services:
       - FCM_SENDER_ID=${FCM_SENDER_ID}
       - FCM_APP_ID=${FCM_APP_ID}
       - FCM_VAPID_KEY=${FCM_VAPID_KEY}
-      - BACKEND_URL=http://localhost:8000
+      - JWT_SECRET=${JWT_SECRET}
+      - AI_CONTROLLER_API_URL=http://ai-controller:8000 
+      - BACKEND_URL=http://localhost:3000
     ports:
-      - "3011:3000"
+      - "3012:3000"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     networks:
       - thermostat-net
+    
 networks:
   thermostat-net:
     driver: bridge
+    driver_opts:
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+      com.docker.network.driver.mtu: 1500
+
 
 volumes:
   influxdb_data:

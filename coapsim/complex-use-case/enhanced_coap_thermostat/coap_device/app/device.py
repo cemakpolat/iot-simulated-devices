@@ -36,14 +36,12 @@ class CoAPDevice:
         root = resource.Site()
 
         # Register core resources
-       # root.add_resource(['.well-known', 'core'], resource.WkVsResource(root))
         root.add_resource(['sensor', 'data'], SensorDataResource(self.config.DEVICE_ID))
         root.add_resource(['device', 'status'], DeviceStatusResource(self.config.DEVICE_ID))
         root.add_resource(['control'], self.control_resource) 
         root.add_resource(['config'], ConfigurationResource(self.config))
         root.add_resource(['diagnostics'], DiagnosticsResource(self.config.DEVICE_ID, self.device_start_time))
         
-        #self.config.ENABLE_DTLS = False
         if self.config.ENABLE_DTLS:
             logger.info(f"Starting CoAP server with DTLS on {self.config.HOST}:{self.config.SECURE_PORT}...")
             
@@ -52,10 +50,7 @@ class CoAPDevice:
                 root, 
                 bind=(self.config.HOST, self.config.SECURE_PORT)
             )
-            
-            # Apply DTLS credentials to the context
             self.dtls_handler.apply_credentials_to_context(self.coap_context)
-            
             logger.info(f"CoAP-DTLS server listening securely on {self.config.HOST}:{self.config.SECURE_PORT}")
         else:
             logger.info(f"Starting CoAP server WITHOUT DTLS on {self.config.HOST}:{self.config.PORT}...")

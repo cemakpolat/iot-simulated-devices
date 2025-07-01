@@ -1,0 +1,66 @@
+.material-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+            transition: box-shadow 0.2s ease;
+        }
+.material-card:hover {
+    box-shadow: 0 2px 6px 2px rgba(60, 64, 67, 0.15), 0 8px 24px 4px rgba(60, 64, 67, 0.15);
+}
+.temp-circle {
+    background: conic-gradient(from 180deg, #4285F4, #34A853, #FBBC04, #DB4437, #4285F4);
+    padding: 3px;
+    border-radius: 50%;
+}
+.temp-inner {
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.notification-toast {
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+.notification-toast.show {
+    transform: translateX(0);
+}
+.auth-modal {
+    display: none;
+    background: rgba(32, 33, 36, 0.6);
+    backdrop-filter: blur(4px);
+}
+.auth-modal.show {
+    display: flex;
+}
+.hidden {
+    display: none !important;
+}
+.status-badge {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+.status-online {
+    background: #E6F4EA;
+    color: #137333;
+}
+.status-offline {
+    background: #FCE8E6;
+    color: #C5221F;
+}
+.hvac-off {
+    background: #F1F3F4;
+    color: #5F6368;
+}
+.hvac-heating {
+    background: #FEF7E0;
+    color: #E37400;
+}
+.hvac-cooling {
+    background: #E8F0FE;
+    color: #1A73E8;
+}
