@@ -1,0 +1,961 @@
+{
+  "version": "1.0",
+  "devices": {
+    "78:9A:BC:30": {
+      "name": "TempSensor_Kitchen",
+      "eep_profile": "A5-02-01",
+      "device_type": "temperature_sensor",
+      "location": "Kitchen",
+      "manufacturer": "Eltako",
+      "model": "FTR55D",
+      "description": "Temperature sensor -40\u00b0C to +40\u00b0C",
+      "capabilities": [
+        "temperature"
+      ],
+      "interval": 300,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:31": {
+      "name": "HumiditySensor_Bathroom",
+      "eep_profile": "A5-10-01",
+      "device_type": "humidity_sensor",
+      "location": "Bathroom",
+      "manufacturer": "Eltako",
+      "model": "FHK61",
+      "description": "Humidity sensor",
+      "capabilities": [
+        "humidity"
+      ],
+      "interval": 360,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:32": {
+      "name": "TempHumidity_LivingRoom",
+      "eep_profile": "A5-04-01",
+      "device_type": "temp_humidity_sensor",
+      "location": "Living Room",
+      "manufacturer": "Eltako",
+      "model": "FUTH65D",
+      "description": "Temperature and humidity sensor",
+      "capabilities": [
+        "temperature",
+        "humidity"
+      ],
+      "interval": 420,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:33": {
+      "name": "CO2Sensor_Office",
+      "eep_profile": "A5-09-04",
+      "device_type": "co2_sensor",
+      "location": "Office",
+      "manufacturer": "Thermokon",
+      "model": "SRC Plus",
+      "description": "CO2 sensor",
+      "capabilities": [
+        "co2"
+      ],
+      "interval": 900,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:34": {
+      "name": "LightSensor_ConferenceRoom",
+      "eep_profile": "A5-06-01",
+      "device_type": "light_sensor",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Light sensor 300-60000 lux",
+      "capabilities": [
+        "illuminance"
+      ],
+      "interval": 600,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:35": {
+      "name": "TempRangeSensor_Warehouse",
+      "eep_profile": "A5-02-02",
+      "device_type": "temperature_sensor",
+      "location": "Unknown",
+      "manufacturer": "Eltako",
+      "model": "FTR55D",
+      "description": "Temperature sensor -30\u00b0C to +50\u00b0C",
+      "capabilities": [
+        "temperature"
+      ],
+      "interval": 480,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:36": {
+      "name": "TempIlluminance_Reception",
+      "eep_profile": "A5-02-04",
+      "device_type": "temp_illuminance_sensor",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Temperature and illuminance sensor",
+      "capabilities": [
+        "temperature",
+        "illuminance"
+      ],
+      "interval": 720,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:37": {
+      "name": "TempHumidityIlluminance_Lobby",
+      "eep_profile": "A5-02-05",
+      "device_type": "temp_humidity_illuminance_sensor",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Temperature, humidity and illuminance sensor",
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "illuminance"
+      ],
+      "interval": 900,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:38": {
+      "name": "BarometricSensor_WeatherStation",
+      "eep_profile": "A5-10-02",
+      "device_type": "barometric_sensor",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Barometric sensor",
+      "capabilities": [
+        "barometric_pressure",
+        "temperature"
+      ],
+      "interval": 1200,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:39": {
+      "name": "TempHumidityBarometric_Outdoor",
+      "eep_profile": "A5-10-03",
+      "device_type": "temp_humidity_barometric_sensor",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Temperature, humidity and barometric sensor",
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "barometric_pressure"
+      ],
+      "interval": 1500,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:3D": {
+      "name": "MotionSensor_Hallway",
+      "eep_profile": "A5-07-01",
+      "device_type": "motion_sensor",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Motion sensor",
+      "capabilities": [
+        "motion",
+        "supply_voltage"
+      ],
+      "interval": 180,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:3E": {
+      "name": "MotionTempSensor_Bathroom",
+      "eep_profile": "A5-07-02",
+      "device_type": "motion_temp_sensor",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Motion sensor with temperature",
+      "capabilities": [
+        "motion",
+        "temperature",
+        "supply_voltage"
+      ],
+      "interval": 300,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:40": {
+      "name": "Accelerometer_VibrationMonitor",
+      "eep_profile": "A5-08-01",
+      "device_type": "accelerometer",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Accelerometer",
+      "capabilities": [
+        "acceleration",
+        "supply_voltage"
+      ],
+      "interval": 120,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:43": {
+      "name": "SoilMoisture_Garden",
+      "eep_profile": "A5-13-02",
+      "device_type": "test",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Soil moisture sensor",
+      "capabilities": [
+        "soil_moisture",
+        "temperature",
+        "supply_voltage"
+      ],
+      "interval": 3600,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:44": {
+      "name": "RainSensor_Outdoor",
+      "eep_profile": "A5-10-09",
+      "device_type": "rain_sensor",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Rain sensor",
+      "capabilities": [
+        "rain_detection",
+        "supply_voltage"
+      ],
+      "interval": 600,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:45": {
+      "name": "ContactSensor_FrontDoor",
+      "eep_profile": "D5-00-01",
+      "device_type": "contact_sensor",
+      "location": "Unknown",
+      "manufacturer": "Eltako",
+      "model": "FTK",
+      "description": "Contact sensor",
+      "capabilities": [
+        "contact"
+      ],
+      "interval": 0,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:46": {
+      "name": "WindowHandle_MasterBedroom",
+      "eep_profile": "D5-00-01",
+      "device_type": "contact_sensor",
+      "location": "Unknown",
+      "manufacturer": "Eltako",
+      "model": "FTK",
+      "description": "Contact sensor",
+      "capabilities": [
+        "contact"
+      ],
+      "interval": 0,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:47": {
+      "name": "DoorHandle_MainEntrance",
+      "eep_profile": "D5-00-01",
+      "device_type": "contact_sensor",
+      "location": "Unknown",
+      "manufacturer": "Eltako",
+      "model": "FTK",
+      "description": "Contact sensor",
+      "capabilities": [
+        "contact"
+      ],
+      "interval": 0,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:49": {
+      "name": "SmokeDetector_Kitchen",
+      "eep_profile": "A5-12-01",
+      "device_type": "smoke_detector",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Smoke detector",
+      "capabilities": [
+        "smoke_detection",
+        "temperature",
+        "supply_voltage"
+      ],
+      "interval": 1800,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:4A": {
+      "name": "GlassBreakDetector_LivingRoom",
+      "eep_profile": "A5-12-02",
+      "device_type": "glass_break_detector",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Glass break detector",
+      "capabilities": [
+        "glass_break_detection",
+        "supply_voltage"
+      ],
+      "interval": 0,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:4B": {
+      "name": "VibrationDetector_Safe",
+      "eep_profile": "A5-12-03",
+      "device_type": "vibration_detector",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Vibration detector",
+      "capabilities": [
+        "vibration_detection",
+        "supply_voltage"
+      ],
+      "interval": 0,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:4C": {
+      "name": "FloodDetector_Basement",
+      "eep_profile": "A5-13-01",
+      "device_type": "flood_detector",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Flood detector",
+      "capabilities": [
+        "flood_detection",
+        "supply_voltage"
+      ],
+      "interval": 600,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:50": {
+      "name": "RockerSwitch_MasterBedroom",
+      "eep_profile": "F6-02-01",
+      "device_type": "rocker_switch",
+      "location": "Unknown",
+      "manufacturer": "Eltako",
+      "model": "FT55",
+      "description": "Rocker switch",
+      "capabilities": [
+        "switch"
+      ],
+      "interval": 0,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:51": {
+      "name": "RockerSwitch2_LivingRoom",
+      "eep_profile": "F6-02-02",
+      "device_type": "unknown",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "2-rocker switch",
+      "capabilities": [
+        "switch"
+      ],
+      "interval": 0,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:52": {
+      "name": "PushButton_Doorbell",
+      "eep_profile": "F6-02-01",
+      "device_type": "rocker_switch",
+      "location": "Unknown",
+      "manufacturer": "Eltako",
+      "model": "FT55",
+      "description": "Rocker switch",
+      "capabilities": [
+        "switch"
+      ],
+      "interval": 0,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:54": {
+      "name": "DualPushButton_Office",
+      "eep_profile": "F6-02-01",
+      "device_type": "rocker_switch",
+      "location": "Unknown",
+      "manufacturer": "Eltako",
+      "model": "FT55",
+      "description": "Rocker switch",
+      "capabilities": [
+        "switch"
+      ],
+      "interval": 0,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:60": {
+      "name": "RadiatorThermostat_LivingRoom",
+      "eep_profile": "D2-01-12",
+      "device_type": "unknown",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Room control panel",
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "setpoint",
+        "fan_speed"
+      ],
+      "interval": 1800,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:62": {
+      "name": "FanCoilThermostat_Office",
+      "eep_profile": "D2-01-12",
+      "device_type": "unknown",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Room control panel",
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "setpoint",
+        "fan_speed"
+      ],
+      "interval": 1800,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:70": {
+      "name": "MultiSensor_SmartBuilding",
+      "eep_profile": "D2-14-40",
+      "device_type": "multi_sensor",
+      "location": "Unknown",
+      "manufacturer": "EnOcean",
+      "model": "STM550J",
+      "description": "Multi-sensor without magnet",
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "acceleration",
+        "illumination"
+      ],
+      "interval": 600,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:72": {
+      "name": "EnergyMeter_MainPanel",
+      "eep_profile": "D2-01-01",
+      "device_type": "unknown",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Electronic switches and dimmers",
+      "capabilities": [
+        "switching",
+        "dimming",
+        "energy_measurement"
+      ],
+      "interval": 3600,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:74": {
+      "name": "WaterMeter_Utility",
+      "eep_profile": "D2-01-01",
+      "device_type": "unknown",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Electronic switches and dimmers",
+      "capabilities": [
+        "switching",
+        "dimming",
+        "energy_measurement"
+      ],
+      "interval": 3600,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:80": {
+      "name": "Dimmer_LivingRoom",
+      "eep_profile": "D2-01-01",
+      "device_type": "unknown",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Electronic switches and dimmers",
+      "capabilities": [
+        "switching",
+        "dimming",
+        "energy_measurement"
+      ],
+      "interval": 120,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:82": {
+      "name": "LEDController_Office",
+      "eep_profile": "D2-01-01",
+      "device_type": "unknown",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Electronic switches and dimmers",
+      "capabilities": [
+        "switching",
+        "dimming",
+        "energy_measurement"
+      ],
+      "interval": 180,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:90": {
+      "name": "AnalogInput_ProcessControl",
+      "eep_profile": "D2-01-01",
+      "device_type": "unknown",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Electronic switches and dimmers",
+      "capabilities": [
+        "switching",
+        "dimming",
+        "energy_measurement"
+      ],
+      "interval": 300,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:92": {
+      "name": "TemperatureSetpoint_HVAC",
+      "eep_profile": "D2-01-12",
+      "device_type": "unknown",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Room control panel",
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "setpoint",
+        "fan_speed"
+      ],
+      "interval": 1800,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:96": {
+      "name": "ValveControl_Heating",
+      "eep_profile": "D2-05-00",
+      "device_type": "unknown",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Blinds control",
+      "capabilities": [
+        "blinds_position",
+        "blinds_angle"
+      ],
+      "interval": 3600,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:E0": {
+      "name": "VLDTempHumidity_Server",
+      "eep_profile": "D2-01-12",
+      "device_type": "unknown",
+      "location": "Unknown",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Room control panel",
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "setpoint",
+        "fan_speed"
+      ],
+      "interval": 600,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:E1": {
+      "name": "VLDOccupancyAdvanced_Conference",
+      "eep_profile": "D2-14-40",
+      "device_type": "multi_sensor",
+      "location": "Unknown",
+      "manufacturer": "EnOcean",
+      "model": "STM550J",
+      "description": "Multi-sensor without magnet",
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "acceleration",
+        "illumination"
+      ],
+      "interval": 300,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:E3": {
+      "name": "MultiSensor_ConferenceRoom",
+      "eep_profile": "D2-14-40",
+      "device_type": "multi_sensor",
+      "location": "Unknown",
+      "manufacturer": "EnOcean",
+      "model": "STM550J",
+      "description": "Multi-sensor without magnet",
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "acceleration",
+        "illumination"
+      ],
+      "interval": 900,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:E4": {
+      "name": "MultiSensorMagnet_Reception",
+      "eep_profile": "D2-14-41",
+      "device_type": "multi_sensor_magnet",
+      "location": "Reception",
+      "manufacturer": "EnOcean",
+      "model": "STM550J-M",
+      "description": "Multi-sensor with magnet contact",
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "acceleration",
+        "illumination",
+        "magnet_contact"
+      ],
+      "interval": 900,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:E5": {
+      "name": "VLDOccupancySimple_Bathroom",
+      "eep_profile": "D2-14-40",
+      "device_type": "multi_sensor",
+      "location": "Unknown",
+      "manufacturer": "EnOcean",
+      "model": "STM550J",
+      "description": "Multi-sensor without magnet",
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "acceleration",
+        "illumination"
+      ],
+      "interval": 300,
+      "last_seen": null,
+      "status": "active"
+    },
+    "78:9A:BC:E6": {
+      "name": "VLDDeskOccupancy_Workstation",
+      "eep_profile": "D2-14-40",
+      "device_type": "multi_sensor",
+      "location": "Unknown",
+      "manufacturer": "EnOcean",
+      "model": "STM550J",
+      "description": "Multi-sensor without magnet",
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "acceleration",
+        "illumination"
+      ],
+      "interval": 600,
+      "last_seen": null,
+      "status": "active"
+    }
+  },
+  "locations": {
+    "Kitchen": {
+      "building": "Main",
+      "floor": 1,
+      "zone": "residential"
+    },
+    "Bathroom": {
+      "building": "Main",
+      "floor": 1,
+      "zone": "residential"
+    },
+    "Living Room": {
+      "building": "Main",
+      "floor": 1,
+      "zone": "residential"
+    },
+    "Office": {
+      "building": "Main",
+      "floor": 2,
+      "zone": "work"
+    },
+    "Bedroom": {
+      "building": "Main",
+      "floor": 2,
+      "zone": "residential"
+    },
+    "Front Door": {
+      "building": "Main",
+      "floor": 1,
+      "zone": "security"
+    },
+    "Conference Room": {
+      "building": "Main",
+      "floor": 2,
+      "zone": "work"
+    },
+    "Reception": {
+      "building": "Main",
+      "floor": 1,
+      "zone": "work"
+    }
+  },
+  "eep_profiles": {
+    "A5-02-01": {
+      "description": "Temperature sensor -40\u00b0C to +40\u00b0C",
+      "data_length": 4,
+      "capabilities": [
+        "temperature"
+      ]
+    },
+    "A5-04-01": {
+      "description": "Temperature and humidity sensor",
+      "data_length": 4,
+      "capabilities": [
+        "temperature",
+        "humidity"
+      ]
+    },
+    "A5-09-04": {
+      "description": "CO2 sensor",
+      "data_length": 4,
+      "capabilities": [
+        "co2"
+      ]
+    },
+    "A5-10-01": {
+      "description": "Humidity sensor",
+      "data_length": 4,
+      "capabilities": [
+        "humidity"
+      ]
+    },
+    "F6-02-01": {
+      "description": "Rocker switch",
+      "data_length": 1,
+      "capabilities": [
+        "switch"
+      ]
+    },
+    "D5-00-01": {
+      "description": "Contact sensor",
+      "data_length": 1,
+      "capabilities": [
+        "contact"
+      ]
+    },
+    "D2-14-40": {
+      "description": "Multi-sensor without magnet",
+      "data_length": 9,
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "acceleration",
+        "illumination"
+      ]
+    },
+    "D2-14-41": {
+      "description": "Multi-sensor with magnet contact",
+      "data_length": 9,
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "acceleration",
+        "illumination",
+        "magnet_contact"
+      ]
+    },
+    "A5-02-02": {
+      "description": "Temperature sensor -30\u00b0C to +50\u00b0C",
+      "data_length": 4,
+      "capabilities": [
+        "temperature"
+      ]
+    },
+    "A5-02-04": {
+      "description": "Temperature and illuminance sensor",
+      "data_length": 4,
+      "capabilities": [
+        "temperature",
+        "illuminance"
+      ]
+    },
+    "A5-02-05": {
+      "description": "Temperature, humidity and illuminance sensor",
+      "data_length": 4,
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "illuminance"
+      ]
+    },
+    "A5-06-01": {
+      "description": "Light sensor 300-60000 lux",
+      "data_length": 4,
+      "capabilities": [
+        "illuminance"
+      ]
+    },
+    "A5-07-01": {
+      "description": "Motion sensor",
+      "data_length": 4,
+      "capabilities": [
+        "motion",
+        "supply_voltage"
+      ]
+    },
+    "A5-07-02": {
+      "description": "Motion sensor with temperature",
+      "data_length": 4,
+      "capabilities": [
+        "motion",
+        "temperature",
+        "supply_voltage"
+      ]
+    },
+    "A5-08-01": {
+      "description": "Accelerometer",
+      "data_length": 4,
+      "capabilities": [
+        "acceleration",
+        "supply_voltage"
+      ]
+    },
+    "A5-10-02": {
+      "description": "Barometric sensor",
+      "data_length": 4,
+      "capabilities": [
+        "barometric_pressure",
+        "temperature"
+      ]
+    },
+    "A5-10-03": {
+      "description": "Temperature, humidity and barometric sensor",
+      "data_length": 4,
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "barometric_pressure"
+      ]
+    },
+    "A5-10-09": {
+      "description": "Rain sensor",
+      "data_length": 4,
+      "capabilities": [
+        "rain_detection",
+        "supply_voltage"
+      ]
+    },
+    "A5-12-01": {
+      "description": "Smoke detector",
+      "data_length": 4,
+      "capabilities": [
+        "smoke_detection",
+        "temperature",
+        "supply_voltage"
+      ]
+    },
+    "A5-12-02": {
+      "description": "Glass break detector",
+      "data_length": 4,
+      "capabilities": [
+        "glass_break_detection",
+        "supply_voltage"
+      ]
+    },
+    "A5-12-03": {
+      "description": "Vibration detector",
+      "data_length": 4,
+      "capabilities": [
+        "vibration_detection",
+        "supply_voltage"
+      ]
+    },
+    "A5-13-01": {
+      "description": "Flood detector",
+      "data_length": 4,
+      "capabilities": [
+        "flood_detection",
+        "supply_voltage"
+      ]
+    },
+    "A5-13-02": {
+      "description": "Soil moisture sensor",
+      "data_length": 4,
+      "capabilities": [
+        "soil_moisture",
+        "temperature",
+        "supply_voltage"
+      ]
+    },
+    "F6-02-02": {
+      "description": "2-rocker switch",
+      "data_length": 1,
+      "capabilities": [
+        "switch"
+      ]
+    },
+    "D2-01-01": {
+      "description": "Electronic switches and dimmers",
+      "data_length": 7,
+      "capabilities": [
+        "switching",
+        "dimming",
+        "energy_measurement"
+      ]
+    },
+    "D2-01-12": {
+      "description": "Room control panel",
+      "data_length": 7,
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "setpoint",
+        "fan_speed"
+      ]
+    },
+    "D2-05-00": {
+      "description": "Blinds control",
+      "data_length": 7,
+      "capabilities": [
+        "blinds_position",
+        "blinds_angle"
+      ]
+    }
+  }
+}

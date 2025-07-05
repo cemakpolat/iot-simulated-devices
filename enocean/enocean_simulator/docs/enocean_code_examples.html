@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnOcean Packet Python Code Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .rorg-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .rorg-button {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .rorg-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .rorg-button.active {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .code-section {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-subtitle {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #4a5568;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s;
+        }
+
+        .copy-button:hover {
+            background: #2d3748;
+        }
+
+        .copy-button.copied {
+            background: #48bb78;
+        }
+
+        .highlight-python {
+            color: #e2e8f0;
+        }
+
+        .highlight-keyword {
+            color: #ed8796;
+        }
+
+        .highlight-string {
+            color: #a6da95;
+        }
+
+        .highlight-number {
+            color: #f5a97f;
+        }
+
+        .highlight-comment {
+            color: #8087a2;
+            font-style: italic;
+        }
+
+        .highlight-function {
+            color: #8aadf4;
+        }
+
+        .packet-info {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .example-output {
+            background: #1a202c;
+            color: #68d391;
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #48bb78;
+        }
+
+        .download-section {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .download-button {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .download-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        .usage-notes {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .usage-notes h4 {
+            color: #856404;
+            margin-top: 0;
+        }
+
+        .usage-notes ul {
+            color: #856404;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐍 EnOcean Python Packet Generator</h1>
+
+        <div class="rorg-selector">
+            <button class="rorg-button active" onclick="showCode('0xF6')">0xF6 - RPS</button>
+            <button class="rorg-button" onclick="showCode('0xD5')">0xD5 - 1BS</button>
+            <button class="rorg-button" onclick="showCode('0xD4')">0xD4 - UTE</button>
+            <button class="rorg-button" onclick="showCode('0xA5')">0xA5 - 4BS</button>
+            <button class="rorg-button" onclick="showCode('0xD2')">0xD2 - VLD</button>
+        </div>
+
+        <div id="code-content">
+            <!-- Content will be dynamically loaded here -->
+        </div>
+
+        <div class="download-section">
+            <h3>📥 Download Complete Python Module</h3>
+            <p>Get a complete Python module with all packet generators, CRC calculation, and utilities</p>
+            <button class="download-button" onclick="downloadCompleteModule()">
+                🔽 Download enocean_packet_generator.py
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const rorgCode = {
+            '0xF6': {
+                name: 'RPS - Repeated Switch Communication',
+                description: 'Energy harvesting switches and buttons',
+                dataLength: 7,
+                totalLength: 14,
+                example: 'F6 70 78 9A BC DE 30',
+                code: `import struct
+from typing import List, Optional
+
+class EnOceanRPSGenerator:
+    """Generator for RPS (Repeated Switch Communication) packets - RORG 0xF6"""
+
+    def __init__(self):
+        self.rorg = 0xF6
+
+    def calculate_crc8(self, data: List[int]) -> int:
+        """Calculate CRC8 checksum for EnOcean packets"""
+        crc = 0
+        for byte in data:
+            crc ^= byte
+            for _ in range(8):
+                if crc & 0x80:
+                    crc = (crc << 1) ^ 0x07
+                else:
+                    crc <<= 1
+                crc &= 0xFF
+        return crc
+
+    def create_rps_packet(self,
+                         action_byte: int,
+                         sender_id: int,
+                         status: int = 0x30) -> List[int]:
+        """
+        Create an RPS packet for switch/button devices
+
+        Args:
+            action_byte: Button action (e.g., 0x70 for button B pressed)
+            sender_id: 32-bit device ID
+            status: Status byte (default 0x30 for T21=0, NU=1)
+
+        Returns:
+            Complete ESP3 packet as list of integers
+        """
+        # Convert sender_id to 4 bytes
+        sender_bytes = [
+            (sender_id >> 24) & 0xFF,
+            (sender_id >> 16) & 0xFF,
+            (sender_id >> 8) & 0xFF,
+            sender_id & 0xFF
+        ]
+
+        # Build data payload
+        data_payload = [self.rorg, action_byte] + sender_bytes + [status]
+
+        # ESP3 Header
+        data_length = len(data_payload)
+        header = [
+            0x55,  # Sync byte
+            (data_length >> 8) & 0xFF,  # Data length MSB
+            data_length & 0xFF,         # Data length LSB
+            0x00,  # Optional length
+            0x01,  # Packet type (RADIO)
+        ]
+
+        # Calculate header CRC
+        header_crc = self.calculate_crc8(header[1:5])
+        header.append(header_crc)
+
+        # Calculate data CRC
+        data_crc = self.calculate_crc8(data_payload)
+
+        # Complete packet
+        return header + data_payload + [data_crc]
+
+    def create_button_press(self,
+                           button: str,
+                           sender_id: int,
+                           pressed: bool = True) -> List[int]:
+        """
+        Create RPS packet for button press/release
+
+        Args:
+            button: Button identifier ('A', 'B', 'C', 'D')
+            sender_id: Device ID
+            pressed: True for press, False for release
+
+        Returns:
+            Complete ESP3 packet
+        """
+        button_map = {
+            'A': 0x10 if pressed else 0x00,
+            'B': 0x30 if pressed else 0x20,
+            'C': 0x50 if pressed else 0x40,
+            'D': 0x70 if pressed else 0x60
+        }
+
+        if button not in button_map:
+            raise ValueError(f"Invalid button: {button}. Use A, B, C, or D")
+
+        action_byte = button_map[button]
+        return self.create_rps_packet(action_byte, sender_id)
+
+# Example usage
+if __name__ == "__main__":
+    generator = EnOceanRPSGenerator()
+
+    # Create button B press packet
+    packet = generator.create_button_press('B', 0x789ABCDE, pressed=True)
+
+    print("RPS Packet (Button B pressed):")
+    print(" ".join([f"{b:02X}" for b in packet]))
+
+    # Expected output: 55 00 07 00 01 EB F6 70 78 9A BC DE 30 08`,
+
+                usageNotes: [
+                    'RPS packets are very short (7 bytes data) for energy efficiency',
+                    'No learn bit - devices must be taught-in manually by triggering 3 times in 2 seconds',
+                    'Status byte contains T21 (switch type) and NU (normal/unassigned) flags',
+                    'Action byte encoding varies by manufacturer and switch type'
+                ]
+            },
+            '0xD5': {
+                name: '1BS - 1-Byte Communication',
+                description: 'Simple sensors with 1 byte of data',
+                dataLength: 7,
+                totalLength: 14,
+                example: 'D5 01 78 9A BC DE 30',
+                code: `import struct
+from typing import List, Optional
+
+class EnOcean1BSGenerator:
+    """Generator for 1BS (1-Byte Communication) packets - RORG 0xD5"""
+
+    def __init__(self):
+        self.rorg = 0xD5
+
+    def calculate_crc8(self, data: List[int]) -> int:
+        """Calculate CRC8 checksum for EnOcean packets"""
+        crc = 0
+        for byte in data:
+            crc ^= byte
+            for _ in range(8):
+                if crc & 0x80:
+                    crc = (crc << 1) ^ 0x07
+                else:
+                    crc <<= 1
+                crc &= 0xFF
+        return crc
+
+    def create_1bs_packet(self,
+                         data_byte: int,
+                         sender_id: int,
+                         learn: bool = False) -> List[int]:
+        """
+        Create a 1BS packet for simple sensors
+
+        Args:
+            data_byte: Single byte of sensor data
+            sender_id: 32-bit device ID
+            learn: True for teach-in packet, False for data packet
+
+        Returns:
+            Complete ESP3 packet as list of integers
+        """
+        # Convert sender_id to 4 bytes
+        sender_bytes = [
+            (sender_id >> 24) & 0xFF,
+            (sender_id >> 16) & 0xFF,
+            (sender_id >> 8) & 0xFF,
+            sender_id & 0xFF
+        ]
+
+        # Status byte: bit 3 is learn bit (0=teach-in, 1=data)
+        status = 0x30 if not learn else 0x20
+
+        # Build data payload
+        data_payload = [self.rorg, data_byte] + sender_bytes + [status]
+
+        # ESP3 Header
+        data_length = len(data_payload)
+        header = [
+            0x55,  # Sync byte
+            (data_length >> 8) & 0xFF,  # Data length MSB
+            data_length & 0xFF,         # Data length LSB
+            0x00,  # Optional length
+            0x01,  # Packet type (RADIO)
+        ]
+
+        # Calculate header CRC
+        header_crc = self.calculate_crc8(header[1:5])
+        header.append(header_crc)
+
+        # Calculate data CRC
+        data_crc = self.calculate_crc8(data_payload)
+
+        # Complete packet
+        return header + data_payload + [data_crc]
+
+    def create_contact_sensor(self,
+                             contact_closed: bool,
+                             sender_id: int,
+                             learn: bool = False) -> List[int]:
+        """
+        Create 1BS packet for door/window contact sensor (D5-00-01)
+
+        Args:
+            contact_closed: True if contact is closed, False if open
+            sender_id: Device ID
+            learn: True for teach-in packet
+
+        Returns:
+            Complete ESP3 packet
+        """
+        # D5-00-01: bit 0 = contact state (0=open, 1=closed)
+        data_byte = 0x01 if contact_closed else 0x00
+        return self.create_1bs_packet(data_byte, sender_id, learn)
+
+    def create_pir_sensor(self,
+                         motion_detected: bool,
+                         sender_id: int,
+                         learn: bool = False) -> List[int]:
+        """
+        Create 1BS packet for PIR motion sensor
+
+        Args:
+            motion_detected: True if motion detected
+            sender_id: Device ID
+            learn: True for teach-in packet
+
+        Returns:
+            Complete ESP3 packet
+        """
+        # PIR sensor: bit 0 = motion state
+        data_byte = 0x01 if motion_detected else 0x00
+        return self.create_1bs_packet(data_byte, sender_id, learn)
+
+# Example usage
+if __name__ == "__main__":
+    generator = EnOcean1BSGenerator()
+
+    # Create contact sensor packet (closed)
+    packet = generator.create_contact_sensor(
+        contact_closed=True,
+        sender_id=0x789ABCDE
+    )
+
+    print("1BS Contact Sensor Packet (closed):")
+    print(" ".join([f"{b:02X}" for b in packet]))
+
+    # Create teach-in packet
+    teach_packet = generator.create_contact_sensor(
+        contact_closed=True,
+        sender_id=0x789ABCDE,
+        learn=True
+    )
+
+    print("\\n1BS Teach-in Packet:")
+    print(" ".join([f"{b:02X}" for b in teach_packet]))`,
+
+                usageNotes: [
+                    '1BS packets carry exactly 1 byte of sensor data',
+                    'Learn bit in status byte distinguishes teach-in vs data telegrams',
+                    'Commonly used for simple binary sensors (door/window contacts, PIR)',
+                    'D5-00-01 is the most common profile for contact sensors'
+                ]
+            },
+            '0xD4': {
+                name: 'UTE - Universal Teach-In',
+                description: 'Universal teach-in for all RORG types',
+                dataLength: 7,
+                totalLength: 14,
+                example: 'D4 80 FF A5 02 05 30',
+                code: `import struct
+from typing import List, Optional
+
+class EnOceanUTEGenerator:
+    """Generator for UTE (Universal Teach-In) packets - RORG 0xD4"""
+
+    def __init__(self):
+        self.rorg = 0xD4
+
+    def calculate_crc8(self, data: List[int]) -> int:
+        """Calculate CRC8 checksum for EnOcean packets"""
+        crc = 0
+        for byte in data:
+            crc ^= byte
+            for _ in range(8):
+                if crc & 0x80:
+                    crc = (crc << 1) ^ 0x07
+                else:
+                    crc <<= 1
+                crc &= 0xFF
+        return crc
+
+    def create_ute_query(self,
+                        target_rorg: int,
+                        func: int,
+                        type_code: int,
+                        manufacturer_id: int = 0x000,
+                        channel: int = 0xFF,
+                        bidirectional: bool = True,
+                        response_expected: bool = True,
+                        sender_id: int = 0x00000000) -> List[int]:
+        """
+        Create UTE teach-in query packet
+
+        Args:
+            target_rorg: Target RORG for teach-in (e.g., 0xA5 for 4BS)
+            func: Function code (0x00-0xFF)
+            type_code: Type code (0x00-0xFF)
+            manufacturer_id: 11-bit manufacturer ID (0x000-0x7FF)
+            channel: Channel number (0xFF for all channels)
+            bidirectional: True for bidirectional communication
+            response_expected: True if response expected
+            sender_id: Sender device ID
+
+        Returns:
+            Complete ESP3 packet as list of integers
+        """
+        # Build UTE data payload
+        communication_byte = 0x00
+        if bidirectional:
+            communication_byte |= 0x80  # Bit 7: bidirectional
+        if not response_expected:
+            communication_byte |= 0x40  # Bit 6: no response expected
+        # Bits 5-4: request type (00 = teach-in request)
+
+        # Channel and manufacturer ID byte
+        channel_mfg_byte = channel
+
+        # Manufacturer ID (split across bytes)
+        mfg_lsb = manufacturer_id & 0xFF
+        mfg_msb = (manufacturer_id >> 8) & 0x07
+
+        # Build data payload
+        data_payload = [
+            self.rorg,           # RORG D4
+            communication_byte,   # Communication type
+            channel_mfg_byte,    # Channel
+            target_rorg,         # Target RORG
+            func,                # Function
+            type_code,           # Type
+            0x30                 # Status byte
+        ]
+
+        # ESP3 Header
+        data_length = len(data_payload)
+        header = [
+            0x55,  # Sync byte
+            (data_length >> 8) & 0xFF,  # Data length MSB
+            data_length & 0xFF,         # Data length LSB
+            0x00,  # Optional length
+            0x01,  # Packet type (RADIO)
+        ]
+
+        # Calculate header CRC
+        header_crc = self.calculate_crc8(header[1:5])
+        header.append(header_crc)
+
+        # Calculate data CRC
+        data_crc = self.calculate_crc8(data_payload)
+
+        # Complete packet
+        return header + data_payload + [data_crc]
+
+    def create_ute_response(self,
+                           target_rorg: int,
+                           func: int,
+                           type_code: int,
+                           accepted: bool = True,
+                           eep_supported: bool = True,
+                           manufacturer_id: int = 0x000,
+                           channel: int = 0xFF,
+                           sender_id: int = 0x00000000) -> List[int]:
+        """
+        Create UTE teach-in response packet
+
+        Args:
+            target_rorg: Target RORG
+            func: Function code
+            type_code: Type code
+            accepted: True if teach-in accepted
+            eep_supported: True if EEP is supported
+            manufacturer_id: 11-bit manufacturer ID
+            channel: Channel number
+            sender_id: Sender device ID
+
+        Returns:
+            Complete ESP3 packet as list of integers
+        """
+        # Build response byte
+        response_byte = 0x10  # CMD = 0x1 (response)
+
+        if accepted and eep_supported:
+            response_byte |= 0x04  # Request accepted, teach-in successful
+        elif not eep_supported:
+            response_byte |= 0x0C  # Request not accepted, EEP not supported
+        else:
+            response_byte |= 0x00  # Request not accepted, general reason
+
+        # Channel and manufacturer ID
+        channel_mfg_byte = channel
+
+        # Build data payload
+        data_payload = [
+            self.rorg,           # RORG D4
+            response_byte,       # Response type
+            channel_mfg_byte,    # Channel
+            target_rorg,         # Target RORG
+            func,                # Function
+            type_code,           # Type
+            0x30                 # Status byte
+        ]
+
+        # ESP3 Header
+        data_length = len(data_payload)
+        header = [
+            0x55,  # Sync byte
+            (data_length >> 8) & 0xFF,
+            data_length & 0xFF,
+            0x00,  # Optional length
+            0x01,  # Packet type
+        ]
+
+        # Calculate CRCs
+        header_crc = self.calculate_crc8(header[1:5])
+        header.append(header_crc)
+
+        data_crc = self.calculate_crc8(data_payload)
+
+        return header + data_payload + [data_crc]
+
+# Example usage
+if __name__ == "__main__":
+    generator = EnOceanUTEGenerator()
+
+    # Create UTE query for 4BS temperature sensor (A5-02-05)
+    query_packet = generator.create_ute_query(
+        target_rorg=0xA5,    # 4BS
+        func=0x02,           # Temperature sensor
+        type_code=0x05,      # 0-40°C range
+        bidirectional=True,
+        response_expected=True
+    )
+
+    print("UTE Query Packet (A5-02-05):")
+    print(" ".join([f"{b:02X}" for b in query_packet]))
+
+    # Create UTE response (accepted)
+    response_packet = generator.create_ute_response(
+        target_rorg=0xA5,
+        func=0x02,
+        type_code=0x05,
+        accepted=True,
+        eep_supported=True
+    )
+
+    print("\\nUTE Response Packet (accepted):")
+    print(" ".join([f"{b:02X}" for b in response_packet]))`,
+
+                usageNotes: [
+                    'UTE enables universal teach-in for any RORG type',
+                    'Supports both unidirectional and bidirectional communication',
+                    'Query/response mechanism with configurable timeouts',
+                    'Replaces older teach-in methods for modern devices'
+                ]
+            },
+            '0xA5': {
+                name: '4BS - 4-Byte Communication',
+                description: 'Multi-parameter sensors (temp, humidity, light)',
+                dataLength: 10,
+                totalLength: 17,
+                example: 'A5 08 08 88 08 78 9A BC DE 30',
+                code: `import struct
+from typing import List, Optional, Tuple
+
+class EnOcean4BSGenerator:
+    """Generator for 4BS (4-Byte Communication) packets - RORG 0xA5"""
+
+    def __init__(self):
+        self.rorg = 0xA5
+
+    def calculate_crc8(self, data: List[int]) -> int:
+        """Calculate CRC8 checksum for EnOcean packets"""
+        crc = 0
+        for byte in data:
+            crc ^= byte
+            for _ in range(8):
+                if crc & 0x80:
+                    crc = (crc << 1) ^ 0x07
+                else:
+                    crc <<= 1
+                crc &= 0xFF
+        return crc
+
+    def create_4bs_packet(self,
+                         db3: int, db2: int, db1: int, db0: int,
+                         sender_id: int,
+                         learn: bool = False) -> List[int]:
+        """
+        Create a 4BS packet with raw data bytes
+
+        Args:
+            db3, db2, db1, db0: Data bytes (transmitted as DB3, DB2, DB1, DB0)
+            sender_id: 32-bit device ID
+            learn: True for teach-in packet (sets LRN bit to 0)
+
+        Returns:
+            Complete ESP3 packet as list of integers
+        """
+        # Convert sender_id to 4 bytes
+        sender_bytes = [
+            (sender_id >> 24) & 0xFF,
+            (sender_id >> 16) & 0xFF,
+            (sender_id >> 8) & 0xFF,
+            sender_id & 0xFF
+        ]
+
+        # Set learn bit in DB0 (bit 3): 0=teach-in, 1=data
+        if learn:
+            db0 &= 0xF7  # Clear bit 3 (learn bit = 0)
+        else:
+            db0 |= 0x08  # Set bit 3 (learn bit = 1)
+
+        # Build data payload (note: DB3 first, DB0 last)
+        data_payload = [self.rorg, db3, db2, db1, db0] + sender_bytes + [0x30]
+
+        # ESP3 Header
+        data_length = len(data_payload)
+        header = [
+            0x55,  # Sync byte
+            (data_length >> 8) & 0xFF,  # Data length MSB
+            data_length & 0xFF,         # Data length LSB
+            0x00,  # Optional length
+            0x01,  # Packet type (RADIO)
+        ]
+
+        # Calculate header CRC
+        header_crc = self.calculate_crc8(header[1:5])
+        header.append(header_crc)
+
+        # Calculate data CRC
+        data_crc = self.calculate_crc8(data_payload)
+
+        # Complete packet
+        return header + data_payload + [data_crc]
+
+    def create_temperature_sensor(self,
+                                 temperature: float,
+                                 sender_id: int,
+                                 temp_range: Tuple[float, float] = (0.0, 40.0),
+                                 learn: bool = False) -> List[int]:
+        """
+        Create 4BS packet for temperature sensor (A5-02-XX family)
+
+        Args:
+            temperature: Temperature in Celsius
+            sender_id: Device ID
+            temp_range: Temperature range tuple (min, max) in Celsius
+            learn: True for teach-in packet
+
+        Returns:
+            Complete ESP3 packet
+        """
+        min_temp, max_temp = temp_range
+
+        # Clamp temperature to range
+        temp = max(min_temp, min(max_temp, temperature))
+
+        # Convert to 8-bit value (0-255)
+        temp_raw = int(255 * (temp - min_temp) / (max_temp - min_temp))
+        temp_raw = max(0, min(255, temp_raw))
+
+        # For A5-02-05 (0-40°C): temperature in DB1 (bits 7-0)
+        # DB3 and DB2 unused (0x00), DB0 has learn bit
+        db3 = 0x00
+        db2 = 0x00
+        db1 = 255 - temp_raw  # Inverted scale for A5-02-05
+        db0 = 0x00  # Learn bit will be set by create_4bs_packet
+
+        return self.create_4bs_packet(db3, db2, db1, db0, sender_id, learn)
+
+    def create_temp_humidity_sensor(self,
+                                   temperature: float,
+                                   humidity: float,
+                                   sender_id: int,
+                                   learn: bool = False) -> List[int]:
+        """
+        Create 4BS packet for temperature/humidity sensor (A5-04-01)
+
+        Args:
+            temperature: Temperature in Celsius (0-40°C)
+            humidity: Relative humidity in % (0-100%)
+            sender_id: Device ID
+            learn: True for teach-in packet
+
+        Returns:
+            Complete ESP3 packet
+        """
+        # Clamp values to valid ranges
+        temp = max(0.0, min(40.0, temperature))
+        hum = max(0.0, min(100.0, humidity))
+
+        # Convert to raw values
+        temp_raw = int(250 * temp / 40.0)  # 0-250 range
+        hum_raw = int(250 * hum / 100.0)   # 0-250 range
+
+        # A5-04-01 format:
+        # DB3: Humidity (250-0, inverted)
+        # DB2: Temperature (0-250)
+        # DB1: Not used
+        # DB0: Learn bit + availability bits
+        db3 = 250 - hum_raw
+        db2 = temp_raw
+        db1 = 0x00
+        db0 = 0x00  # Learn bit set by create_4bs_packet
+
+        return self.create_4bs_packet(db3, db2, db1, db0, sender_id, learn)
+
+    def create_teach_in_packet(self,
+                              func: int,
+                              type_code: int,
+                              manufacturer_id: int,
+                              sender_id: int,
+                              bidirectional: bool = False) -> List[int]:
+        """
+        Create 4BS teach-in packet with EEP information
+
+        Args:
+            func: Function code (0x00-0x3F for 4BS teach-in)
+            type_code: Type code (0x00-0x7F for 4BS teach-in)
+            manufacturer_id: 11-bit manufacturer ID
+            sender_id: Device ID
+            bidirectional: True for bidirectional teach-in
+
+        Returns:
+            Complete ESP3 packet
+        """
+        if func > 0x3F:
+            raise ValueError("FUNC > 0x3F requires UTE teach-in, not 4BS")
+        if type_code > 0x7F:
+            raise ValueError("TYPE > 0x7F requires UTE teach-in, not 4BS")
+
+        # Build teach-in data
+        # DB3: FUNC (bits 7-2) + TYPE MSB (bits 1-0)
+        # DB2: TYPE LSB (bits 7-2) + Manufacturer MSB (bits 1-0)
+        # DB1: Manufacturer LSB
+        # DB0: Learn Type + Learn Bit (0)
+
+        db3 = (func << 2) | ((type_code >> 5) & 0x03)
+        db2 = ((type_code & 0x1F) << 3) | ((manufacturer_id >> 8) & 0x07)
+        db1 = manufacturer_id & 0xFF
+
+        # DB0: Learn Type bit 7 (1=with EEP), other bits for bidirectional
+        db0 = 0x80  # Learn Type = 1 (with EEP)
+        if bidirectional:
+            # Add bidirectional teach-in bits as needed
+            db0 |= 0x00  # Query mode
+
+        return self.create_4bs_packet(db3, db2, db1, db0, sender_id, learn=True)
+
+# Example usage
+if __name__ == "__main__":
+    generator = EnOcean4BSGenerator()
+
+    # Create temperature sensor packet (25.5°C)
+    temp_packet = generator.create_temperature_sensor(
+        temperature=25.5,
+        sender_id=0x789ABCDE
+    )
+
+    print("4BS Temperature Sensor Packet (25.5°C):")
+    print(" ".join([f"{b:02X}" for b in temp_packet]))
+
+    # Create temperature/humidity sensor packet
+    temp_hum_packet = generator.create_temp_humidity_sensor(
+        temperature=23.0,
+        humidity=65.0,
+        sender_id=0x789ABCDE
+    )
+
+    print("\\n4BS Temp/Humidity Packet (23°C, 65%RH):")
+    print(" ".join([f"{b:02X}" for b in temp_hum_packet]))
+
+    # Create teach-in packet for A5-02-05
+    teach_packet = generator.create_teach_in_packet(
+        func=0x02,           # Temperature sensor
+        type_code=0x05,      # 0-40°C range
+        manufacturer_id=0x000,
+        sender_id=0x789ABCDE
+    )
+
+    print("\\n4BS Teach-in Packet (A5-02-05):")
+    print(" ".join([f"{b:02X}" for b in teach_packet]))`,
+
+                usageNotes: [
+                    '4BS packets have 4 bytes of payload data for complex sensors',
+                    'Data bytes transmitted in reverse order: DB3 → DB2 → DB1 → DB0',
+                    'DB0 bit 3 is the learn bit: 0=teach-in, 1=data telegram',
+                    'Teach-in packets can include EEP profile information (FUNC/TYPE)',
+                    'For FUNC > 0x3F or TYPE > 0x7F, use UTE instead of 4BS teach-in'
+                ]
+            },
+            '0xD2': {
+                name: 'VLD - Variable Length Data',
+                description: 'Complex devices with variable payload',
+                dataLength: 19,
+                totalLength: 26,
+                example: 'D2 14 41 00 XX XX XX XX XX XX XX XX XX 78 9A BC DE 30',
+                code: `import struct
+from typing import List, Optional, Dict, Any
+
+class EnOceanVLDGenerator:
+    """Generator for VLD (Variable Length Data) packets - RORG 0xD2"""
+
+    def __init__(self):
+        self.rorg = 0xD2
+
+    def calculate_crc8(self, data: List[int]) -> int:
+        """Calculate CRC8 checksum for EnOcean packets"""
+        crc = 0
+        for byte in data:
+            crc ^= byte
+            for _ in range(8):
+                if crc & 0x80:
+                    crc = (crc << 1) ^ 0x07
+                else:
+                    crc <<= 1
+                crc &= 0xFF
+        return crc
+
+    def create_vld_packet(self,
+                         func: int,
+                         type_code: int,
+                         manufacturer_id: int,
+                         payload_data: List[int],
+                         sender_id: int) -> List[int]:
+        """
+        Create a VLD packet with custom payload
+
+        Args:
+            func: Function code (0x00-0xFF)
+            type_code: Type code (0x00-0xFF)
+            manufacturer_id: 11-bit manufacturer ID
+            payload_data: Variable payload data (1-14 bytes max)
+            sender_id: 32-bit device ID
+
+        Returns:
+            Complete ESP3 packet as list of integers
+        """
+        if len(payload_data) > 14:
+            raise ValueError("VLD payload cannot exceed 14 bytes")
+
+        # Convert sender_id to 4 bytes
+        sender_bytes = [
+            (sender_id >> 24) & 0xFF,
+            (sender_id >> 16) & 0xFF,
+            (sender_id >> 8) & 0xFF,
+            sender_id & 0xFF
+        ]
+
+        # Build VLD data payload
+        # Format: RORG + FUNC + TYPE + MFG_ID + payload_data + sender_id + status
+        vld_header = [self.rorg, func, type_code, manufacturer_id & 0xFF]
+        data_payload = vld_header + payload_data + sender_bytes + [0x30]
+
+        # ESP3 Header
+        data_length = len(data_payload)
+        header = [
+            0x55,  # Sync byte
+            (data_length >> 8) & 0xFF,  # Data length MSB
+            data_length & 0xFF,         # Data length LSB
+            0x00,  # Optional length
+            0x01,  # Packet type (RADIO)
+        ]
+
+        # Calculate header CRC
+        header_crc = self.calculate_crc8(header[1:5])
+        header.append(header_crc)
+
+        # Calculate data CRC
+        data_crc = self.calculate_crc8(data_payload)
+
+        # Complete packet
+        return header + data_payload + [data_crc]
+
+    def create_multi_sensor(self,
+                           temperature: Optional[float] = None,
+                           humidity: Optional[float] = None,
+                           illumination: Optional[int] = None,
+                           pir_status: Optional[bool] = None,
+                           sender_id: int = 0x789ABCDE,
+                           manufacturer_id: int = 0x000) -> List[int]:
+        """
+        Create VLD packet for multi-sensor device (D2-14-41)
+
+        Args:
+            temperature: Temperature in Celsius (-20 to +60°C)
+            humidity: Relative humidity (0-100%)
+            illumination: Illumination in lux (0-1000 lux)
+            pir_status: PIR motion detection status
+            sender_id: Device ID
+            manufacturer_id: Manufacturer ID
+
+        Returns:
+            Complete ESP3 packet
+        """
+        payload = []
+
+        # Temperature (2 bytes, 0.1°C resolution, -20°C to +60°C)
+        if temperature is not None:
+            temp_clamped = max(-20.0, min(60.0, temperature))
+            temp_raw = int((temp_clamped + 20.0) * 10)  # 0-800 range
+            payload.extend([(temp_raw >> 8) & 0xFF, temp_raw & 0xFF])
+        else:
+            payload.extend([0xFF, 0xFF])  # Invalid/not available
+
+        # Humidity (1 byte, 0.5% resolution, 0-100%)
+        if humidity is not None:
+            hum_clamped = max(0.0, min(100.0, humidity))
+            hum_raw = int(hum_clamped * 2)  # 0-200 range
+            payload.append(hum_raw)
+        else:
+            payload.append(0xFF)  # Invalid/not available
+
+        # Illumination (2 bytes, 0-1000 lux)
+        if illumination is not None:
+            illum_clamped = max(0, min(1000, illumination))
+            illum_raw = int(illum_clamped)
+            payload.extend([(illum_raw >> 8) & 0xFF, illum_raw & 0xFF])
+        else:
+            payload.extend([0xFF, 0xFF])  # Invalid/not available
+
+        # PIR Status (1 byte)
+        if pir_status is not None:
+            pir_byte = 0x01 if pir_status else 0x00
+            payload.append(pir_byte)
+        else:
+            payload.append(0xFF)  # Invalid/not available
+
+        # Additional sensor data (pad to 9 bytes total for D2-14-41)
+        while len(payload) < 9:
+            payload.append(0x00)
+
+        return self.create_vld_packet(
+            func=0x14,           # Multi-sensor
+            type_code=0x41,      # Indoor multi-sensor
+            manufacturer_id=manufacturer_id,
+            payload_data=payload,
+            sender_id=sender_id
+        )
+
+    def create_actuator_status(self,
+                              switch_state: bool,
+                              dimmer_value: int,
+                              power_consumption: float,
+                              sender_id: int,
+                              manufacturer_id: int = 0x000) -> List[int]:
+        """
+        Create VLD packet for actuator status (D2-01-XX family)
+
+        Args:
+            switch_state: True if switch is on
+            dimmer_value: Dimmer value (0-100%)
+            power_consumption: Power consumption in watts
+            sender_id: Device ID
+            manufacturer_id: Manufacturer ID
+
+        Returns:
+            Complete ESP3 packet
+        """
+        payload = []
+
+        # Switch state (1 byte)
+        payload.append(0x01 if switch_state else 0x00)
+
+        # Dimmer value (1 byte, 0-100%)
+        dimmer_clamped = max(0, min(100, dimmer_value))
+        payload.append(dimmer_clamped)
+
+        # Power consumption (2 bytes, 0.1W resolution)
+        power_raw = int(power_consumption * 10)
+        payload.extend([(power_raw >> 8) & 0xFF, power_raw & 0xFF])
+
+        # Additional status bytes (example)
+        payload.extend([0x00, 0x00, 0x00])  # Reserved/additional data
+
+        return self.create_vld_packet(
+            func=0x01,           # Electronic switches/dimmers
+            type_code=0x00,      # Basic switch/dimmer
+            manufacturer_id=manufacturer_id,
+            payload_data=payload,
+            sender_id=sender_id
+        )
+
+# Example usage
+if __name__ == "__main__":
+    generator = EnOceanVLDGenerator()
+
+    # Create multi-sensor packet
+    multi_sensor_packet = generator.create_multi_sensor(
+        temperature=22.5,
+        humidity=58.0,
+        illumination=350,
+        pir_status=True,
+        sender_id=0x789ABCDE
+    )
+
+    print("VLD Multi-sensor Packet (D2-14-41):")
+    print(" ".join([f"{b:02X}" for b in multi_sensor_packet]))
+
+    # Create actuator status packet
+    actuator_packet = generator.create_actuator_status(
+        switch_state=True,
+        dimmer_value=75,
+        power_consumption=150.5,
+        sender_id=0x789ABCDE
+    )
+
+    print("\\nVLD Actuator Status Packet (D2-01-00):")
+    print(" ".join([f"{b:02X}" for b in actuator_packet]))
+
+    # Create custom VLD packet
+    custom_packet = generator.create_vld_packet(
+        func=0x32,           # Current clamp
+        type_code=0x02,      # AC current type 2
+        manufacturer_id=0x123,
+        payload_data=[0x12, 0x34, 0x56, 0x78],  # Custom sensor data
+        sender_id=0x789ABCDE
+    )
+
+    print("\\nVLD Custom Packet (D2-32-02):")
+    print(" ".join([f"{b:02X}" for b in custom_packet]))`,
+
+                usageNotes: [
+                    'VLD packets support variable payload length (1-14 bytes)',
+                    'FUNC and TYPE codes are embedded in the data payload',
+                    'Manufacturer ID typically included for device identification',
+                    'Often used with SMART ACK for bidirectional communication',
+                    'Complex sensors can pack multiple measurements in single packet'
+                ]
+            }
+        };
+
+        function showCode(rorg) {
+            // Update active button
+            document.querySelectorAll('.rorg-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            const targetButton = document.querySelector(`button[onclick="showCode('${rorg}')"]`);
+            if (targetButton) {
+                targetButton.classList.add('active');
+            }
+
+            // Generate content
+            const content = document.getElementById('code-content');
+            content.innerHTML = generateCodeContent(rorgCode[rorg]);
+        }
+
+        function generateCodeContent(data) {
+            let usageNotesHTML = '';
+            data.usageNotes.forEach(note => {
+                usageNotesHTML += `<li>${note}</li>`;
+            });
+
+            let exampleOutput = '';
+            if (data.example) {
+                exampleOutput = `<div class="example-output">Example output: ${data.example}</div>`;
+            }
+
+            return `
+                <div class="packet-info">
+                    <h2>${data.name}</h2>
+                    <p>${data.description}</p>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Data Length</div>
+                            <div class="info-value">${data.dataLength} bytes</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Total Length</div>
+                            <div class="info-value">${data.totalLength} bytes</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Example Data</div>
+                            <div class="info-value" style="font-family: monospace; font-size: 12px;">${data.example}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-section">
+                    <h3 class="section-title">
+                        🐍 Python Implementation
+                    </h3>
+                    <p class="section-subtitle">Complete Python class for generating ${data.name} packets</p>
+
+                    <div class="code-block">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="highlight-python">${escapeHtml(data.code)}</code></pre>
+                    </div>
+                    ${exampleOutput}
+                </div>
+
+                <div class="usage-notes">
+                    <h4>📝 Implementation Notes</h4>
+                    <ul>
+                        ${usageNotesHTML}
+                    </ul>
+                </div>
+            `;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.nextElementSibling.textContent;
+            navigator.clipboard.writeText(codeBlock).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function downloadCompleteModule() {
+            const completeModule = generateCompleteModule();
+            const blob = new Blob([completeModule], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'enocean_packet_generator.py';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function generateCompleteModule() {
+            return `#!/usr/bin/env python3
+"""
+EnOcean Packet Generator Module
+Complete implementation for generating all RORG packet types
+
+This module provides Python classes for generating EnOcean ESP3 packets
+for all major RORG types: F6 (RPS), D5 (1BS), D4 (UTE), A5 (4BS), D2 (VLD)
+
+Author: Generated by EnOcean Packet Visualizer
+License: MIT
+"""
+
+import struct
+from typing import List, Optional, Tuple, Dict, Any
+from enum import Enum
+
+class RORGType(Enum):
+    """EnOcean RORG types"""
+    RPS = 0xF6  # Repeated Switch Communication
+    ONE_BS = 0xD5  # 1-Byte Communication
+    UTE = 0xD4  # Universal Teach-In
+    FOUR_BS = 0xA5  # 4-Byte Communication
+    VLD = 0xD2  # Variable Length Data
+
+class EnOceanCRC:
+    """CRC8 calculation for EnOcean packets"""
+
+    @staticmethod
+    def calculate_crc8(data: List[int]) -> int:
+        """Calculate CRC8 checksum for EnOcean packets"""
+        crc = 0
+        for byte in data:
+            crc ^= byte
+            for _ in range(8):
+                if crc & 0x80:
+                    crc = (crc << 1) ^ 0x07
+                else:
+                    crc <<= 1
+                crc &= 0xFF
+        return crc
+
+${Object.values(rorgCode).map(data => data.code).join('\n\n')}
+
+class EnOceanPacketFactory:
+    """Factory class for creating EnOcean packets of all types"""
+
+    def __init__(self):
+        self.rps_generator = EnOceanRPSGenerator()
+        self.one_bs_generator = EnOcean1BSGenerator()
+        self.ute_generator = EnOceanUTEGenerator()
+        self.four_bs_generator = EnOcean4BSGenerator()
+        self.vld_generator = EnOceanVLDGenerator()
+
+    def create_button_packet(self, button: str, sender_id: int, pressed: bool = True) -> List[int]:
+        """Create RPS button packet"""
+        return self.rps_generator.create_button_press(button, sender_id, pressed)
+
+    def create_contact_packet(self, closed: bool, sender_id: int) -> List[int]:
+        """Create 1BS contact sensor packet"""
+        return self.one_bs_generator.create_contact_sensor(closed, sender_id)
+
+    def create_temperature_packet(self, temp: float, sender_id: int) -> List[int]:
+        """Create 4BS temperature sensor packet"""
+        return self.four_bs_generator.create_temperature_sensor(temp, sender_id)
+
+    def create_teach_in_query(self, target_rorg: int, func: int, type_code: int) -> List[int]:
+        """Create UTE teach-in query packet"""
+        return self.ute_generator.create_ute_query(target_rorg, func, type_code)
+
+    def create_multi_sensor_packet(self, temp: float, humidity: float, sender_id: int) -> List[int]:
+        """Create VLD multi-sensor packet"""
+        return self.vld_generator.create_multi_sensor(temp, humidity, sender_id=sender_id)
+
+def packet_to_hex_string(packet: List[int]) -> str:
+    """Convert packet to hex string representation"""
+    return " ".join([f"{b:02X}" for b in packet])
+
+def validate_packet(packet: List[int]) -> bool:
+    """Validate EnOcean packet structure and CRC"""
+    if len(packet) < 7:  # Minimum packet size
+        return False
+
+    if packet[0] != 0x55:  # Sync byte
+        return False
+
+    # Extract lengths
+    data_length = (packet[1] << 8) | packet[2]
+    opt_length = packet[3]
+
+    # Check packet size
+    expected_size = 6 + data_length + opt_length + 1  # Header + Data + Optional + CRC
+    if len(packet) != expected_size:
+        return False
+
+    # Validate header CRC
+    header_crc = EnOceanCRC.calculate_crc8(packet[1:5])
+    if packet[5] != header_crc:
+        return False
+
+    # Validate data CRC
+    data_start = 6
+    data_end = data_start + data_length + opt_length
+    data_crc = EnOceanCRC.calculate_crc8(packet[data_start:data_end])
+    if packet[-1] != data_crc:
+        return False
+
+    return True
+
+# Example usage and testing
+if __name__ == "__main__":
+    factory = EnOceanPacketFactory()
+
+    print("EnOcean Packet Generator Examples")
+    print("=" * 50)
+
+    # RPS Button Press
+    button_packet = factory.create_button_packet('B', 0x789ABCDE, True)
+    print(f"RPS Button B Press: {packet_to_hex_string(button_packet)}")
+    print(f"Valid: {validate_packet(button_packet)}\\n")
+
+    # 1BS Contact Sensor
+    contact_packet = factory.create_contact_packet(True, 0x789ABCDE)
+    print(f"1BS Contact Closed: {packet_to_hex_string(contact_packet)}")
+    print(f"Valid: {validate_packet(contact_packet)}\\n")
+
+    # 4BS Temperature Sensor
+    temp_packet = factory.create_temperature_packet(25.5, 0x789ABCDE)
+    print(f"4BS Temperature (25.5°C): {packet_to_hex_string(temp_packet)}")
+    print(f"Valid: {validate_packet(temp_packet)}\\n")
+
+    # UTE Teach-in Query
+    ute_packet = factory.create_teach_in_query(0xA5, 0x02, 0x05)
+    print(f"UTE Teach-in Query: {packet_to_hex_string(ute_packet)}")
+    print(f"Valid: {validate_packet(ute_packet)}\\n")
+
+    # VLD Multi-sensor
+    vld_packet = factory.create_multi_sensor_packet(23.0, 65.0, 0x789ABCDE)
+    print(f"VLD Multi-sensor: {packet_to_hex_string(vld_packet)}")
+    print(f"Valid: {validate_packet(vld_packet)}\\n")
+`;
+        }
+
+        // Initialize with F6
+        document.addEventListener('DOMContentLoaded', function() {
+            showCode('0xF6');
+        });
+    </script>
+</body>
+</html>

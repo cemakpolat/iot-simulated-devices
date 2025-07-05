@@ -1,0 +1,5 @@
+Timestamp,Device_Name,Device_ID,EEP_Type,Raw_Telegram,Payload,Decoded_Data,Status
+2025-07-05T22:40:57.058561,HumiditySensor_Bathroom,789abc31,A5-10-01,55000a000180a5006b0059789abc3130d0,a5006b0059789abc3130,"{""humidity"": 0.0}",SUCCESS
+2025-07-05T22:40:59.062047,TempHumidity_LivingRoom,789abc32,A5-02-03,55000a000180a50092a90d789abc32300c,a50092a90d789abc3230,"{""humidity"": 0.0, ""temperature"": 22.9}",SUCCESS
+2025-07-05T22:41:01.062017,CO2Sensor_Office,789abc33,A5-09-04,55000a000180a50069002e789abc3330d0,a50069002e789abc3330,"{""co2_ppm"": 824}",SUCCESS
+2025-07-05T22:41:03.061923,LightSensor_ConferenceRoom,789abc34,A5-06-01,55000a000180a5be0000bc789abc3430ce,a5be0000bc789abc3430,"{""light_lux"": 0}",SUCCESS
