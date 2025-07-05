@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnOcean ESP3 Packet Structure Visualizer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .rorg-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .rorg-button {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .rorg-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .rorg-button.active {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .packet-info {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .packet-info h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        .packet-info p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .packet-structure {
+            background: #fff;
+            border: 2px solid #3498db;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .packet-hex {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c3e50;
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            word-break: break-all;
+            text-align: center;
+        }
+
+        .packet-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .packet-table th,
+        .packet-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .packet-table th {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            font-weight: bold;
+        }
+
+        .packet-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .packet-table tr:hover {
+            background-color: #e3f2fd;
+        }
+
+        .header-section {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+
+        .data-section {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+
+        .optional-section {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+
+        .crc-section {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .byte-value {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .correction-note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .correction-note h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(45deg, #16a085, #27ae60);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(22, 160, 133, 0.3);
+        }
+
+        .stat-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+        }
+
+        .stat-card p {
+            margin: 0;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎛️ EnOcean ESP3 Packet Structure Visualizer</h1>
+
+        <div class="rorg-selector">
+            <button class="rorg-button active" onclick="showRORG('0xF6')">0xF6 - RPS</button>
+            <button class="rorg-button" onclick="showRORG('0xD5')">0xD5 - 1BS</button>
+            <button class="rorg-button" onclick="showRORG('0xD4')">0xD4 - UTE</button>
+            <button class="rorg-button" onclick="showRORG('0xA5')">0xA5 - 4BS</button>
+            <button class="rorg-button" onclick="showRORG('0xD2')">0xD2 - VLD</button>
+        </div>
+
+        <div class="summary-stats">
+            <div class="stat-card">
+                <h3>Total Packet Length</h3>
+                <p id="total-length">14 bytes</p>
+            </div>
+            <div class="stat-card">
+                <h3>Data Length</h3>
+                <p id="data-length">7 bytes</p>
+            </div>
+            <div class="stat-card">
+                <h3>Header Length</h3>
+                <p id="header-length">6 bytes</p>
+            </div>
+            <div class="stat-card">
+                <h3>CRC Length</h3>
+                <p id="crc-length">1 byte</p>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color header-section"></div>
+                <span>ESP3 Header</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color data-section"></div>
+                <span>Data Payload</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color optional-section"></div>
+                <span>Optional Data</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color crc-section"></div>
+                <span>CRC Checksum</span>
+            </div>
+        </div>
+
+        <div id="packet-content">
+            <!-- Content will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <script>
+        const rorgData = {
+            '0xF6': {
+                name: 'RPS - Repeated Switch Communication',
+                description: 'Short switch messages from energy harvesting devices like rocker switches and push buttons.',
+                dataLength: 7,
+                totalLength: 14,
+                headerLength: 6,
+                crcLength: 1,
+                example: '55 0007 0001 EB F6 70 789ABCDE 30 08',
+                structure: [
+                    {index: 0, byte: '55', name: 'Sync Byte', meaning: 'Start of ESP3 packet', section: 'header'},
+                    {index: 1, byte: '00', name: 'Data Length MSB', meaning: 'High byte of data length', section: 'header'},
+                    {index: 2, byte: '07', name: 'Data Length LSB', meaning: 'Low byte of data length (7 bytes)', section: 'header'},
+                    {index: 3, byte: '00', name: 'Optional Length', meaning: 'No optional data', section: 'header'},
+                    {index: 4, byte: '01', name: 'Packet Type', meaning: 'Radio packet (0x01)', section: 'header'},
+                    {index: 5, byte: 'EB', name: 'CRC8H', meaning: 'Header checksum', section: 'header'},
+                    {index: 6, byte: 'F6', name: 'RORG', meaning: 'RPS telegram type', section: 'data'},
+                    {index: 7, byte: '70', name: 'Action Byte', meaning: 'Button press data (e.g., Button B pressed)', section: 'data'},
+                    {index: 8, byte: '78', name: 'Sender ID[0]', meaning: 'Device ID byte 0', section: 'data'},
+                    {index: 9, byte: '9A', name: 'Sender ID[1]', meaning: 'Device ID byte 1', section: 'data'},
+                    {index: 10, byte: 'BC', name: 'Sender ID[2]', meaning: 'Device ID byte 2', section: 'data'},
+                    {index: 11, byte: 'DE', name: 'Sender ID[3]', meaning: 'Device ID byte 3', section: 'data'},
+                    {index: 12, byte: '30', name: 'Status', meaning: 'T21=0, NU=1 (Normal message)', section: 'data'},
+                    {index: 13, byte: '08', name: 'CRC8D', meaning: 'Data checksum', section: 'crc'}
+                ],
+                notes: [
+                    'RPS telegrams are used for energy harvesting switches and buttons',
+                    'Very short payload (1 byte) for minimal energy consumption',
+                    'No learn bit - teaching requires manual triggering 3 times within 2 seconds',
+                    'Status byte contains T21 (switch type) and NU (normal/unassigned) bits'
+                ]
+            },
+            '0xD5': {
+                name: '1BS - 1-Byte Communication',
+                description: 'Simple sensor data with 1 byte payload, commonly used for contact sensors.',
+                dataLength: 7,
+                totalLength: 14,
+                headerLength: 6,
+                crcLength: 1,
+                example: '55 0007 0001 EB D5 01 789ABCDE 30 9C',
+                structure: [
+                    {index: 0, byte: '55', name: 'Sync Byte', meaning: 'Start of ESP3 packet', section: 'header'},
+                    {index: 1, byte: '00', name: 'Data Length MSB', meaning: 'High byte of data length', section: 'header'},
+                    {index: 2, byte: '07', name: 'Data Length LSB', meaning: 'Low byte of data length (7 bytes)', section: 'header'},
+                    {index: 3, byte: '00', name: 'Optional Length', meaning: 'No optional data', section: 'header'},
+                    {index: 4, byte: '01', name: 'Packet Type', meaning: 'Radio packet (0x01)', section: 'header'},
+                    {index: 5, byte: 'EB', name: 'CRC8H', meaning: 'Header checksum', section: 'header'},
+                    {index: 6, byte: 'D5', name: 'RORG', meaning: '1BS telegram type', section: 'data'},
+                    {index: 7, byte: '01', name: 'Data Byte', meaning: 'Sensor state (contact closed)', section: 'data'},
+                    {index: 8, byte: '78', name: 'Sender ID[0]', meaning: 'Device ID byte 0', section: 'data'},
+                    {index: 9, byte: '9A', name: 'Sender ID[1]', meaning: 'Device ID byte 1', section: 'data'},
+                    {index: 10, byte: 'BC', name: 'Sender ID[2]', meaning: 'Device ID byte 2', section: 'data'},
+                    {index: 11, byte: 'DE', name: 'Sender ID[3]', meaning: 'Device ID byte 3', section: 'data'},
+                    {index: 12, byte: '30', name: 'Status', meaning: 'LRN=1 (data telegram)', section: 'data'},
+                    {index: 13, byte: '9C', name: 'CRC8D', meaning: 'Data checksum', section: 'crc'}
+                ],
+                notes: [
+                    '1BS telegrams carry 1 byte of sensor data',
+                    'Commonly used for door/window contacts, motion sensors',
+                    'Learn bit in status byte distinguishes data vs. teach-in telegrams',
+                    'Status byte bit 3 (LRN): 0=teach-in, 1=data telegram'
+                ]
+            },
+            '0xD4': {
+                name: 'UTE - Universal Teach-In',
+                description: 'Universal teach-in mechanism for all RORG types, supporting both uni- and bidirectional communication.',
+                dataLength: 7,
+                totalLength: 14,
+                headerLength: 6,
+                crcLength: 1,
+                example: '55 0007 0001 EB D4 80 FF A5 02 05 42',
+                structure: [
+                    {index: 0, byte: '55', name: 'Sync Byte', meaning: 'Start of ESP3 packet', section: 'header'},
+                    {index: 1, byte: '00', name: 'Data Length MSB', meaning: 'High byte of data length', section: 'header'},
+                    {index: 2, byte: '07', name: 'Data Length LSB', meaning: 'Low byte of data length (7 bytes)', section: 'header'},
+                    {index: 3, byte: '00', name: 'Optional Length', meaning: 'No optional data', section: 'header'},
+                    {index: 4, byte: '01', name: 'Packet Type', meaning: 'Radio packet (0x01)', section: 'header'},
+                    {index: 5, byte: 'EB', name: 'CRC8H', meaning: 'Header checksum', section: 'header'},
+                    {index: 6, byte: 'D4', name: 'RORG', meaning: 'UTE telegram type', section: 'data'},
+                    {index: 7, byte: '80', name: 'Communication', meaning: 'Bit 7: Response expected, Bit 6-5: Teach-in request', section: 'data'},
+                    {index: 8, byte: 'FF', name: 'Channel/Mfg ID', meaning: 'Channel 0xFF (all channels), Mfg ID bits', section: 'data'},
+                    {index: 9, byte: 'A5', name: 'RORG Target', meaning: 'Target RORG for teach-in (4BS)', section: 'data'},
+                    {index: 10, byte: '02', name: 'FUNC', meaning: 'Function code (Temperature Sensor)', section: 'data'},
+                    {index: 11, byte: '05', name: 'TYPE', meaning: 'Type code (0-40°C range)', section: 'data'},
+                    {index: 12, byte: '30', name: 'Status', meaning: 'Standard status byte', section: 'data'},
+                    {index: 13, byte: '42', name: 'CRC8D', meaning: 'Data checksum', section: 'crc'}
+                ],
+                notes: [
+                    'UTE enables universal teach-in for all RORG types',
+                    'Supports both unidirectional and bidirectional communication',
+                    'Replaces older teach-in methods for complex devices',
+                    'Command byte defines communication type and teach-in request type',
+                    'Introduced to handle EEPs that don\'t fit SMART ACK principles'
+                ]
+            },
+            '0xA5': {
+                name: '4BS - 4-Byte Communication',
+                description: 'Standard sensor data with 4 bytes payload, used for temperature, humidity, and other multi-parameter sensors.',
+                dataLength: 10,
+                totalLength: 17,
+                headerLength: 6,
+                crcLength: 1,
+                example: '55 000A 0001 F6 A5 08 08 88 08 789ABCDE 30 5E',
+                structure: [
+                    {index: 0, byte: '55', name: 'Sync Byte', meaning: 'Start of ESP3 packet', section: 'header'},
+                    {index: 1, byte: '00', name: 'Data Length MSB', meaning: 'High byte of data length', section: 'header'},
+                    {index: 2, byte: '0A', name: 'Data Length LSB', meaning: 'Low byte of data length (10 bytes)', section: 'header'},
+                    {index: 3, byte: '00', name: 'Optional Length', meaning: 'No optional data', section: 'header'},
+                    {index: 4, byte: '01', name: 'Packet Type', meaning: 'Radio packet (0x01)', section: 'header'},
+                    {index: 5, byte: 'F6', name: 'CRC8H', meaning: 'Header checksum', section: 'header'},
+                    {index: 6, byte: 'A5', name: 'RORG', meaning: '4BS telegram type', section: 'data'},
+                    {index: 7, byte: '08', name: 'Data Byte 3', meaning: 'Temperature data (MSB)', section: 'data'},
+                    {index: 8, byte: '08', name: 'Data Byte 2', meaning: 'Temperature data', section: 'data'},
+                    {index: 9, byte: '88', name: 'Data Byte 1', meaning: 'Humidity data', section: 'data'},
+                    {index: 10, byte: '08', name: 'Data Byte 0', meaning: 'LRN=1 (data telegram)', section: 'data'},
+                    {index: 11, byte: '78', name: 'Sender ID[0]', meaning: 'Device ID byte 0', section: 'data'},
+                    {index: 12, byte: '9A', name: 'Sender ID[1]', meaning: 'Device ID byte 1', section: 'data'},
+                    {index: 13, byte: 'BC', name: 'Sender ID[2]', meaning: 'Device ID byte 2', section: 'data'},
+                    {index: 14, byte: 'DE', name: 'Sender ID[3]', meaning: 'Device ID byte 3', section: 'data'},
+                    {index: 15, byte: '30', name: 'Status', meaning: 'Standard status byte', section: 'data'},
+                    {index: 16, byte: '5E', name: 'CRC8D', meaning: 'Data checksum', section: 'crc'}
+                ],
+                notes: [
+                    '4BS telegrams carry 4 bytes of sensor data',
+                    'Data bytes are transmitted in reverse order (DB3 first, DB0 last)',
+                    'DB0 bit 3 is the learn bit: 0=teach-in, 1=data telegram',
+                    'Commonly used for temperature, humidity, light sensors',
+                    'Supports both unidirectional and bidirectional teach-in'
+                ]
+            },
+            '0xD2': {
+                name: 'VLD - Variable Length Data',
+                description: 'Variable length telegrams for complex devices, supporting 1-14 bytes of payload data.',
+                dataLength: 19,
+                totalLength: 26,
+                headerLength: 6,
+                crcLength: 1,
+                example: '55 0013 0001 F3 D2 14 41 00 XX XX XX XX XX XX XX XX XX 789ABCDE 30 5A',
+                structure: [
+                    {index: 0, byte: '55', name: 'Sync Byte', meaning: 'Start of ESP3 packet', section: 'header'},
+                    {index: 1, byte: '00', name: 'Data Length MSB', meaning: 'High byte of data length', section: 'header'},
+                    {index: 2, byte: '13', name: 'Data Length LSB', meaning: 'Low byte of data length (19 bytes)', section: 'header'},
+                    {index: 3, byte: '00', name: 'Optional Length', meaning: 'No optional data', section: 'header'},
+                    {index: 4, byte: '01', name: 'Packet Type', meaning: 'Radio packet (0x01)', section: 'header'},
+                    {index: 5, byte: 'F3', name: 'CRC8H', meaning: 'Header checksum', section: 'header'},
+                    {index: 6, byte: 'D2', name: 'RORG', meaning: 'VLD telegram type', section: 'data'},
+                    {index: 7, byte: '14', name: 'FUNC', meaning: 'Function code (Multi-sensor)', section: 'data'},
+                    {index: 8, byte: '41', name: 'TYPE', meaning: 'Type code (Indoor sensor)', section: 'data'},
+                    {index: 9, byte: '00', name: 'Manufacturer ID', meaning: 'Manufacturer identifier', section: 'data'},
+                    {index: 10, byte: 'XX', name: 'Sensor Data[0]', meaning: 'Multi-sensor data byte 0', section: 'data'},
+                    {index: 11, byte: 'XX', name: 'Sensor Data[1]', meaning: 'Multi-sensor data byte 1', section: 'data'},
+                    {index: 12, byte: 'XX', name: 'Sensor Data[2]', meaning: 'Multi-sensor data byte 2', section: 'data'},
+                    {index: 13, byte: 'XX', name: 'Sensor Data[3]', meaning: 'Multi-sensor data byte 3', section: 'data'},
+                    {index: 14, byte: 'XX', name: 'Sensor Data[4]', meaning: 'Multi-sensor data byte 4', section: 'data'},
+                    {index: 15, byte: 'XX', name: 'Sensor Data[5]', meaning: 'Multi-sensor data byte 5', section: 'data'},
+                    {index: 16, byte: 'XX', name: 'Sensor Data[6]', meaning: 'Multi-sensor data byte 6', section: 'data'},
+                    {index: 17, byte: 'XX', name: 'Sensor Data[7]', meaning: 'Multi-sensor data byte 7', section: 'data'},
+                    {index: 18, byte: 'XX', name: 'Sensor Data[8]', meaning: 'Multi-sensor data byte 8', section: 'data'},
+                    {index: 19, byte: '78', name: 'Sender ID[0]', meaning: 'Device ID byte 0', section: 'data'},
+                    {index: 20, byte: '9A', name: 'Sender ID[1]', meaning: 'Device ID byte 1', section: 'data'},
+                    {index: 21, byte: 'BC', name: 'Sender ID[2]', meaning: 'Device ID byte 2', section: 'data'},
+                    {index: 22, byte: 'DE', name: 'Sender ID[3]', meaning: 'Device ID byte 3', section: 'data'},
+                    {index: 23, byte: '30', name: 'Status', meaning: 'Standard status byte', section: 'data'},
+                    {index: 24, byte: '5A', name: 'CRC8D', meaning: 'Data checksum', section: 'crc'}
+                ],
+                notes: [
+                    'VLD telegrams support variable payload length (1-14 bytes)',
+                    'FUNC and TYPE bytes are embedded in the data payload',
+                    'Manufacturer ID is typically included in the payload',
+                    'Used for complex multi-sensor devices and actuators',
+                    'Often used with SMART ACK for bidirectional communication'
+                ]
+            }
+        };
+
+        function showRORG(rorg) {
+            // Update active button
+            document.querySelectorAll('.rorg-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Find the button that was clicked
+            const targetButton = document.querySelector(`button[onclick="showRORG('${rorg}')"]`);
+            if (targetButton) {
+                targetButton.classList.add('active');
+            }
+
+            // Update stats
+            const data = rorgData[rorg];
+            document.getElementById('total-length').textContent = data.totalLength + ' bytes';
+            document.getElementById('data-length').textContent = data.dataLength + ' bytes';
+            document.getElementById('header-length').textContent = data.headerLength + ' bytes';
+            document.getElementById('crc-length').textContent = data.crcLength + ' byte';
+
+            // Generate content
+            const content = document.getElementById('packet-content');
+            content.innerHTML = generatePacketContent(data);
+        }
+
+        function generatePacketContent(data) {
+            let html = `
+                <div class="packet-info">
+                    <h2>${data.name}</h2>
+                    <p><strong>Description:</strong> ${data.description}</p>
+                    <p><strong>Data Length:</strong> ${data.dataLength} bytes</p>
+                    <p><strong>Total Packet Length:</strong> ${data.totalLength} bytes</p>
+                </div>
+
+                <div class="packet-structure">
+                    <h3>Example Packet Structure</h3>
+                    <div class="packet-hex">${data.example}</div>
+
+                    <table class="packet-table">
+                        <thead>
+                            <tr>
+                                <th>Index</th>
+                                <th>Byte</th>
+                                <th>Name</th>
+                                <th>Meaning</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            data.structure.forEach(item => {
+                const sectionClass = item.section + '-section';
+                html += `
+                    <tr class="${sectionClass}">
+                        <td>[${item.index}]</td>
+                        <td><span class="byte-value">${item.byte}</span></td>
+                        <td><strong>${item.name}</strong></td>
+                        <td>${item.meaning}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="correction-note">
+                    <h3>📝 Important Notes</h3>
+                    <ul>
+            `;
+
+            data.notes.forEach(note => {
+                html += `<li>${note}</li>`;
+            });
+
+            html += `
+                    </ul>
+                </div>
+            `;
+
+            return html;
+        }
+
+        // Initialize with F6
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial active button
+            document.querySelector('.rorg-button').classList.add('active');
+            showRORG('0xF6');
+        });
+    </script>
+</body>
+</html>

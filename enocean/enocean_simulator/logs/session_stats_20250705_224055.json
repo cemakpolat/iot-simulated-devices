@@ -1,0 +1,16 @@
+{
+  "total_telegrams": 4,
+  "successful_telegrams": 4,
+  "failed_telegrams": 0,
+  "unknown_devices": 0,
+  "checksum_failures": 0,
+  "devices_seen": [
+    "TempHumidity_LivingRoom",
+    "HumiditySensor_Bathroom",
+    "CO2Sensor_Office",
+    "LightSensor_ConferenceRoom"
+  ],
+  "start_time": "2025-07-05T22:40:55.051183",
+  "end_time": "2025-07-05T22:41:05.057895",
+  "session_duration_seconds": 10.006712
+}

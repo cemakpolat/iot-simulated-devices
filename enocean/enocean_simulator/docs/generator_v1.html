@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnOcean Packet PNG Generator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .packet-card {
+            width: 800px;
+            background: white;
+            border: 2px solid #2c3e50;
+            border-radius: 10px;
+            margin: 20px auto;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .packet-header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 15px;
+        }
+
+        .packet-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0 0 5px 0;
+        }
+
+        .packet-subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin: 0;
+        }
+
+        .packet-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+            background: #ecf0f1;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #7f8c8d;
+            margin: 0;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .packet-hex {
+            background: #2c3e50;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            margin: 15px 0;
+            word-break: break-all;
+            line-height: 1.4;
+        }
+
+        .packet-structure {
+            margin: 15px 0;
+        }
+
+        .structure-row {
+            display: flex;
+            align-items: center;
+            border: 1px solid #bdc3c7;
+            border-bottom: none;
+        }
+
+        .structure-row:last-child {
+            border-bottom: 1px solid #bdc3c7;
+        }
+
+        .structure-row:first-child {
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+        }
+
+        .structure-row:last-child {
+            border-bottom-left-radius: 6px;
+            border-bottom-right-radius: 6px;
+        }
+
+        .cell-index {
+            width: 50px;
+            text-align: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: #2c3e50;
+            background: #ecf0f1;
+            padding: 8px 4px;
+            border-right: 1px solid #bdc3c7;
+        }
+
+        .cell-byte {
+            width: 60px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            font-weight: bold;
+            color: #e74c3c;
+            padding: 8px 4px;
+            border-right: 1px solid #bdc3c7;
+        }
+
+        .cell-name {
+            width: 150px;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 8px 8px;
+            border-right: 1px solid #bdc3c7;
+        }
+
+        .cell-meaning {
+            flex: 1;
+            font-size: 10px;
+            padding: 8px 8px;
+        }
+
+        .header-section {
+            background: #fff3cd;
+        }
+
+        .data-section {
+            background: #d4edda;
+        }
+
+        .crc-section {
+            background: #d1ecf1;
+        }
+
+        .packet-notes {
+            margin-top: 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .notes-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #495057;
+            margin: 0 0 8px 0;
+        }
+
+        .notes-list {
+            margin: 0;
+            padding-left: 15px;
+            font-size: 10px;
+            color: #6c757d;
+            line-height: 1.4;
+        }
+
+        .notes-list li {
+            margin-bottom: 3px;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 10px 0;
+            font-size: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            border: 1px solid #bdc3c7;
+        }
+
+        .control-panel {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .generate-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+
+        .generate-btn:hover {
+            background: #2980b9;
+        }
+
+        .download-all-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+
+        .download-all-btn:hover {
+            background: #229954;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; color: #2c3e50; margin-bottom: 30px;">EnOcean Packet Structure PNG Generator</h1>
+
+        <div class="control-panel">
+            <button class="generate-btn" onclick="generatePNG('0xF6')">Generate F6 (RPS)</button>
+            <button class="generate-btn" onclick="generatePNG('0xD5')">Generate D5 (1BS)</button>
+            <button class="generate-btn" onclick="generatePNG('0xD4')">Generate D4 (UTE)</button>
+            <button class="generate-btn" onclick="generatePNG('0xA5')">Generate A5 (4BS)</button>
+            <button class="generate-btn" onclick="generatePNG('0xD2')">Generate D2 (VLD)</button>
+            <br>
+            <button class="download-all-btn" onclick="generateAllPNGs()">📥 Download All Packet Types</button>
+        </div>
+
+        <div id="packet-container">
+            <!-- Packet cards will be generated here -->
+        </div>
+    </div>
+
+    <script>
+        const rorgData = {
+            '0xF6': {
+                name: 'RPS - Repeated Switch Communication',
+                description: 'Energy harvesting switches and buttons with minimal power consumption',
+                dataLength: 7,
+                totalLength: 14,
+                headerLength: 6,
+                crcLength: 1,
+                example: '55 00 07 00 01 EB F6 70 78 9A BC DE 30 08',
+                structure: [
+                    {index: 0, byte: '55', name: 'Sync Byte', meaning: 'Start of ESP3 packet', section: 'header'},
+                    {index: 1, byte: '00', name: 'Data Len MSB', meaning: 'High byte of data length', section: 'header'},
+                    {index: 2, byte: '07', name: 'Data Len LSB', meaning: 'Low byte (7 bytes total)', section: 'header'},
+                    {index: 3, byte: '00', name: 'Opt Length', meaning: 'No optional data', section: 'header'},
+                    {index: 4, byte: '01', name: 'Packet Type', meaning: 'Radio packet (0x01)', section: 'header'},
+                    {index: 5, byte: 'EB', name: 'CRC8H', meaning: 'Header checksum', section: 'header'},
+                    {index: 6, byte: 'F6', name: 'RORG', meaning: 'RPS telegram type', section: 'data'},
+                    {index: 7, byte: '70', name: 'Action Byte', meaning: 'Button press data', section: 'data'},
+                    {index: 8, byte: '78', name: 'Sender ID[0]', meaning: 'Device ID byte 0', section: 'data'},
+                    {index: 9, byte: '9A', name: 'Sender ID[1]', meaning: 'Device ID byte 1', section: 'data'},
+                    {index: 10, byte: 'BC', name: 'Sender ID[2]', meaning: 'Device ID byte 2', section: 'data'},
+                    {index: 11, byte: 'DE', name: 'Sender ID[3]', meaning: 'Device ID byte 3', section: 'data'},
+                    {index: 12, byte: '30', name: 'Status', meaning: 'T21=0, NU=1 (Normal)', section: 'data'},
+                    {index: 13, byte: '08', name: 'CRC8D', meaning: 'Data checksum', section: 'crc'}
+                ],
+                notes: [
+                    'Very short payload (1 byte) for minimal energy consumption',
+                    'No learn bit - teaching requires 3 triggers within 2 seconds',
+                    'Status byte: T21 (switch type), NU (normal/unassigned)',
+                    'Used for energy harvesting switches and push buttons'
+                ]
+            },
+            '0xD5': {
+                name: '1BS - 1-Byte Communication',
+                description: 'Simple sensors with 1 byte of data (contacts, PIR, etc.)',
+                dataLength: 7,
+                totalLength: 14,
+                headerLength: 6,
+                crcLength: 1,
+                example: '55 00 07 00 01 EB D5 01 78 9A BC DE 30 9C',
+                structure: [
+                    {index: 0, byte: '55', name: 'Sync Byte', meaning: 'Start of ESP3 packet', section: 'header'},
+                    {index: 1, byte: '00', name: 'Data Len MSB', meaning: 'High byte of data length', section: 'header'},
+                    {index: 2, byte: '07', name: 'Data Len LSB', meaning: 'Low byte (7 bytes total)', section: 'header'},
+                    {index: 3, byte: '00', name: 'Opt Length', meaning: 'No optional data', section: 'header'},
+                    {index: 4, byte: '01', name: 'Packet Type', meaning: 'Radio packet (0x01)', section: 'header'},
+                    {index: 5, byte: 'EB', name: 'CRC8H', meaning: 'Header checksum', section: 'header'},
+                    {index: 6, byte: 'D5', name: 'RORG', meaning: '1BS telegram type', section: 'data'},
+                    {index: 7, byte: '01', name: 'Data Byte', meaning: 'Sensor state (contact closed)', section: 'data'},
+                    {index: 8, byte: '78', name: 'Sender ID[0]', meaning: 'Device ID byte 0', section: 'data'},
+                    {index: 9, byte: '9A', name: 'Sender ID[1]', meaning: 'Device ID byte 1', section: 'data'},
+                    {index: 10, byte: 'BC', name: 'Sender ID[2]', meaning: 'Device ID byte 2', section: 'data'},
+                    {index: 11, byte: 'DE', name: 'Sender ID[3]', meaning: 'Device ID byte 3', section: 'data'},
+                    {index: 12, byte: '30', name: 'Status', meaning: 'LRN=1 (data telegram)', section: 'data'},
+                    {index: 13, byte: '9C', name: 'CRC8D', meaning: 'Data checksum', section: 'crc'}
+                ],
+                notes: [
+                    'Single byte of sensor data for simple devices',
+                    'Commonly used for door/window contacts, motion sensors',
+                    'Learn bit in status: 0=teach-in, 1=data telegram',
+                    'Status byte bit 3 distinguishes teach-in vs data'
+                ]
+            },
+            '0xD4': {
+                name: 'UTE - Universal Teach-In',
+                description: 'Universal teach-in for all RORG types, uni/bidirectional',
+                dataLength: 7,
+                totalLength: 14,
+                headerLength: 6,
+                crcLength: 1,
+                example: '55 00 07 00 01 EB D4 80 FF A5 02 05 30 42',
+                structure: [
+                    {index: 0, byte: '55', name: 'Sync Byte', meaning: 'Start of ESP3 packet', section: 'header'},
+                    {index: 1, byte: '00', name: 'Data Len MSB', meaning: 'High byte of data length', section: 'header'},
+                    {index: 2, byte: '07', name: 'Data Len LSB', meaning: 'Low byte (7 bytes total)', section: 'header'},
+                    {index: 3, byte: '00', name: 'Opt Length', meaning: 'No optional data', section: 'header'},
+                    {index: 4, byte: '01', name: 'Packet Type', meaning: 'Radio packet (0x01)', section: 'header'},
+                    {index: 5, byte: 'EB', name: 'CRC8H', meaning: 'Header checksum', section: 'header'},
+                    {index: 6, byte: 'D4', name: 'RORG', meaning: 'UTE telegram type', section: 'data'},
+                    {index: 7, byte: '80', name: 'Communication', meaning: 'Response expected, teach-in request', section: 'data'},
+                    {index: 8, byte: 'FF', name: 'Channel/Mfg', meaning: 'All channels, Mfg ID bits', section: 'data'},
+                    {index: 9, byte: 'A5', name: 'RORG Target', meaning: 'Target RORG (4BS)', section: 'data'},
+                    {index: 10, byte: '02', name: 'FUNC', meaning: 'Function (Temperature)', section: 'data'},
+                    {index: 11, byte: '05', name: 'TYPE', meaning: 'Type (0-40°C range)', section: 'data'},
+                    {index: 12, byte: '30', name: 'Status', meaning: 'Standard status byte', section: 'data'},
+                    {index: 13, byte: '42', name: 'CRC8D', meaning: 'Data checksum', section: 'crc'}
+                ],
+                notes: [
+                    'Universal teach-in for all RORG types',
+                    'Supports uni- and bidirectional communication',
+                    'Replaces older teach-in methods for complex devices',
+                    'Command byte defines communication and request type'
+                ]
+            },
+            '0xA5': {
+                name: '4BS - 4-Byte Communication',
+                description: 'Multi-parameter sensors (temperature, humidity, light, etc.)',
+                dataLength: 10,
+                totalLength: 17,
+                headerLength: 6,
+                crcLength: 1,
+                example: '55 00 0A 00 01 F6 A5 08 08 88 08 78 9A BC DE 30 5E',
+                structure: [
+                    {index: 0, byte: '55', name: 'Sync Byte', meaning: 'Start of ESP3 packet', section: 'header'},
+                    {index: 1, byte: '00', name: 'Data Len MSB', meaning: 'High byte of data length', section: 'header'},
+                    {index: 2, byte: '0A', name: 'Data Len LSB', meaning: 'Low byte (10 bytes total)', section: 'header'},
+                    {index: 3, byte: '00', name: 'Opt Length', meaning: 'No optional data', section: 'header'},
+                    {index: 4, byte: '01', name: 'Packet Type', meaning: 'Radio packet (0x01)', section: 'header'},
+                    {index: 5, byte: 'F6', name: 'CRC8H', meaning: 'Header checksum', section: 'header'},
+                    {index: 6, byte: 'A5', name: 'RORG', meaning: '4BS telegram type', section: 'data'},
+                    {index: 7, byte: '08', name: 'Data Byte 3', meaning: 'Temperature data (MSB)', section: 'data'},
+                    {index: 8, byte: '08', name: 'Data Byte 2', meaning: 'Temperature data', section: 'data'},
+                    {index: 9, byte: '88', name: 'Data Byte 1', meaning: 'Humidity data', section: 'data'},
+                    {index: 10, byte: '08', name: 'Data Byte 0', meaning: 'LRN=1 (data telegram)', section: 'data'},
+                    {index: 11, byte: '78', name: 'Sender ID[0]', meaning: 'Device ID byte 0', section: 'data'},
+                    {index: 12, byte: '9A', name: 'Sender ID[1]', meaning: 'Device ID byte 1', section: 'data'},
+                    {index: 13, byte: 'BC', name: 'Sender ID[2]', meaning: 'Device ID byte 2', section: 'data'},
+                    {index: 14, byte: 'DE', name: 'Sender ID[3]', meaning: 'Device ID byte 3', section: 'data'},
+                    {index: 15, byte: '30', name: 'Status', meaning: 'Standard status byte', section: 'data'},
+                    {index: 16, byte: '5E', name: 'CRC8D', meaning: 'Data checksum', section: 'crc'}
+                ],
+                notes: [
+                    '4 bytes of sensor data for complex measurements',
+                    'Data bytes transmitted in reverse order (DB3→DB0)',
+                    'DB0 bit 3 is learn bit: 0=teach-in, 1=data',
+                    'Supports uni- and bidirectional teach-in'
+                ]
+            },
+            '0xD2': {
+                name: 'VLD - Variable Length Data',
+                description: 'Complex devices with variable payload (1-14 bytes)',
+                dataLength: 19,
+                totalLength: 26,
+                headerLength: 6,
+                crcLength: 1,
+                example: '55 00 13 00 01 F3 D2 14 41 00 XX XX XX XX XX XX XX XX XX 78 9A BC DE 30 5A',
+                structure: [
+                    {index: 0, byte: '55', name: 'Sync Byte', meaning: 'Start of ESP3 packet', section: 'header'},
+                    {index: 1, byte: '00', name: 'Data Len MSB', meaning: 'High byte of data length', section: 'header'},
+                    {index: 2, byte: '13', name: 'Data Len LSB', meaning: 'Low byte (19 bytes total)', section: 'header'},
+                    {index: 3, byte: '00', name: 'Opt Length', meaning: 'No optional data', section: 'header'},
+                    {index: 4, byte: '01', name: 'Packet Type', meaning: 'Radio packet (0x01)', section: 'header'},
+                    {index: 5, byte: 'F3', name: 'CRC8H', meaning: 'Header checksum', section: 'header'},
+                    {index: 6, byte: 'D2', name: 'RORG', meaning: 'VLD telegram type', section: 'data'},
+                    {index: 7, byte: '14', name: 'FUNC', meaning: 'Function (Multi-sensor)', section: 'data'},
+                    {index: 8, byte: '41', name: 'TYPE', meaning: 'Type (Indoor sensor)', section: 'data'},
+                    {index: 9, byte: '00', name: 'Manufacturer', meaning: 'Manufacturer ID', section: 'data'},
+                    {index: 10, byte: 'XX', name: 'Sensor Data', meaning: 'Variable sensor data', section: 'data'},
+                    {index: 11, byte: '...', name: '(Variable)', meaning: '1-14 bytes of payload', section: 'data'},
+                    {index: 19, byte: '78', name: 'Sender ID[0]', meaning: 'Device ID byte 0', section: 'data'},
+                    {index: 20, byte: '9A', name: 'Sender ID[1]', meaning: 'Device ID byte 1', section: 'data'},
+                    {index: 21, byte: 'BC', name: 'Sender ID[2]', meaning: 'Device ID byte 2', section: 'data'},
+                    {index: 22, byte: 'DE', name: 'Sender ID[3]', meaning: 'Device ID byte 3', section: 'data'},
+                    {index: 23, byte: '30', name: 'Status', meaning: 'Standard status byte', section: 'data'},
+                    {index: 24, byte: '5A', name: 'CRC8D', meaning: 'Data checksum', section: 'crc'}
+                ],
+                notes: [
+                    'Variable payload length (1-14 bytes)',
+                    'FUNC and TYPE embedded in data payload',
+                    'Manufacturer ID typically included',
+                    'Used with SMART ACK for bidirectional communication'
+                ]
+            }
+        };
+
+        function createPacketCard(rorg) {
+            const data = rorgData[rorg];
+            const card = document.createElement('div');
+            card.className = 'packet-card';
+            card.id = `packet-${rorg.replace('x', '')}`;
+
+            let structureHTML = '';
+            data.structure.forEach(item => {
+                const sectionClass = item.section + '-section';
+                structureHTML += `
+                    <div class="structure-row ${sectionClass}">
+                        <div class="cell-index">[${item.index}]</div>
+                        <div class="cell-byte">${item.byte}</div>
+                        <div class="cell-name">${item.name}</div>
+                        <div class="cell-meaning">${item.meaning}</div>
+                    </div>
+                `;
+            });
+
+            let notesHTML = '';
+            data.notes.forEach(note => {
+                notesHTML += `<li>${note}</li>`;
+            });
+
+            card.innerHTML = `
+                <div class="packet-header">
+                    <div class="packet-title">${data.name}</div>
+                    <div class="packet-subtitle">${data.description}</div>
+                </div>
+
+                <div class="packet-stats">
+                    <div class="stat">
+                        <div class="stat-label">Total Length</div>
+                        <div class="stat-value">${data.totalLength} bytes</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Data Length</div>
+                        <div class="stat-value">${data.dataLength} bytes</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Header</div>
+                        <div class="stat-value">${data.headerLength} bytes</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">CRC</div>
+                        <div class="stat-value">${data.crcLength} byte</div>
+                    </div>
+                </div>
+
+                <div class="packet-hex">${data.example}</div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color header-section"></div>
+                        <span>ESP3 Header</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color data-section"></div>
+                        <span>Data Payload</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color crc-section"></div>
+                        <span>CRC Checksum</span>
+                    </div>
+                </div>
+
+                <div class="packet-structure">
+                    ${structureHTML}
+                </div>
+
+                <div class="packet-notes">
+                    <div class="notes-title">Key Characteristics:</div>
+                    <ul class="notes-list">
+                        ${notesHTML}
+                    </ul>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function generatePNG(rorg) {
+            const container = document.getElementById('packet-container');
+            container.innerHTML = '';
+
+            const card = createPacketCard(rorg);
+            container.appendChild(card);
+
+            // Use html2canvas to convert to PNG
+            setTimeout(() => {
+                html2canvas(card, {
+                    backgroundColor: '#ffffff',
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `EnOcean_${rorg.replace('0x', '')}_Packet_Structure.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                });
+            }, 100);
+        }
+
+        function generateAllPNGs() {
+            const rorgs = ['0xF6', '0xD5', '0xD4', '0xA5', '0xD2'];
+            let currentIndex = 0;
+
+            function generateNext() {
+                if (currentIndex >= rorgs.length) {
+                    alert('All PNG files have been generated and downloaded!');
+                    return;
+                }
+
+                const rorg = rorgs[currentIndex];
+                const container = document.getElementById('packet-container');
+                container.innerHTML = '';
+
+                const card = createPacketCard(rorg);
+                container.appendChild(card);
+
+                setTimeout(() => {
+                    html2canvas(card, {
+                        backgroundColor: '#ffffff',
+                        scale: 2,
+                        useCORS: true,
+                        allowTaint: true
+                    }).then(canvas => {
+                        const link = document.createElement('a');
+                        link.download = `EnOcean_${rorg.replace('0x', '')}_Packet_Structure.png`;
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+
+                        currentIndex++;
+                        setTimeout(generateNext, 1000); // Wait 1 second between downloads
+                    });
+                }, 100);
+            }
+
+            generateNext();
+        }
+
+        // Load html2canvas library
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        document.head.appendChild(script);
+    </script>
+</body>
+</html>

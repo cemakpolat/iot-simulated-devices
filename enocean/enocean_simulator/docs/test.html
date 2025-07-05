@@ -1,0 +1,810 @@
+
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OneReview - Create Your Review</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .gradient-accent {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: #667eea; /* Fallback for unsupported browsers */
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .platform-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .platform-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .pulse-glow {
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(240, 147, 251, 0.3);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(240, 147, 251, 0.6);
+                transform: scale(1.02);
+            }
+        }
+
+        .voice-wave {
+            animation: voiceWave 1.5s ease-in-out infinite;
+            width: 4px;
+            background: #ef4444;
+            border-radius: 2px;
+        }
+
+        @keyframes voiceWave {
+            0%, 100% { height: 4px; }
+            50% { height: 20px; }
+        }
+
+        .typing-indicator::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #3b82f6;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Custom button hover effects */
+        .btn-secondary {
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        /* Focus states for accessibility */
+        input:focus, textarea:focus, button:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Smooth transitions for all interactive elements */
+        button, input, textarea, .platform-card {
+            transition: all 0.3s ease;
+        }
+
+        /* Loading spinner animation */
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* Hide elements properly */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Ensure proper stacking */
+        .z-40 {
+            z-index: 40;
+        }
+
+        .z-50 {
+            z-index: 50;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 640px) {
+            .platform-card {
+                margin-bottom: 0.5rem;
+            }
+
+            .voice-wave {
+                width: 3px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .text-xl {
+                font-size: 1.125rem;
+            }
+        }
+
+        /* Better visual hierarchy */
+        .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .shadow-xl {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-white"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"></polygon></svg>
+                    </div>
+                    <span class="text-2xl font-bold gradient-text">OneReview</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    </button>
+                    <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Welcome Section -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">Create Your Review</h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Share your experience with the world. Type, speak, or record - we make it effortless.</p>
+        </div>
+
+        <!-- Product Search/Scanner -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-semibold text-gray-900">What are you reviewing?</h2>
+                <div class="flex space-x-2">
+                    <button id="scanBtn" class="flex items-center space-x-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path></svg>
+                        <span>Scan</span>
+                    </button>
+                    <button id="cameraBtn" class="flex items-center space-x-2 px-4 py-2 bg-green-50 text-green-600 rounded-xl hover:bg-green-100 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+                        <span>Photo</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Product Search -->
+            <div class="relative">
+                <input type="text" id="productSearch" placeholder="Search for a product, service, or place..."
+                       class="w-full px-4 py-4 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg">
+                <button class="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
+                </button>
+            </div>
+
+            <!-- Product Suggestions -->
+            <div id="productSuggestions" class="mt-4 space-y-2 hidden">
+                <div class="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-xl cursor-pointer transition-colors">
+                    <img src="https://via.placeholder.com/48" alt="Product" class="w-12 h-12 rounded-lg object-cover">
+                    <div class="flex-1">
+                        <h3 class="font-medium text-gray-900">iPhone 15 Pro</h3>
+                        <p class="text-sm text-gray-500">Apple • Electronics</p>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-400"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"></polygon></svg>
+                        <span class="text-sm text-gray-600">4.5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review Creation Form -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 mb-8">
+            <!-- Rating Section -->
+            <div class="mb-6">
+                <label class="block text-lg font-medium text-gray-900 mb-3">Your Rating</label>
+                <div class="flex items-center space-x-2">
+                    <div id="starRating" class="flex space-x-1">
+                        <!-- Stars will be generated by JavaScript -->
+                    </div>
+                    <span id="ratingText" class="ml-3 text-lg font-medium text-gray-600">Select a rating</span>
+                </div>
+            </div>
+
+            <!-- Review Title -->
+            <div class="mb-6">
+                <label class="block text-lg font-medium text-gray-900 mb-3">Review Title</label>
+                <input type="text" id="reviewTitle" placeholder="Summarize your experience in a few words..."
+                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg">
+                <div class="mt-2 flex items-center space-x-2">
+                    <div class="h-1 bg-gray-200 rounded-full flex-1">
+                        <div id="titleProgress" class="h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <span class="text-sm text-gray-500">AI suggests: Clear and specific</span>
+                </div>
+            </div>
+
+            <!-- Multi-Modal Input Section -->
+            <div class="mb-6">
+                <label class="block text-lg font-medium text-gray-900 mb-3">Share Your Experience</label>
+
+                <!-- Input Method Tabs -->
+                <div class="flex space-x-1 bg-gray-100 rounded-xl p-1 mb-4">
+                    <button id="typeTab" class="flex-1 flex items-center justify-center space-x-2 px-4 py-2 rounded-lg bg-white shadow-sm text-blue-600 font-medium transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+                        <span>Type</span>
+                    </button>
+                    <button id="voiceTab" class="flex-1 flex items-center justify-center space-x-2 px-4 py-2 rounded-lg text-gray-600 hover:text-gray-900 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+                        <span>Voice</span>
+                    </button>
+                    <button id="videoTab" class="flex-1 flex items-center justify-center space-x-2 px-4 py-2 rounded-lg text-gray-600 hover:text-gray-900 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"></path><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                        <span>Video</span>
+                    </button>
+                </div>
+
+                <!-- Text Input Panel -->
+                <div id="textPanel" class="input-panel">
+                    <div class="relative">
+                        <textarea id="reviewText" rows="6" placeholder="Tell us about your experience... What did you like? What could be improved?"
+                                class="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg resize-none"></textarea>
+                        <div class="absolute bottom-3 right-3 flex items-center space-x-3">
+                            <div class="flex items-center space-x-2 text-sm text-gray-500">
+                                <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                                <span>AI Writing Assistant</span>
+                            </div>
+                            <div class="text-sm text-gray-400" id="characterCount">0/2000</div>
+                        </div>
+                    </div>
+
+                    <!-- AI Suggestions -->
+                    <div id="aiSuggestions" class="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-blue-900 mb-2">AI Suggestions</h4>
+                                <div class="space-y-2">
+                                    <button class="text-left w-full p-2 hover:bg-blue-100 rounded-lg text-sm text-blue-800 transition-colors">
+                                        "Consider mentioning the product's durability and value for money"
+                                    </button>
+                                    <button class="text-left w-full p-2 hover:bg-blue-100 rounded-lg text-sm text-blue-800 transition-colors">
+                                        "Add details about customer service experience"
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Voice Input Panel -->
+                <div id="voicePanel" class="input-panel hidden">
+                    <div class="text-center py-8">
+                        <div id="voiceRecorder" class="inline-flex flex-col items-center">
+                            <button id="recordBtn" class="w-24 h-24 gradient-accent rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all pulse-glow mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+                            </button>
+                            <p class="text-lg font-medium text-gray-900 mb-2">Tap to start recording</p>
+                            <p class="text-sm text-gray-500">Speak naturally - we'll convert it to text</p>
+                        </div>
+
+                        <!-- Recording State -->
+                        <div id="recordingState" class="hidden">
+                            <div class="flex items-center justify-center space-x-2 mb-4">
+                                <div class="voice-wave"></div>
+                                <div class="voice-wave" style="animation-delay: 0.1s"></div>
+                                <div class="voice-wave" style="animation-delay: 0.2s"></div>
+                                <div class="voice-wave" style="animation-delay: 0.3s"></div>
+                                <div class="voice-wave" style="animation-delay: 0.4s"></div>
+                            </div>
+                            <p class="text-lg font-medium text-red-600 mb-2">Recording... <span id="recordingTime">00:05</span></p>
+                            <button id="stopRecordBtn" class="px-6 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors">
+                                Stop Recording
+                            </button>
+                        </div>
+
+                        <!-- Transcription -->
+                        <div id="transcription" class="hidden mt-6 p-4 bg-gray-50 rounded-xl">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-medium text-gray-900">Transcription</h4>
+                                <button class="text-sm text-blue-600 hover:text-blue-800">Edit</button>
+                            </div>
+                            <p class="text-gray-700 typing-indicator">This product exceeded my expectations...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Input Panel -->
+                <div id="videoPanel" class="input-panel hidden">
+                    <div class="text-center py-8">
+                        <div class="w-full max-w-md mx-auto">
+                            <div class="aspect-video bg-gray-900 rounded-xl mb-4 relative overflow-hidden">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <button id="startVideoBtn" class="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M23 7l-7 5 7 5V7z"></path><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="text-lg font-medium text-gray-900 mb-2">Record a video review</p>
+                            <p class="text-sm text-gray-500">Show the product and share your thoughts</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Media Upload -->
+            <div class="mb-6">
+                <label class="block text-lg font-medium text-gray-900 mb-3">Add Photos or Videos</label>
+                <div id="mediaUpload" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-blue-400 hover:bg-blue-50 transition-all cursor-pointer">
+                    <div class="flex flex-col items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400 mb-4"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7,10 12,15 17,10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        <p class="text-lg font-medium text-gray-600 mb-2">Drag and drop your files here</p>
+                        <p class="text-sm text-gray-500 mb-4">or click to browse (max 10 files, 50MB each)</p>
+                        <button class="px-6 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors">
+                            Choose Files
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Publishing Options -->
+            <div class="mb-6">
+                <label class="block text-lg font-medium text-gray-900 mb-3">Where should we publish your review?</label>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="platform-card bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-4 cursor-pointer hover:shadow-lg transition-all">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"></polygon></svg>
+                            </div>
+                            <span class="font-medium text-blue-900">Google</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-blue-700">4.2M reviews</span>
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" checked>
+                        </div>
+                    </div>
+
+                    <div class="platform-card bg-gradient-to-br from-orange-50 to-orange-100 border border-orange-200 rounded-xl p-4 cursor-pointer hover:shadow-lg transition-all">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                            </div>
+                            <span class="font-medium text-orange-900">Amazon</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-orange-700">1.8M reviews</span>
+                            <input type="checkbox" class="w-4 h-4 text-orange-600 rounded" checked>
+                        </div>
+                    </div>
+
+                    <div class="platform-card bg-gradient-to-br from-red-50 to-red-100 border border-red-200 rounded-xl p-4 cursor-pointer hover:shadow-lg transition-all">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg>
+                            </div>
+                            <span class="font-medium text-red-900">Yelp</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-red-700">892K reviews</span>
+                            <input type="checkbox" class="w-4 h-4 text-red-600 rounded">
+                        </div>
+                    </div>
+
+                    <div class="platform-card bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-xl p-4 cursor-pointer hover:shadow-lg transition-all">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+<!--                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M9 12l2 2 4-4"></path><path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"></path><path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"></path><path d="M3 12c0 1 0 3 3 3-->
+<!--                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M9 12l2 2 4-4"></path><circle cx="12" cy="12" r="10"></circle></svg>-->
+                            </div>
+                            <span class="font-medium text-green-900">Trustpilot</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-green-700">2.1M reviews</span>
+                            <input type="checkbox" class="w-4 h-4 text-green-600 rounded">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privacy & Settings -->
+            <div class="mb-8">
+                <label class="block text-lg font-medium text-gray-900 mb-3">Privacy & Preferences</label>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                        <div class="flex items-center space-x-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            <div>
+                                <p class="font-medium text-gray-900">Public Review</p>
+                                <p class="text-sm text-gray-500">Anyone can see this review</p>
+                            </div>
+                        </div>
+                        <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" checked>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                        <div class="flex items-center space-x-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="m22 9-3 3L15 8"></path></svg>
+                            <div>
+                                <p class="font-medium text-gray-900">Verified Purchase</p>
+                                <p class="text-sm text-gray-500">Show proof of purchase badge</p>
+                            </div>
+                        </div>
+                        <input type="checkbox" class="w-4 h-4 text-blue-600 rounded">
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                        <div class="flex items-center space-x-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                            <div>
+                                <p class="font-medium text-gray-900">Engagement Notifications</p>
+                                <p class="text-sm text-gray-500">Get notified when people interact with your review</p>
+                            </div>
+                        </div>
+                        <input type="checkbox" class="w-4 h-4 text-blue-600 rounded" checked>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                <button id="publishBtn" class="flex-1 btn-primary text-white px-8 py-4 rounded-xl font-medium hover:shadow-lg transition-all flex items-center justify-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22,2 15,22 11,13 2,9 22,2"></polygon></svg>
+                    <span>Publish Review</span>
+                </button>
+
+                <button id="saveDraftBtn" class="px-8 py-4 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17,21 17,13 7,13 7,21"></polyline><polyline points="7,3 7,8 15,8"></polyline></svg>
+                    <span>Save Draft</span>
+                </button>
+
+                <button id="previewBtn" class="px-8 py-4 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <span>Preview</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- AI Insights Panel -->
+        <div class="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-6 mb-8">
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="w-10 h-10 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5A2.5 2.5 0 0 1 14.5 2a2.5 2.5 0 0 1 2.5 2.5c0 .51-.15 1-.42 1.42L12 13.5 7.42 5.92C7.15 5.5 7 5.01 7 4.5A2.5 2.5 0 0 1 9.5 2Z"></path></svg>
+                </div>
+                <h3 class="text-xl font-semibold text-white">AI Review Insights</h3>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span class="text-2xl font-bold text-white">92</span>
+                    </div>
+                    <h4 class="font-medium text-white mb-1">Quality Score</h4>
+                    <p class="text-sm text-white text-opacity-80">Well-detailed and helpful</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+                    </div>
+                    <h4 class="font-medium text-white mb-1">Sentiment</h4>
+                    <p class="text-sm text-white text-opacity-80">Positive experience</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span class="text-2xl font-bold text-white">4.2</span>
+                    </div>
+                    <h4 class="font-medium text-white mb-1">Predicted Impact</h4>
+                    <p class="text-sm text-white text-opacity-80">High engagement expected</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Bottom Bar (for mobile view) -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 sm:hidden z-40">
+        <div class="flex space-x-3">
+            <button class="flex-1 btn-primary text-white px-6 py-3 rounded-xl font-medium">
+                Publish Review
+            </button>
+            <button class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17,21 17,13 7,13 7,21"></polyline><polyline points="7,3 7,8 15,8"></polyline></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-8 max-w-sm mx-4 text-center">
+            <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Publishing your review...</h3>
+            <p class="text-sm text-gray-500">We're sharing your experience across platforms</p>
+        </div>
+    </div>
+
+    <script>
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // Tab switching functionality
+            function switchTab(activeTab) {
+                const tabs = ['typeTab', 'voiceTab', 'videoTab'];
+                const panels = ['textPanel', 'voicePanel', 'videoPanel'];
+
+                tabs.forEach(tab => {
+                    const element = document.getElementById(tab);
+                    if (element) {
+                        if (tab === activeTab) {
+                            element.classList.add('bg-white', 'shadow-sm', 'text-blue-600');
+                            element.classList.remove('text-gray-600');
+                        } else {
+                            element.classList.remove('bg-white', 'shadow-sm', 'text-blue-600');
+                            element.classList.add('text-gray-600');
+                        }
+                    }
+                });
+
+                panels.forEach(panel => {
+                    const element = document.getElementById(panel);
+                    if (element) {
+                        if (panel === activeTab.replace('Tab', 'Panel')) {
+                            element.classList.remove('hidden');
+                        } else {
+                            element.classList.add('hidden');
+                        }
+                    }
+                });
+            }
+
+            // Star rating functionality
+            function initStarRating() {
+                const starContainer = document.getElementById('starRating');
+                const ratingText = document.getElementById('ratingText');
+                const ratings = ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+                let currentRating = 0;
+
+                if (!starContainer || !ratingText) return;
+
+                for (let i = 1; i <= 5; i++) {
+                    const star = document.createElement('button');
+                    star.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="star-icon"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"></polygon></svg>`;
+                    star.className = 'text-gray-300 hover:text-yellow-400 transition-colors';
+                    star.addEventListener('click', () => {
+                        currentRating = i;
+                        updateStars();
+                        ratingText.textContent = ratings[i - 1];
+                    });
+                    starContainer.appendChild(star);
+                }
+
+                function updateStars() {
+                    const stars = starContainer.querySelectorAll('button');
+                    stars.forEach((star, index) => {
+                        const svg = star.querySelector('svg');
+                        if (index < currentRating) {
+                            star.className = 'text-yellow-400';
+                            svg.setAttribute('fill', 'currentColor');
+                        } else {
+                            star.className = 'text-gray-300 hover:text-yellow-400 transition-colors';
+                            svg.setAttribute('fill', 'none');
+                        }
+                    });
+                }
+            }
+
+            // Character count and progress tracking
+            function initTextTracking() {
+                const reviewText = document.getElementById('reviewText');
+                const charCount = document.getElementById('characterCount');
+                const titleInput = document.getElementById('reviewTitle');
+                const titleProgress = document.getElementById('titleProgress');
+
+                if (reviewText && charCount) {
+                    reviewText.addEventListener('input', () => {
+                        const count = reviewText.value.length;
+                        charCount.textContent = `${count}/2000`;
+
+                        if (count > 1800) {
+                            charCount.classList.add('text-red-500');
+                        } else {
+                            charCount.classList.remove('text-red-500');
+                        }
+                    });
+                }
+
+                if (titleInput && titleProgress) {
+                    titleInput.addEventListener('input', () => {
+                        const length = titleInput.value.length;
+                        const progress = Math.min((length / 50) * 100, 100);
+                        titleProgress.style.width = progress + '%';
+                    });
+                }
+            }
+
+            // Voice recording simulation
+            function initVoiceRecording() {
+                const recordBtn = document.getElementById('recordBtn');
+                const voiceRecorder = document.getElementById('voiceRecorder');
+                const recordingState = document.getElementById('recordingState');
+                const transcription = document.getElementById('transcription');
+                const stopRecordBtn = document.getElementById('stopRecordBtn');
+                let isRecording = false;
+                let recordingTimer = null;
+
+                if (recordBtn) {
+                    recordBtn.addEventListener('click', () => {
+                        if (!isRecording) {
+                            startRecording();
+                        }
+                    });
+                }
+
+                if (stopRecordBtn) {
+                    stopRecordBtn.addEventListener('click', () => {
+                        stopRecording();
+                    });
+                }
+
+                function startRecording() {
+                    isRecording = true;
+                    if (voiceRecorder) voiceRecorder.classList.add('hidden');
+                    if (recordingState) recordingState.classList.remove('hidden');
+
+                    // Simulate recording timer
+                    let seconds = 0;
+                    recordingTimer = setInterval(() => {
+                        seconds++;
+                        const mins = Math.floor(seconds / 60);
+                        const secs = seconds % 60;
+                        const timerElement = document.getElementById('recordingTime');
+                        if (timerElement) {
+                            timerElement.textContent =
+                                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                        }
+                    }, 1000);
+                }
+
+                function stopRecording() {
+                    isRecording = false;
+                    if (recordingTimer) {
+                        clearInterval(recordingTimer);
+                        recordingTimer = null;
+                    }
+                    if (recordingState) recordingState.classList.add('hidden');
+                    if (transcription) transcription.classList.remove('hidden');
+
+                    // Simulate transcription
+                    setTimeout(() => {
+                        const transcriptionText = transcription.querySelector('p');
+                        if (transcriptionText) {
+                            transcriptionText.classList.remove('typing-indicator');
+                            transcriptionText.textContent = "This product exceeded my expectations. The build quality is outstanding and the customer service was exceptional. I would definitely recommend this to anyone looking for a reliable solution.";
+                        }
+                    }, 2000);
+                }
+            }
+
+            // Search functionality
+            function initProductSearch() {
+                const searchInput = document.getElementById('productSearch');
+                const suggestions = document.getElementById('productSuggestions');
+
+                if (searchInput && suggestions) {
+                    searchInput.addEventListener('input', (e) => {
+                        if (e.target.value.length > 2) {
+                            suggestions.classList.remove('hidden');
+                        } else {
+                            suggestions.classList.add('hidden');
+                        }
+                    });
+                }
+            }
+
+            // Publish button functionality
+            function initPublishButton() {
+                const publishBtn = document.getElementById('publishBtn');
+                const loadingOverlay = document.getElementById('loadingOverlay');
+
+                if (publishBtn && loadingOverlay) {
+                    publishBtn.addEventListener('click', () => {
+                        loadingOverlay.classList.remove('hidden');
+
+                        // Simulate publishing process
+                        setTimeout(() => {
+                            loadingOverlay.classList.add('hidden');
+                            alert('Review published successfully!');
+                        }, 3000);
+                    });
+                }
+            }
+
+            // Tab event listeners
+            const typeTab = document.getElementById('typeTab');
+            const voiceTab = document.getElementById('voiceTab');
+            const videoTab = document.getElementById('videoTab');
+
+            if (typeTab) typeTab.addEventListener('click', () => switchTab('typeTab'));
+            if (voiceTab) voiceTab.addEventListener('click', () => switchTab('voiceTab'));
+            if (videoTab) videoTab.addEventListener('click', () => switchTab('videoTab'));
+
+            // Initialize components
+            initStarRating();
+            initTextTracking();
+            initVoiceRecording();
+            initProductSearch();
+            initPublishButton();
+
+            // Platform card interactions
+            document.querySelectorAll('.platform-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    // Don't toggle if clicking directly on checkbox
+                    if (e.target.type !== 'checkbox') {
+                        const checkbox = card.querySelector('input[type="checkbox"]');
+                        if (checkbox) {
+                            checkbox.checked = !checkbox.checked;
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
