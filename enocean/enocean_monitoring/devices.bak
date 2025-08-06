@@ -15,8 +15,8 @@
       ],
       "interval": 0,
       "first_seen": 1754392351.605611,
-      "last_seen": 1754480460.3468108,
-      "packet_count": 1900
+      "last_seen": 1754480490.3658812,
+      "packet_count": 1901
     },
     "78:9A:BC:80": {
       "name": "device",
@@ -33,8 +33,8 @@
       ],
       "interval": 0,
       "first_seen": 1754392433.654916,
-      "last_seen": 1754480304.265707,
-      "packet_count": 392
+      "last_seen": 1754480462.345131,
+      "packet_count": 393
     },
     "78:9A:BC:32": {
       "name": "temperature sensor",
