@@ -1,0 +1,270 @@
+{
+    "A5-02-01": {
+      "description": "Temperature sensor -40°C to +40°C",
+      "data_length": 4,
+      "capabilities": [
+        "temperature"
+      ],
+      "rorg": "A5"
+    },
+    "A5-02-02": {
+      "description": "Temperature sensor 0°C to +40°C",
+      "data_length": 4,
+      "capabilities": [
+        "temperature"
+      ],
+      "rorg": "A5"
+    },
+    "A5-02-04": {
+      "description": "Temperature and illuminance sensor",
+      "data_length": 4,
+      "capabilities": [
+        "temperature",
+        "illuminance"
+      ],
+      "rorg": "A5"
+    },
+    "A5-02-05": {
+      "description": "Temperature, humidity and illuminance sensor",
+      "data_length": 4,
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "illuminance"
+      ],
+      "rorg": "A5"
+    },
+    "A5-04-01": {
+      "description": "Temperature and humidity sensor",
+      "data_length": 4,
+      "capabilities": [
+        "temperature",
+        "humidity"
+      ],
+      "rorg": "A5"
+    },
+    "A5-04-02": {
+      "description": "Temperature, humidity and acceleration sensor",
+      "data_length": 4,
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "acceleration"
+      ],
+      "rorg": "A5"
+    },
+    "A5-06-01": {
+      "description": "Light sensor",
+      "data_length": 4,
+      "capabilities": [
+        "illuminance"
+      ],
+      "rorg": "A5"
+    },
+    "A5-07-01": {
+      "description": "Motion sensor",
+      "data_length": 4,
+      "capabilities": [
+        "motion"
+      ],
+      "rorg": "A5"
+    },
+    "A5-07-02": {
+      "description": "Motion and temperature sensor",
+      "data_length": 4,
+      "capabilities": [
+        "motion",
+        "temperature"
+      ],
+      "rorg": "A5"
+    },
+    "A5-08-01": {
+      "description": "Accelerometer sensor",
+      "data_length": 4,
+      "capabilities": [
+        "acceleration"
+      ],
+      "rorg": "A5"
+    },
+    "A5-09-01": {
+      "description": "Gas sensor",
+      "data_length": 4,
+      "capabilities": [
+        "gas"
+      ],
+      "rorg": "A5"
+    },
+    "A5-09-04": {
+      "description": "CO2 sensor",
+      "data_length": 4,
+      "capabilities": [
+        "co2"
+      ],
+      "rorg": "A5"
+    },
+    "A5-10-01": {
+      "description": "Humidity sensor",
+      "data_length": 4,
+      "capabilities": [
+        "humidity"
+      ],
+      "rorg": "A5"
+    },
+    "A5-10-02": {
+      "description": "Barometric pressure sensor",
+      "data_length": 4,
+      "capabilities": [
+        "pressure"
+      ],
+      "rorg": "A5"
+    },
+    "A5-10-03": {
+      "description": "Temperature, humidity and barometric sensor",
+      "data_length": 4,
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "pressure"
+      ],
+      "rorg": "A5"
+    },
+    "A5-10-09": {
+      "description": "Rain sensor",
+      "data_length": 4,
+      "capabilities": [
+        "rain"
+      ],
+      "rorg": "A5"
+    },
+    "A5-10-11": {
+      "description": "Temperature, humidity and barometric sensor (extended)",
+      "data_length": 4,
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "pressure"
+      ],
+      "rorg": "A5"
+    },
+    "A5-12-01": {
+      "description": "Smoke detector",
+      "data_length": 4,
+      "capabilities": [
+        "smoke"
+      ],
+      "rorg": "A5"
+    },
+    "A5-12-02": {
+      "description": "Glass break detector",
+      "data_length": 4,
+      "capabilities": [
+        "glass_break"
+      ],
+      "rorg": "A5"
+    },
+    "A5-12-03": {
+      "description": "Vibration detector",
+      "data_length": 4,
+      "capabilities": [
+        "vibration"
+      ],
+      "rorg": "A5"
+    },
+    "A5-13-01": {
+      "description": "Flood detector",
+      "data_length": 4,
+      "capabilities": [
+        "flood"
+      ],
+      "rorg": "A5"
+    },
+    "A5-13-02": {
+      "description": "Soil moisture sensor",
+      "data_length": 4,
+      "capabilities": [
+        "soil_moisture"
+      ],
+      "rorg": "A5"
+    },
+    "F6-02-01": {
+      "description": "Rocker switch",
+      "data_length": 1,
+      "capabilities": [
+        "switch"
+      ],
+      "rorg": "F6"
+    },
+    "F6-02-02": {
+      "description": "Rocker switch (alternative)",
+      "data_length": 1,
+      "capabilities": [
+        "switch"
+      ],
+      "rorg": "F6"
+    },
+    "D5-00-01": {
+      "description": "Contact sensor",
+      "data_length": 1,
+      "capabilities": [
+        "contact"
+      ],
+      "rorg": "D5"
+    },
+    "D2-01-01": {
+      "description": "Electronic switch with energy measurement",
+      "data_length": 8,
+      "capabilities": [
+        "switch",
+        "energy"
+      ],
+      "rorg": "D2"
+    },
+    "D2-01-12": {
+      "description": "Temperature and humidity sensor (VLD)",
+      "data_length": 4,
+      "capabilities": [
+        "temperature",
+        "humidity"
+      ],
+      "rorg": "D2"
+    },
+    "D2-05-00": {
+      "description": "Blind control",
+      "data_length": 3,
+      "capabilities": [
+        "blind"
+      ],
+      "rorg": "D2"
+    },
+    "D2-14-40": {
+      "description": "Multi-sensor without magnet",
+      "data_length": 9,
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "acceleration",
+        "illumination"
+      ],
+      "rorg": "D2"
+    },
+    "D2-14-41": {
+      "description": "Multi-sensor with magnet contact",
+      "data_length": 9,
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "acceleration",
+        "illumination",
+        "magnet_contact"
+      ],
+      "rorg": "D2"
+    },
+    "D4-00-01": {
+      "description": "Universal teach-in",
+      "data_length": 7,
+      "capabilities": [
+        "teach_in"
+      ],
+      "rorg": "D4"
+    }
+  }

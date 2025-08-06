@@ -1,0 +1,178 @@
+{
+  "version": "1.0",
+  "devices": {
+    "78:9A:BC:50": {
+      "name": "a",
+      "eep_profile": "F6-02-01",
+      "device_type": "unknown",
+      "location": "a",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Registered via discovery with EEP F6-02-01",
+      "enabled": true,
+      "capabilities": [
+        "switch"
+      ],
+      "interval": 0,
+      "first_seen": 1754326793.336904,
+      "last_seen": 1754326853.369906,
+      "packet_count": 2
+    },
+    "78:9A:BC:40": {
+      "name": "b",
+      "eep_profile": "A5-02-01",
+      "device_type": "unknown",
+      "location": "b",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Registered via discovery with EEP A5-02-01",
+      "enabled": true,
+      "capabilities": [
+        "temperature"
+      ],
+      "interval": 0,
+      "first_seen": null,
+      "last_seen": null,
+      "packet_count": 0
+    },
+    "78:9A:BC:46": {
+      "name": "c",
+      "eep_profile": "D5-00-01",
+      "device_type": "unknown",
+      "location": "c",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Registered via discovery with EEP D5-00-01",
+      "enabled": true,
+      "capabilities": [
+        "contact"
+      ],
+      "interval": 0,
+      "first_seen": 1754326845.3672168,
+      "last_seen": 1754326873.3793979,
+      "packet_count": 2
+    },
+    "78:9A:BC:3D": {
+      "name": "d",
+      "eep_profile": "A5-02-01",
+      "device_type": "unknown",
+      "location": "d",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Registered via discovery with EEP A5-02-01",
+      "enabled": true,
+      "capabilities": [
+        "temperature"
+      ],
+      "interval": 0,
+      "first_seen": null,
+      "last_seen": null,
+      "packet_count": 0
+    },
+    "78:9A:BC:3E": {
+      "name": "d",
+      "eep_profile": "A5-10-01",
+      "device_type": "unknown",
+      "location": "d",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Registered via discovery with EEP A5-10-01",
+      "enabled": true,
+      "capabilities": [
+        "humidity"
+      ],
+      "interval": 0,
+      "first_seen": null,
+      "last_seen": null,
+      "packet_count": 0
+    },
+    "78:9A:BC:43": {
+      "name": "q",
+      "eep_profile": "A5-02-01",
+      "device_type": "unknown",
+      "location": "q",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Registered via discovery with EEP A5-02-01",
+      "enabled": true,
+      "capabilities": [
+        "temperature"
+      ],
+      "interval": 0,
+      "first_seen": null,
+      "last_seen": null,
+      "packet_count": 0
+    },
+    "78:9A:BC:47": {
+      "name": "d",
+      "eep_profile": "D5-00-01",
+      "device_type": "unknown",
+      "location": "d",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Registered via discovery with EEP D5-00-01",
+      "enabled": true,
+      "capabilities": [
+        "contact"
+      ],
+      "interval": 0,
+      "first_seen": 1754326875.375201,
+      "last_seen": 1754326875.375201,
+      "packet_count": 1
+    },
+    "78:9A:BC:49": {
+      "name": "ww",
+      "eep_profile": "A5-02-01",
+      "device_type": "unknown",
+      "location": "ww",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Registered via discovery with EEP A5-02-01",
+      "enabled": true,
+      "capabilities": [
+        "temperature"
+      ],
+      "interval": 0,
+      "first_seen": null,
+      "last_seen": null,
+      "packet_count": 0
+    }
+  },
+  "locations": {
+    "Unknown": {
+      "building": "Main",
+      "floor": 1,
+      "zone": "general"
+    }
+  },
+  "eep_profiles": {
+    "A5-04-01": {
+      "description": "Temperature and humidity sensor",
+      "capabilities": [
+        "temperature",
+        "humidity"
+      ]
+    },
+    "F6-02-01": {
+      "description": "Rocker switch",
+      "capabilities": [
+        "switch"
+      ]
+    },
+    "D5-00-01": {
+      "description": "Contact sensor",
+      "capabilities": [
+        "contact"
+      ]
+    },
+    "D2-14-40": {
+      "description": "Multi-sensor",
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "contact",
+        "acceleration"
+      ]
+    }
+  }
+}

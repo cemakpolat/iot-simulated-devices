@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnOcean Gateway - Professional IoT Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a'
+                        },
+                        dark: {
+                            50: '#f9fafb',
+                            100: '#f3f4f6',
+                            800: '#1f2937',
+                            900: '#111827',
+                            950: '#0f172a'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'pulse-success': 'pulseSuccess 2s infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        pulseSuccess: {
+                            '0%, 100%': { boxShadow: '0 0 0 0 rgba(34, 197, 94, 0.7)' },
+                            '50%': { boxShadow: '0 0 0 10px rgba(34, 197, 94, 0)' }
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(59, 130, 246, 0.5)' },
+                            '100%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.8)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-effect {
+            backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .gradient-border {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4);
+            background-size: 300% 300%;
+            animation: gradient-shift 3s ease infinite;
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+
+        .status-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-black text-white min-h-screen overflow-x-hidden">
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 z-0">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/10 to-black"></div>
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.02"%3E%3Ccircle cx="30" cy="30" r="1"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div id="app" class="relative z-10" x-data="dashboardApp()">
+        <!-- Navigation Header -->
+        <nav class="glass-effect border-b border-white/10 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <!-- Logo & Title -->
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-microchip text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                                    EnOcean Gateway
+                                </h1>
+                                <p class="text-xs text-gray-400">Professional IoT Management</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Status -->
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2" x-data="{ status: 'healthy' }">
+                            <div class="w-3 h-3 rounded-full"
+                                 :class="status === 'healthy' ? 'bg-green-500 status-pulse' : status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'"></div>
+                            <span class="text-sm font-medium" x-text="status.charAt(0).toUpperCase() + status.slice(1)"></span>
+                        </div>
+
+                        <!-- Notifications -->
+                        <button class="relative p-2 rounded-lg hover:bg-white/10 transition-colors">
+                            <i class="fas fa-bell text-gray-400"></i>
+                            <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs flex items-center justify-center" x-text="notifications.length" x-show="notifications.length > 0"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <template x-for="stat in stats" :key="stat.id">
+                    <div class="glass-effect rounded-xl p-6 metric-card group">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-400 text-sm font-medium" x-text="stat.label"></p>
+                                <p class="text-3xl font-bold text-white mt-1" x-text="stat.value"></p>
+                                <div class="flex items-center mt-2" x-show="stat.trend">
+                                    <i :class="stat.trend > 0 ? 'fas fa-arrow-up text-green-400' : 'fas fa-arrow-down text-red-400'" class="text-xs mr-1"></i>
+                                    <span :class="stat.trend > 0 ? 'text-green-400' : 'text-red-400'" class="text-sm font-medium" x-text="Math.abs(stat.trend) + '%'"></span>
+                                </div>
+                            </div>
+                            <div class="w-12 h-12 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform" :class="stat.iconBg">
+                                <i :class="stat.icon + ' text-xl'"></i>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="glass-effect rounded-xl mb-8">
+                <div class="flex flex-wrap border-b border-white/10">
+                    <template x-for="tab in tabs" :key="tab.id">
+                        <button
+                            @click="activeTab = tab.id"
+                            :class="activeTab === tab.id ? 'border-b-2 border-blue-500 text-blue-400' : 'text-gray-400 hover:text-white'"
+                            class="px-6 py-4 font-medium transition-colors flex items-center space-x-2">
+                            <i :class="tab.icon"></i>
+                            <span x-text="tab.name"></span>
+                            <span x-show="tab.badge" class="ml-2 px-2 py-1 text-xs bg-red-500 text-white rounded-full" x-text="tab.badge"></span>
+                        </button>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="space-y-8">
+                <!-- Devices Tab -->
+                <div x-show="activeTab === 'devices'" class="animate-fade-in">
+                    <div class="glass-effect rounded-xl p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold flex items-center space-x-2">
+                                <i class="fas fa-microchip text-blue-400"></i>
+                                <span>Registered Devices</span>
+                            </h2>
+                            <button @click="refreshDevices()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors flex items-center space-x-2">
+                                <i class="fas fa-sync-alt" :class="{ 'animate-spin': isLoading }"></i>
+                                <span>Refresh</span>
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" x-show="devices.length > 0">
+                            <template x-for="device in devices" :key="device.device_id">
+                                <div class="bg-gray-900/50 rounded-lg p-6 border border-gray-700 hover:border-blue-500/50 transition-colors">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-white" x-text="device.name"></h3>
+                                            <p class="text-gray-400 text-sm" x-text="device.device_id"></p>
+                                        </div>
+                                        <span :class="getStatusBadgeClass(device.status || 'active')" class="px-3 py-1 rounded-full text-xs font-medium" x-text="device.status || 'active'"></span>
+                                    </div>
+
+                                    <div class="space-y-2 mb-4">
+                                        <div class="flex justify-between text-sm">
+                                            <span class="text-gray-400">EEP Profile:</span>
+                                            <span class="text-white" x-text="device.eep_profile"></span>
+                                        </div>
+                                        <div class="flex justify-between text-sm">
+                                            <span class="text-gray-400">Location:</span>
+                                            <span class="text-white" x-text="device.location || 'Not set'"></span>
+                                        </div>
+                                        <div class="flex justify-between text-sm">
+                                            <span class="text-gray-400">Packets:</span>
+                                            <span class="text-white" x-text="device.packet_count || 0"></span>
+                                        </div>
+                                        <div class="flex justify-between text-sm" x-show="device.last_seen">
+                                            <span class="text-gray-400">Last Seen:</span>
+                                            <span class="text-white" x-text="formatTimeAgo(device.last_seen)"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex space-x-2">
+                                        <button @click="testDevice(device.device_id)" class="flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 rounded text-sm transition-colors">
+                                            <i class="fas fa-vial mr-1"></i> Test
+                                        </button>
+                                        <button @click="editDevice(device.device_id)" class="flex-1 px-3 py-2 bg-yellow-600 hover:bg-yellow-700 rounded text-sm transition-colors">
+                                            <i class="fas fa-edit mr-1"></i> Edit
+                                        </button>
+                                        <button @click="removeDevice(device.device_id)" class="flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 rounded text-sm transition-colors">
+                                            <i class="fas fa-trash mr-1"></i> Remove
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div x-show="devices.length === 0" class="text-center py-12">
+                            <i class="fas fa-microchip text-gray-600 text-6xl mb-4"></i>
+                            <h3 class="text-xl font-semibold text-gray-400 mb-2">No Devices Registered</h3>
+                            <p class="text-gray-500 mb-6">Start by adding your first device or use the discovery system</p>
+                            <button @click="activeTab = 'add-device'" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                                Add First Device
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Discovery Tab -->
+                <div x-show="activeTab === 'discovery'" class="animate-fade-in">
+                    <div class="glass-effect rounded-xl p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold flex items-center space-x-2">
+                                <i class="fas fa-search text-purple-400"></i>
+                                <span>Device Discovery</span>
+                            </h2>
+                            <button @click="refreshUnknownDevices()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors flex items-center space-x-2">
+                                <i class="fas fa-sync-alt" :class="{ 'animate-spin': isLoading }"></i>
+                                <span>Scan</span>
+                            </button>
+                        </div>
+
+                        <div class="space-y-6" x-show="unknownDevices.length > 0">
+                            <template x-for="device in unknownDevices" :key="device.device_id">
+                                <div class="bg-gray-900/50 rounded-lg p-6 border border-orange-500/30">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-white flex items-center space-x-2">
+                                                <i class="fas fa-wifi text-orange-400"></i>
+                                                <span x-text="device.device_id"></span>
+                                            </h3>
+                                            <p class="text-gray-400 text-sm">Unknown Device</p>
+                                        </div>
+                                        <span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-xs font-medium">PENDING</span>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
+                                        <div>
+                                            <span class="text-gray-400">First Seen:</span>
+                                            <p class="text-white" x-text="formatDate(device.first_seen)"></p>
+                                        </div>
+                                        <div>
+                                            <span class="text-gray-400">Packet Count:</span>
+                                            <p class="text-white" x-text="device.packet_count || 0"></p>
+                                        </div>
+                                    </div>
+
+                                    <div x-show="device.eep_suggestions && device.eep_suggestions.length > 0" class="mb-4">
+                                        <h4 class="text-sm font-medium text-gray-300 mb-2">EEP Suggestions:</h4>
+                                        <div class="space-y-2">
+                                            <template x-for="suggestion in device.eep_suggestions.slice(0, 3)" :key="suggestion.eep_profile">
+                                                <div class="flex justify-between items-center p-3 bg-gray-800 rounded border border-gray-700">
+                                                    <div>
+                                                        <p class="font-medium text-blue-400" x-text="suggestion.eep_profile"></p>
+                                                        <p class="text-xs text-gray-400" x-text="Math.round((suggestion.confidence || 0.5) * 100) + '% confidence'"></p>
+                                                    </div>
+                                                    <button @click="registerFromSuggestion(device.device_id, suggestion.eep_profile)"
+                                                            class="px-3 py-1 bg-green-600 hover:bg-green-700 rounded text-sm transition-colors">
+                                                        Register
+                                                    </button>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex space-x-2">
+                                        <button @click="showRegisterDialog(device.device_id)" class="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors">
+                                            <i class="fas fa-plus mr-1"></i> Register Manually
+                                        </button>
+                                        <button @click="analyzeDevice(device.device_id)" class="flex-1 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 rounded text-sm transition-colors">
+                                            <i class="fas fa-search mr-1"></i> Re-analyze
+                                        </button>
+                                        <button @click="ignoreDevice(device.device_id)" class="flex-1 px-3 py-2 bg-gray-600 hover:bg-gray-700 rounded text-sm transition-colors">
+                                            <i class="fas fa-times mr-1"></i> Ignore
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div x-show="unknownDevices.length === 0" class="text-center py-12">
+                            <i class="fas fa-search text-gray-600 text-6xl mb-4"></i>
+                            <h3 class="text-xl font-semibold text-gray-400 mb-2">No Unknown Devices</h3>
+                            <p class="text-gray-500 mb-6">Unknown devices will appear here automatically when detected</p>
+                            <button @click="activeTab = 'testing'" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors">
+                                Generate Test Device
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monitoring Tab -->
+                <div x-show="activeTab === 'monitoring'" class="animate-fade-in">
+                    <div class="space-y-6">
+                        <!-- Real-time Metrics -->
+                        <div class="glass-effect rounded-xl p-6">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-2xl font-bold flex items-center space-x-2">
+                                    <i class="fas fa-chart-line text-green-400"></i>
+                                    <span>Real-time Metrics</span>
+                                </h2>
+                                <button @click="refreshMetrics()" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition-colors flex items-center space-x-2">
+                                    <i class="fas fa-sync-alt" :class="{ 'animate-spin': isLoading }"></i>
+                                    <span>Refresh</span>
+                                </button>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" x-show="metrics.length > 0">
+                                <template x-for="metric in metrics" :key="metric.name">
+                                    <div class="bg-gray-900/50 rounded-lg p-6 border border-gray-700">
+                                        <div class="flex justify-between items-start mb-3">
+                                            <h3 class="font-semibold text-white text-sm" x-text="metric.name.replace(/_/g, ' ').toUpperCase()"></h3>
+                                            <span class="text-2xl font-bold text-green-400" x-text="metric.value"></span>
+                                        </div>
+                                        <p class="text-gray-400 text-xs" x-text="metric.description"></p>
+                                        <div class="mt-2 flex items-center">
+                                            <div class="w-full bg-gray-800 rounded-full h-2">
+                                                <div class="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full" :style="`width: ${Math.min(metric.value / 10, 100)}%`"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div x-show="metrics.length === 0" class="text-center py-12">
+                                <i class="fas fa-chart-line text-gray-600 text-6xl mb-4"></i>
+                                <h3 class="text-xl font-semibold text-gray-400 mb-2">No Metrics Available</h3>
+                                <p class="text-gray-500 mb-6">Monitoring data will appear here when available</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Tab -->
+                <div x-show="activeTab === 'health'" class="animate-fade-in">
+                    <div class="space-y-6">
+                        <div class="glass-effect rounded-xl p-6">
+                            <h2 class="text-2xl font-bold flex items-center space-x-2 mb-6">
+                                <i class="fas fa-heartbeat text-red-400"></i>
+                                <span>System Health</span>
+                            </h2>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" x-show="healthChecks.length > 0">
+                                <template x-for="health in healthChecks" :key="health.name">
+                                    <div class="bg-gray-900/50 rounded-lg p-6 border" :class="getHealthBorderClass(health.status)">
+                                        <div class="flex justify-between items-center mb-3">
+                                            <h3 class="font-semibold text-white" x-text="health.name.replace(/_/g, ' ').toUpperCase()"></h3>
+                                            <span :class="getHealthBadgeClass(health.status)" class="px-3 py-1 rounded-full text-xs font-medium" x-text="health.status.toUpperCase()"></span>
+                                        </div>
+                                        <p class="text-gray-400 text-sm" x-text="health.last_check ? 'Last check: ' + formatDate(health.last_check) : 'Never checked'"></p>
+                                        <div x-show="health.error" class="mt-2 p-2 bg-red-900/30 border border-red-700 rounded text-red-400 text-xs" x-text="health.error"></div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div x-show="healthChecks.length === 0" class="text-center py-12">
+                                <i class="fas fa-heartbeat text-gray-600 text-6xl mb-4"></i>
+                                <h3 class="text-xl font-semibold text-gray-400 mb-2">No Health Checks Available</h3>
+                                <p class="text-gray-500 mb-6">Health monitoring data will appear here when available</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Tab -->
+                <div x-show="activeTab === 'performance'" class="animate-fade-in">
+                    <div class="glass-effect rounded-xl p-6">
+                        <h2 class="text-2xl font-bold flex items-center space-x-2 mb-6">
+                            <i class="fas fa-tachometer-alt text-yellow-400"></i>
+                            <span>System Performance</span>
+                        </h2>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <template x-for="perf in performanceMetrics" :key="perf.name">
+                                <div class="bg-gray-900/50 rounded-lg p-6 border border-gray-700">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h3 class="font-semibold text-white" x-text="perf.name"></h3>
+                                        <span class="text-2xl font-bold" :class="getPerformanceColor(perf.value)" x-text="perf.value + '%'"></span>
+                                    </div>
+                                    <div class="w-full bg-gray-800 rounded-full h-3">
+                                        <div class="h-3 rounded-full transition-all duration-500"
+                                             :class="getPerformanceBarClass(perf.value)"
+                                             :style="`width: ${perf.value}%`"></div>
+                                    </div>
+                                    <p class="text-gray-400 text-xs mt-2" x-text="perf.description"></p>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Device Tab -->
+                <div x-show="activeTab === 'add-device'" class="animate-fade-in">
+                    <div class="glass-effect rounded-xl p-6">
+                        <h2 class="text-2xl font-bold flex items-center space-x-2 mb-6">
+                            <i class="fas fa-plus text-blue-400"></i>
+                            <span>Add New Device</span>
+                        </h2>
+
+                        <form @submit.prevent="submitDevice()" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Device ID</label>
+                                    <input x-model="newDevice.device_id" type="text" placeholder="01:23:45:67"
+                                           class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Device Name</label>
+                                    <input x-model="newDevice.name" type="text" placeholder="Kitchen Sensor"
+                                           class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">EEP Profile</label>
+                                    <select x-model="newDevice.eep_profile"
+                                            class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white" required>
+                                        <option value="">Select EEP Profile</option>
+                                        <optgroup label="4-Byte Sensors (A5)">
+                                            <option value="A5-04-01">A5-04-01 - Temperature & Humidity</option>
+                                            <option value="A5-02-05">A5-02-05 - Temperature Only</option>
+                                            <option value="A5-06-01">A5-06-01 - Light Sensor</option>
+                                        </optgroup>
+                                        <optgroup label="Rocker Switches (F6)">
+                                            <option value="F6-02-01">F6-02-01 - 2-Button Switch</option>
+                                            <option value="F6-03-01">F6-03-01 - 4-Button Switch</option>
+                                        </optgroup>
+                                        <optgroup label="Contact Sensors (D5)">
+                                            <option value="D5-00-01">D5-00-01 - Contact Sensor</option>
+                                        </optgroup>
+                                        <optgroup label="Variable Length Data (D2)">
+                                            <option value="D2-14-41">D2-14-41 - Multi Sensor</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Location</label>
+                                    <input x-model="newDevice.location" type="text" placeholder="Kitchen, Living Room"
+                                           class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Manufacturer</label>
+                                    <input x-model="newDevice.manufacturer" type="text" placeholder="EnOcean, Eltako"
+                                           class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Model</label>
+                                    <input x-model="newDevice.model" type="text" placeholder="STM 431J"
+                                           class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Description</label>
+                                <textarea x-model="newDevice.description" rows="3" placeholder="Optional description"
+                                         class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400 resize-none"></textarea>
+                            </div>
+
+                            <div class="flex space-x-4">
+                                <button type="submit" class="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors font-medium">
+                                    <i class="fas fa-plus mr-2"></i>
+                                    Add Device
+                                </button>
+                                <button type="button" @click="clearForm()" class="px-6 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg transition-colors font-medium">
+                                    <i class="fas fa-times mr-2"></i>
+                                    Clear
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Testing Tab -->
+                <div x-show="activeTab === 'testing'" class="animate-fade-in">
+                    <div class="space-y-6">
+                        <!-- Generate Test Devices -->
+                        <div class="glass-effect rounded-xl p-6">
+                            <h2 class="text-2xl font-bold flex items-center space-x-2 mb-6">
+                                <i class="fas fa-flask text-purple-400"></i>
+                                <span>Testing Tools</span>
+                            </h2>
+
+                            <div class="mb-8">
+                                <h3 class="text-lg font-semibold mb-4">Generate Unknown Devices</h3>
+                                <p class="text-gray-400 mb-4">Generate simulated unknown devices to test the discovery system.</p>
+                                <div class="flex flex-wrap gap-3">
+                                    <button @click="simulateUnknownDevice('A5')" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
+                                        <i class="fas fa-thermometer-half mr-2"></i>A5 (4BS) Device
+                                    </button>
+                                    <button @click="simulateUnknownDevice('F6')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                                        <i class="fas fa-toggle-on mr-2"></i>F6 (RPS) Device
+                                    </button>
+                                    <button @click="simulateUnknownDevice('D5')" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg transition-colors">
+                                        <i class="fas fa-door-open mr-2"></i>D5 (1BS) Device
+                                    </button>
+                                    <button @click="simulateUnknownDevice('D2')" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors">
+                                        <i class="fas fa-microchip mr-2"></i>D2 (VLD) Device
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 class="text-lg font-semibold mb-4">Simulate Device Packet</h3>
+                                <p class="text-gray-400 mb-4">Send a specific packet to test device communication and decoding.</p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-300 mb-2">Device ID</label>
+                                        <input x-model="testPacket.device_id" type="text" placeholder="01:23:45:67"
+                                               class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-300 mb-2">Packet Data (hex)</label>
+                                        <input x-model="testPacket.packet_data" type="text" placeholder="A5 00 64 96 08"
+                                               class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400">
+                                    </div>
+                                </div>
+                                <button @click="simulatePacket()" class="mt-4 px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors font-medium">
+                                    <i class="fas fa-paper-plane mr-2"></i>
+                                    Send Packet
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2">
+        <template x-for="toast in notifications" :key="toast.id">
+            <div x-show="toast.show"
+                 x-transition:enter="transform ease-out duration-300 transition"
+                 x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+                 x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
+                 x-transition:leave="transition ease-in duration-100"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="max-w-sm w-full glass-effect shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5">
+                <div class="p-4">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <i :class="getToastIcon(toast.type)" class="text-xl"></i>
+                        </div>
+                        <div class="ml-3 w-0 flex-1 pt-0.5">
+                            <p class="text-sm font-medium text-white" x-text="toast.title"></p>
+                            <p class="mt-1 text-sm text-gray-300" x-text="toast.message"></p>
+                        </div>
+                        <div class="ml-4 flex-shrink-0 flex">
+                            <button @click="removeNotification(toast.id)" class="rounded-md inline-flex text-gray-400 hover:text-gray-300 focus:outline-none">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

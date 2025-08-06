@@ -1,0 +1,178 @@
+{
+  "timestamp": 1754387775.536629,
+  "collection_duration": 27.091547966003418,
+  "counters": {
+    "packets_processed_total": {
+      "value": 0.0,
+      "description": "Total packets processed"
+    },
+    "packets_failed_total": {
+      "value": 0.0,
+      "description": "Total packets that failed processing"
+    },
+    "packets_unknown_total": {
+      "value": 0.0,
+      "description": "Total packets from unknown devices"
+    },
+    "errors_total": {
+      "value": 0.0,
+      "description": "Total errors encountered"
+    },
+    "circuit_breaker_opens_total": {
+      "value": 0.0,
+      "description": "Total circuit breaker opens"
+    },
+    "enocean_packets_processed_total": {
+      "value": 4.0,
+      "description": "Total packets processed"
+    },
+    "enocean_errors_total": {
+      "value": 0.0,
+      "description": "Total errors"
+    }
+  },
+  "gauges": {
+    "devices_registered": {
+      "value": 0.0,
+      "description": "Number of registered devices"
+    },
+    "devices_unknown": {
+      "value": 0.0,
+      "description": "Number of unknown devices"
+    },
+    "devices_active_24h": {
+      "value": 0.0,
+      "description": "Devices active in last 24 hours"
+    },
+    "enocean_devices_registered": {
+      "value": 2.0,
+      "description": "Number of registered devices"
+    },
+    "enocean_devices_unknown": {
+      "value": 38.0,
+      "description": "Number of unknown devices"
+    }
+  },
+  "histograms": {
+    "packet_processing_duration_seconds": {
+      "statistics": {
+        "count": 0,
+        "mean": 0.0,
+        "min": 0,
+        "max": 0,
+        "percentiles": {},
+        "buckets": {}
+      },
+      "description": "Time to process packets"
+    },
+    "discovery_analysis_duration_seconds": {
+      "statistics": {
+        "count": 0,
+        "mean": 0.0,
+        "min": 0,
+        "max": 0,
+        "percentiles": {},
+        "buckets": {}
+      },
+      "description": "Time to analyze unknown packets"
+    },
+    "enocean_packet_processing_duration_seconds": {
+      "statistics": {
+        "count": 1430,
+        "mean": 8.344883685345416e-05,
+        "min": 2.86102294921875e-06,
+        "max": 0.01716923713684082,
+        "percentiles": {
+          "50": 3.1948089599609375e-05,
+          "90": 6.29425048828125e-05,
+          "95": 7.390975952148438e-05,
+          "99": 0.0001437664031982422
+        },
+        "buckets": {
+          "0.1": 1430,
+          "0.5": 0,
+          "1.0": 0,
+          "2.5": 0,
+          "5.0": 0,
+          "10.0": 0,
+          "inf": 0
+        }
+      },
+      "description": "Packet processing time"
+    }
+  },
+  "custom": {
+    "system_cpu_percent": {
+      "latest_value": 9.9,
+      "latest_timestamp": 1754387749.449485,
+      "tags": {},
+      "point_count": 1
+    },
+    "system_memory_percent": {
+      "latest_value": 75.8,
+      "latest_timestamp": 1754387749.4496572,
+      "tags": {},
+      "point_count": 1
+    },
+    "system_memory_available_bytes": {
+      "latest_value": 8326430720.0,
+      "latest_timestamp": 1754387749.449676,
+      "tags": {},
+      "point_count": 1
+    },
+    "system_disk_percent": {
+      "latest_value": 2.277634109123629,
+      "latest_timestamp": 1754387749.449825,
+      "tags": {},
+      "point_count": 1
+    },
+    "system_disk_free_bytes": {
+      "latest_value": 162526679040.0,
+      "latest_timestamp": 1754387749.449837,
+      "tags": {},
+      "point_count": 1
+    },
+    "system_network_bytes_sent": {
+      "latest_value": 2123072512.0,
+      "latest_timestamp": 1754387749.450519,
+      "tags": {},
+      "point_count": 1
+    },
+    "system_network_bytes_recv": {
+      "latest_value": 2540691456.0,
+      "latest_timestamp": 1754387749.4505322,
+      "tags": {},
+      "point_count": 1
+    },
+    "process_cpu_percent": {
+      "latest_value": 3.2,
+      "latest_timestamp": 1754387749.4507608,
+      "tags": {},
+      "point_count": 1
+    },
+    "process_memory_bytes": {
+      "latest_value": 43876352.0,
+      "latest_timestamp": 1754387749.450769,
+      "tags": {},
+      "point_count": 1
+    },
+    "process_memory_percent": {
+      "latest_value": 0.12769699096679688,
+      "latest_timestamp": 1754387749.450817,
+      "tags": {},
+      "point_count": 1
+    },
+    "process_threads": {
+      "latest_value": 7.0,
+      "latest_timestamp": 1754387749.450847,
+      "tags": {},
+      "point_count": 1
+    },
+    "process_open_files": {
+      "latest_value": 16.0,
+      "latest_timestamp": 1754387749.4508832,
+      "tags": {},
+      "point_count": 1
+    }
+  }
+}

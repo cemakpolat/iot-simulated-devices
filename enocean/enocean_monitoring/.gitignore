@@ -1,0 +1,150 @@
+# ==============================================================================
+#  Python .gitignore
+#
+#  Get the latest version from: https://github.com/github/gitignore/blob/main/Python.gitignore
+#  or generate one at: https://www.toptal.com/developers/gitignore/
+# ==============================================================================
+
+# Byte-compiled / optimized / C files
+# ------------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+# C extensions
+# ------------------------------------------------------------------------------
+*.so
+
+
+# Distribution / packaging
+# ------------------------------------------------------------------------------
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+
+# PyInstaller
+# ------------------------------------------------------------------------------
+# Usually these files are created by a PyInstaller build; they are not needed
+# in production.
+*.spec
+
+
+# Installer logs
+# ------------------------------------------------------------------------------
+pip-log.txt
+pip-delete-this-directory.txt
+
+
+# Virtual Environments
+# ------------------------------------------------------------------------------
+# It's good practice to name your venv "venv" or ".venv"
+# If you use a different name, add it here.
+venv/
+.venv/
+env/
+.env/
+ENV/
+.ENV/
+env.bak/
+venv.bak/
+
+
+# Sphinx documentation
+# ------------------------------------------------------------------------------
+docs/_build/
+
+
+# Pytest and coverage
+# ------------------------------------------------------------------------------
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+pytest-report.html
+.tox/
+
+
+# Other tool caches
+# ------------------------------------------------------------------------------
+.mypy_cache/
+.ruff_cache/
+.pytype/
+cython_debug/
+
+
+# IDE / Editor specific files
+# ------------------------------------------------------------------------------
+# VS Code
+.vscode/
+# Don't ignore extensions recommended for the project
+!/.vscode/extensions.json
+# Don't ignore shared settings or launch configs
+!/.vscode/settings.json
+!/.vscode/launch.json
+
+# PyCharm
+.idea/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*~
+
+
+# Secrets and sensitive data
+# ------------------------------------------------------------------------------
+# NEVER commit secrets, API keys, or credentials.
+# Use a template file (e.g., .env.example) to show what variables are needed.
+*.env
+.env.*
+secrets.ini
+secrets.json
+secrets.toml
+# But DO commit the example file
+!*.env.example
+!*.env.template
+
+
+# Logs and Databases
+# ------------------------------------------------------------------------------
+*.log
+*.sqlite3
+*.db
+*.pid
+*.pid.lock
+
+
+# OS-generated files
+# ------------------------------------------------------------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Jupyter Notebook checkpoints
+#-------------------------------------------------------------------------------
+.ipynb_checkpoints
