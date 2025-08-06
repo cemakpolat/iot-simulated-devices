@@ -1,0 +1,3402 @@
+{
+  "78:9A:BC:72": {
+    "device_id": "78:9A:BC:72",
+    "first_seen": 1754326133.2151759,
+    "last_seen": 1754326807.363913,
+    "packet_count": 2,
+    "sample_packets": [
+      "a5397df6ef",
+      "a5930a4dbd"
+    ],
+    "rorg_types": [
+      165
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "A5-02-01",
+        "confidence": 1.0,
+        "reasoning": "Matched capabilities: temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-02-02",
+        "confidence": 1.0,
+        "reasoning": "Matched capabilities: temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-04-01",
+        "confidence": 1.0,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-10-01",
+        "confidence": 1.0,
+        "reasoning": "Matched capabilities: humidity; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-02-05",
+        "confidence": 0.8999999999999999,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-04-02",
+        "confidence": 0.8999999999999999,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-10-03",
+        "confidence": 0.8999999999999999,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-10-11",
+        "confidence": 0.8999999999999999,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-02-04",
+        "confidence": 0.85,
+        "reasoning": "Matched capabilities: temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-07-02",
+        "confidence": 0.85,
+        "reasoning": "Matched capabilities: temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-06-01",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-07-01",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-08-01",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-09-01",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-09-04",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-10-02",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-10-09",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-12-01",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-12-02",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-12-03",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-13-01",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-13-02",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 37.2,
+          "illuminance_lx": 490,
+          "humidity_percent": 22.4,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      }
+    ],
+    "status": "ignored"
+  },
+  "78:9A:BC:74": {
+    "device_id": "78:9A:BC:74",
+    "first_seen": 1754326135.2154272,
+    "last_seen": 1754326809.351018,
+    "packet_count": 2,
+    "sample_packets": [
+      "a5d3e59599",
+      "a556bcebef"
+    ],
+    "rorg_types": [
+      165
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "A5-02-01",
+        "confidence": 1.0,
+        "reasoning": "Matched capabilities: temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-02-02",
+        "confidence": 1.0,
+        "reasoning": "Matched capabilities: temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-04-01",
+        "confidence": 1.0,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-10-01",
+        "confidence": 1.0,
+        "reasoning": "Matched capabilities: humidity; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-02-05",
+        "confidence": 0.8999999999999999,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-04-02",
+        "confidence": 0.8999999999999999,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-10-03",
+        "confidence": 0.8999999999999999,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-10-11",
+        "confidence": 0.8999999999999999,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-02-04",
+        "confidence": 0.85,
+        "reasoning": "Matched capabilities: temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-07-02",
+        "confidence": 0.85,
+        "reasoning": "Matched capabilities: temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-06-01",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-07-01",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-08-01",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-09-01",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-09-04",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-10-02",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-10-09",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-12-01",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-12-02",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-12-03",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-13-01",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "A5-13-02",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity_illuminance_sensor",
+          "temperature_c": 6.7,
+          "illuminance_lx": 898,
+          "humidity_percent": 82.7,
+          "eep_profile": "A5-02-05"
+        },
+        "data_quality": 1.0
+      }
+    ],
+    "status": "ignored"
+  },
+  "78:9A:BC:80": {
+    "device_id": "78:9A:BC:80",
+    "first_seen": 1754326137.204876,
+    "last_seen": 1754326811.347954,
+    "packet_count": 2,
+    "sample_packets": [
+      "d2c7",
+      "d228"
+    ],
+    "rorg_types": [
+      210
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "D2-01-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-01-01 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D2C7"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-01-12",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-01-12 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D2C7"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-05-00",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-05-00 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D2C7"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-14-40",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-14-40 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D2C7"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-14-41",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-14-41 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D2C7"
+        },
+        "data_quality": 0.6
+      }
+    ],
+    "status": "ignored"
+  },
+  "78:9A:BC:82": {
+    "device_id": "78:9A:BC:82",
+    "first_seen": 1754326139.209184,
+    "last_seen": 1754326813.353278,
+    "packet_count": 2,
+    "sample_packets": [
+      "d257",
+      "d290"
+    ],
+    "rorg_types": [
+      210
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "D2-01-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-01-01 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D257"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-01-12",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-01-12 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D257"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-05-00",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-05-00 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D257"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-14-40",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-14-40 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D257"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-14-41",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-14-41 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D257"
+        },
+        "data_quality": 0.6
+      }
+    ],
+    "status": "ignored"
+  },
+  "78:9A:BC:90": {
+    "device_id": "78:9A:BC:90",
+    "first_seen": 1754326141.2050061,
+    "last_seen": 1754326815.3568,
+    "packet_count": 2,
+    "sample_packets": [
+      "d201",
+      "d2a3"
+    ],
+    "rorg_types": [
+      210
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "D2-01-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-01-01 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D201"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-01-12",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-01-12 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D201"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-05-00",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-05-00 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D201"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-14-40",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-14-40 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D201"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-14-41",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-14-41 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D201"
+        },
+        "data_quality": 0.6
+      }
+    ],
+    "status": "ignored"
+  },
+  "78:9A:BC:92": {
+    "device_id": "78:9A:BC:92",
+    "first_seen": 1754326143.209224,
+    "last_seen": 1754326817.358028,
+    "packet_count": 2,
+    "sample_packets": [
+      "d25f",
+      "d22e"
+    ],
+    "rorg_types": [
+      210
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "D2-01-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-01-01 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D25F"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-01-12",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-01-12 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D25F"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-05-00",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-05-00 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D25F"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-14-40",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-14-40 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D25F"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-14-41",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-14-41 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D25F"
+        },
+        "data_quality": 0.6
+      }
+    ],
+    "status": "ignored"
+  },
+  "78:9A:BC:E0": {
+    "device_id": "78:9A:BC:E0",
+    "first_seen": 1754326147.209744,
+    "last_seen": 1754326821.354944,
+    "packet_count": 2,
+    "sample_packets": [
+      "d2011200026e7b00",
+      "d2011200025a8700"
+    ],
+    "rorg_types": [
+      210
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "D2-01-12",
+        "confidence": 1.0,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity",
+          "temperature_c": -13.22,
+          "temperature_f": 8.21,
+          "humidity_percent": 0.0,
+          "eep_profile": "D2-01-12",
+          "debug_raw_values": {
+            "temp_raw": 274,
+            "humidity_raw": 0,
+            "arrangement": "temp:0-1, hum:2"
+          }
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "D2-14-40",
+        "confidence": 0.85,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity",
+          "temperature_c": -13.22,
+          "temperature_f": 8.21,
+          "humidity_percent": 0.0,
+          "eep_profile": "D2-01-12",
+          "debug_raw_values": {
+            "temp_raw": 274,
+            "humidity_raw": 0,
+            "arrangement": "temp:0-1, hum:2"
+          }
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "D2-14-41",
+        "confidence": 0.82,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity",
+          "temperature_c": -13.22,
+          "temperature_f": 8.21,
+          "humidity_percent": 0.0,
+          "eep_profile": "D2-01-12",
+          "debug_raw_values": {
+            "temp_raw": 274,
+            "humidity_raw": 0,
+            "arrangement": "temp:0-1, hum:2"
+          }
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "D2-01-01",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity",
+          "temperature_c": -13.22,
+          "temperature_f": 8.21,
+          "humidity_percent": 0.0,
+          "eep_profile": "D2-01-12",
+          "debug_raw_values": {
+            "temp_raw": 274,
+            "humidity_raw": 0,
+            "arrangement": "temp:0-1, hum:2"
+          }
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "D2-05-00",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "temp_humidity",
+          "temperature_c": -13.22,
+          "temperature_f": 8.21,
+          "humidity_percent": 0.0,
+          "eep_profile": "D2-01-12",
+          "debug_raw_values": {
+            "temp_raw": 274,
+            "humidity_raw": 0,
+            "arrangement": "temp:0-1, hum:2"
+          }
+        },
+        "data_quality": 1.0
+      }
+    ],
+    "status": "ignored"
+  },
+  "78:9A:BC:E1": {
+    "device_id": "78:9A:BC:E1",
+    "first_seen": 1754326149.213778,
+    "last_seen": 1754326823.356417,
+    "packet_count": 2,
+    "sample_packets": [
+      "d27d50",
+      "d22e50"
+    ],
+    "rorg_types": [
+      210
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "D2-01-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-01-01 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D27D50"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-01-12",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-01-12 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D27D50"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-05-00",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-05-00 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D27D50"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-14-40",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-14-40 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D27D50"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-14-41",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-14-41 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D27D50"
+        },
+        "data_quality": 0.6
+      }
+    ],
+    "status": "ignored"
+  },
+  "78:9A:BC:E5": {
+    "device_id": "78:9A:BC:E5",
+    "first_seen": 1754326155.211055,
+    "last_seen": 1754326829.3602822,
+    "packet_count": 2,
+    "sample_packets": [
+      "d286",
+      "d2ee"
+    ],
+    "rorg_types": [
+      210
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "D2-01-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-01-01 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D286"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-01-12",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-01-12 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D286"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-05-00",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-05-00 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D286"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-14-40",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-14-40 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D286"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-14-41",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-14-41 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D286"
+        },
+        "data_quality": 0.6
+      }
+    ],
+    "status": "ignored"
+  },
+  "78:9A:BC:E6": {
+    "device_id": "78:9A:BC:E6",
+    "first_seen": 1754326157.215553,
+    "last_seen": 1754326831.366624,
+    "packet_count": 2,
+    "sample_packets": [
+      "d2b000",
+      "d2df00"
+    ],
+    "rorg_types": [
+      210
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "D2-01-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-01-01 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D2B000"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-01-12",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-01-12 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D2B000"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-05-00",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-05-00 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D2B000"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-14-40",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-14-40 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D2B000"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-14-41",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-14-41 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D2B000"
+        },
+        "data_quality": 0.6
+      }
+    ],
+    "status": "ignored"
+  },
+  "78:9A:BC:45": {
+    "device_id": "78:9A:BC:45",
+    "first_seen": 1754326169.2217011,
+    "last_seen": 1754326871.383473,
+    "packet_count": 5,
+    "sample_packets": [
+      "d508",
+      "d509",
+      "d509",
+      "d509",
+      "d509"
+    ],
+    "rorg_types": [
+      213
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "D5-00-01",
+        "confidence": 0.8,
+        "reasoning": "Matched capabilities: contact; Shows binary state changes typical for contact sensors",
+        "decoded_data": {
+          "type": "contact",
+          "state": "closed",
+          "raw_data": "0x08",
+          "eep_profile": "D5-00-01"
+        },
+        "data_quality": 0.6
+      }
+    ],
+    "status": "ignored"
+  },
+  "78:9A:BC:4A": {
+    "device_id": "78:9A:BC:4A",
+    "first_seen": 1754326175.228523,
+    "last_seen": 1754326877.395917,
+    "packet_count": 5,
+    "sample_packets": [
+      "a5000000ac",
+      "a50000000c",
+      "a50000002a",
+      "a50000001f",
+      "a5000000ec"
+    ],
+    "rorg_types": [
+      165
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "A5-02-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-02-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-02-02",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-02-02 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-02-04",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-02-04 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-02-05",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-02-05 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-04-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-04-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-04-02",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-04-02 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-06-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-06-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-07-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-07-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-07-02",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-07-02 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-08-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-08-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-09-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-09-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-09-04",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-09-04 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-10-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-10-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-10-02",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-10-02 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-10-03",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-10-03 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-10-09",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-10-09 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-10-11",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-10-11 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-12-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-12-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-12-02",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-12-02 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-12-03",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-12-03 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-13-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-13-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-13-02",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-13-02 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      }
+    ],
+    "status": "ignored"
+  },
+  "78:9A:BC:51": {
+    "device_id": "78:9A:BC:51",
+    "first_seen": 1754326181.218685,
+    "last_seen": 1754326883.391467,
+    "packet_count": 4,
+    "sample_packets": [
+      "f600",
+      "f630",
+      "f600",
+      "f650"
+    ],
+    "rorg_types": [
+      246
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "F6-02-01",
+        "confidence": 1.0,
+        "reasoning": "Matched capabilities: switch; Shows button press patterns typical for switches",
+        "decoded_data": {
+          "type": "switch",
+          "pressed": false,
+          "raw_data": "0x00",
+          "action": "released",
+          "button_combination": "released",
+          "button_name": "released",
+          "button_description": "All buttons released",
+          "button_a_pressed": false,
+          "button_b_pressed": false,
+          "button_c_pressed": false,
+          "button_d_pressed": false
+        },
+        "data_quality": 0.8
+      },
+      {
+        "eep_profile": "F6-02-02",
+        "confidence": 1.0,
+        "reasoning": "Matched capabilities: switch; Shows button press patterns typical for switches",
+        "decoded_data": {
+          "type": "switch",
+          "pressed": false,
+          "raw_data": "0x00",
+          "action": "released",
+          "button_combination": "released",
+          "button_name": "released",
+          "button_description": "All buttons released",
+          "button_a_pressed": false,
+          "button_b_pressed": false,
+          "button_c_pressed": false,
+          "button_d_pressed": false
+        },
+        "data_quality": 0.8
+      }
+    ],
+    "status": "ignored"
+  },
+  "78:9A:BC:52": {
+    "device_id": "78:9A:BC:52",
+    "first_seen": 1754326183.223232,
+    "last_seen": 1754326885.381954,
+    "packet_count": 5,
+    "sample_packets": [
+      "f600",
+      "f600",
+      "f610",
+      "f600",
+      "f600"
+    ],
+    "rorg_types": [
+      246
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "F6-02-01",
+        "confidence": 1.0,
+        "reasoning": "Matched capabilities: switch; Shows button press patterns typical for switches",
+        "decoded_data": {
+          "type": "switch",
+          "pressed": false,
+          "raw_data": "0x00",
+          "action": "released",
+          "button_combination": "released",
+          "button_name": "released",
+          "button_description": "All buttons released",
+          "button_a_pressed": false,
+          "button_b_pressed": false,
+          "button_c_pressed": false,
+          "button_d_pressed": false
+        },
+        "data_quality": 0.8
+      },
+      {
+        "eep_profile": "F6-02-02",
+        "confidence": 1.0,
+        "reasoning": "Matched capabilities: switch; Shows button press patterns typical for switches",
+        "decoded_data": {
+          "type": "switch",
+          "pressed": false,
+          "raw_data": "0x00",
+          "action": "released",
+          "button_combination": "released",
+          "button_name": "released",
+          "button_description": "All buttons released",
+          "button_a_pressed": false,
+          "button_b_pressed": false,
+          "button_c_pressed": false,
+          "button_d_pressed": false
+        },
+        "data_quality": 0.8
+      }
+    ],
+    "status": "ignored"
+  },
+  "78:9A:BC:4B": {
+    "device_id": "78:9A:BC:4B",
+    "first_seen": 1754326789.344374,
+    "last_seen": 1754326879.3954,
+    "packet_count": 3,
+    "sample_packets": [
+      "a50015008b",
+      "a5000200df",
+      "a5000f00ad"
+    ],
+    "rorg_types": [
+      165
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "A5-10-01",
+        "confidence": 0.9,
+        "reasoning": "Matched capabilities: humidity; Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-04-01",
+        "confidence": 0.75,
+        "reasoning": "Matched capabilities: humidity; Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-02-05",
+        "confidence": 0.7,
+        "reasoning": "Matched capabilities: humidity; Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-04-02",
+        "confidence": 0.7,
+        "reasoning": "Matched capabilities: humidity; Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-10-03",
+        "confidence": 0.7,
+        "reasoning": "Matched capabilities: humidity; Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-10-11",
+        "confidence": 0.7,
+        "reasoning": "Matched capabilities: humidity; Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-02-01",
+        "confidence": 0.6,
+        "reasoning": "Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-02-02",
+        "confidence": 0.6,
+        "reasoning": "Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-02-04",
+        "confidence": 0.6,
+        "reasoning": "Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-06-01",
+        "confidence": 0.6,
+        "reasoning": "Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-07-01",
+        "confidence": 0.6,
+        "reasoning": "Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-07-02",
+        "confidence": 0.6,
+        "reasoning": "Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-08-01",
+        "confidence": 0.6,
+        "reasoning": "Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-09-01",
+        "confidence": 0.6,
+        "reasoning": "Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-09-04",
+        "confidence": 0.6,
+        "reasoning": "Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-10-02",
+        "confidence": 0.6,
+        "reasoning": "Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-10-09",
+        "confidence": 0.6,
+        "reasoning": "Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-12-01",
+        "confidence": 0.6,
+        "reasoning": "Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-12-02",
+        "confidence": 0.6,
+        "reasoning": "Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-12-03",
+        "confidence": 0.6,
+        "reasoning": "Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-13-01",
+        "confidence": 0.6,
+        "reasoning": "Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      },
+      {
+        "eep_profile": "A5-13-02",
+        "confidence": 0.6,
+        "reasoning": "Contains humidity data",
+        "decoded_data": {
+          "type": "humidity_sensor",
+          "humidity_percent": 8.4,
+          "eep_profile": "A5-10-01"
+        },
+        "data_quality": 0.7
+      }
+    ],
+    "status": "pending"
+  },
+  "78:9A:BC:4C": {
+    "device_id": "78:9A:BC:4C",
+    "first_seen": 1754326791.3398342,
+    "last_seen": 1754326791.3398342,
+    "packet_count": 1,
+    "sample_packets": [
+      "a50000003f"
+    ],
+    "rorg_types": [
+      165
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "A5-02-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-02-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-02-02",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-02-02 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-02-04",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-02-04 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-02-05",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-02-05 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-04-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-04-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-04-02",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-04-02 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-06-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-06-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-07-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-07-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-07-02",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-07-02 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-08-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-08-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-09-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-09-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-09-04",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-09-04 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-10-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-10-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-10-02",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-10-02 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-10-03",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-10-03 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-10-09",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-10-09 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-10-11",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-10-11 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-12-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-12-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-12-02",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-12-02 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-12-03",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-12-03 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-13-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-13-01 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "A5-13-02",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches A5-13-02 format",
+        "decoded_data": {
+          "type": "smoke_detector",
+          "alarm": true,
+          "eep_profile": "A5-12-01"
+        },
+        "data_quality": 0.6
+      }
+    ],
+    "status": "pending"
+  },
+  "78:9A:BC:54": {
+    "device_id": "78:9A:BC:54",
+    "first_seen": 1754326799.3371992,
+    "last_seen": 1754326887.385633,
+    "packet_count": 3,
+    "sample_packets": [
+      "f600",
+      "f600",
+      "f600"
+    ],
+    "rorg_types": [
+      246
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "F6-02-01",
+        "confidence": 1.0,
+        "reasoning": "Matched capabilities: switch; Shows button press patterns typical for switches",
+        "decoded_data": {
+          "type": "switch",
+          "pressed": false,
+          "raw_data": "0x00",
+          "action": "released",
+          "button_combination": "released",
+          "button_name": "released",
+          "button_description": "All buttons released",
+          "button_a_pressed": false,
+          "button_b_pressed": false,
+          "button_c_pressed": false,
+          "button_d_pressed": false
+        },
+        "data_quality": 0.8
+      },
+      {
+        "eep_profile": "F6-02-02",
+        "confidence": 1.0,
+        "reasoning": "Matched capabilities: switch; Shows button press patterns typical for switches",
+        "decoded_data": {
+          "type": "switch",
+          "pressed": false,
+          "raw_data": "0x00",
+          "action": "released",
+          "button_combination": "released",
+          "button_name": "released",
+          "button_description": "All buttons released",
+          "button_a_pressed": false,
+          "button_b_pressed": false,
+          "button_c_pressed": false,
+          "button_d_pressed": false
+        },
+        "data_quality": 0.8
+      }
+    ],
+    "status": "pending"
+  },
+  "78:9A:BC:60": {
+    "device_id": "78:9A:BC:60",
+    "first_seen": 1754326801.3380558,
+    "last_seen": 1754326801.3380558,
+    "packet_count": 1,
+    "sample_packets": [
+      "a5006ab449"
+    ],
+    "rorg_types": [
+      165
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "A5-02-01",
+        "confidence": 0.9,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-02-02",
+        "confidence": 0.9,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-07-01",
+        "confidence": 0.9,
+        "reasoning": "Matched capabilities: motion; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-07-02",
+        "confidence": 0.9,
+        "reasoning": "Matched capabilities: motion, temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-02-04",
+        "confidence": 0.75,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-04-01",
+        "confidence": 0.75,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-02-05",
+        "confidence": 0.7,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-04-02",
+        "confidence": 0.7,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-10-03",
+        "confidence": 0.7,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-10-11",
+        "confidence": 0.7,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-06-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-08-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-09-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-09-04",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-10-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-10-02",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-10-09",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-12-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-12-02",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-12-03",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-13-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-13-02",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 20.8,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      }
+    ],
+    "status": "pending"
+  },
+  "78:9A:BC:62": {
+    "device_id": "78:9A:BC:62",
+    "first_seen": 1754326803.350689,
+    "last_seen": 1754326803.350689,
+    "packet_count": 1,
+    "sample_packets": [
+      "a50087a35f"
+    ],
+    "rorg_types": [
+      165
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "A5-02-01",
+        "confidence": 0.9,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-02-02",
+        "confidence": 0.9,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-07-01",
+        "confidence": 0.9,
+        "reasoning": "Matched capabilities: motion; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-07-02",
+        "confidence": 0.9,
+        "reasoning": "Matched capabilities: motion, temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-02-04",
+        "confidence": 0.75,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-04-01",
+        "confidence": 0.75,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-02-05",
+        "confidence": 0.7,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-04-02",
+        "confidence": 0.7,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-10-03",
+        "confidence": 0.7,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-10-11",
+        "confidence": 0.7,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-06-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-08-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-09-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-09-04",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-10-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-10-02",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-10-09",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-12-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-12-02",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-12-03",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-13-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-13-02",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 26.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      }
+    ],
+    "status": "pending"
+  },
+  "78:9A:BC:70": {
+    "device_id": "78:9A:BC:70",
+    "first_seen": 1754326805.343746,
+    "last_seen": 1754326805.343746,
+    "packet_count": 1,
+    "sample_packets": [
+      "a50073bedb"
+    ],
+    "rorg_types": [
+      165
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "A5-02-01",
+        "confidence": 0.9,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-02-02",
+        "confidence": 0.9,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-07-01",
+        "confidence": 0.9,
+        "reasoning": "Matched capabilities: motion; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-07-02",
+        "confidence": 0.9,
+        "reasoning": "Matched capabilities: motion, temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-02-04",
+        "confidence": 0.75,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-04-01",
+        "confidence": 0.75,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-02-05",
+        "confidence": 0.7,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-04-02",
+        "confidence": 0.7,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-10-03",
+        "confidence": 0.7,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-10-11",
+        "confidence": 0.7,
+        "reasoning": "Matched capabilities: temperature; Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-06-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-08-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-09-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-09-04",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-10-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-10-02",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-10-09",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-12-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-12-02",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-12-03",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-13-01",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      },
+      {
+        "eep_profile": "A5-13-02",
+        "confidence": 0.6,
+        "reasoning": "Contains temperature data",
+        "decoded_data": {
+          "type": "motion_temp_sensor",
+          "motion_detected": true,
+          "temperature_c": 22.5,
+          "eep_profile": "A5-07-02"
+        },
+        "data_quality": 0.7999999999999999
+      }
+    ],
+    "status": "pending"
+  },
+  "78:9A:BC:96": {
+    "device_id": "78:9A:BC:96",
+    "first_seen": 1754326819.3590348,
+    "last_seen": 1754326819.3590348,
+    "packet_count": 1,
+    "sample_packets": [
+      "d2bd"
+    ],
+    "rorg_types": [
+      210
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "D2-01-01",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-01-01 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D2BD"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-01-12",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-01-12 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D2BD"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-05-00",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-05-00 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D2BD"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-14-40",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-14-40 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D2BD"
+        },
+        "data_quality": 0.6
+      },
+      {
+        "eep_profile": "D2-14-41",
+        "confidence": 0.5,
+        "reasoning": "Packet structure matches D2-14-41 format",
+        "decoded_data": {
+          "type": "vld",
+          "error": "short_payload",
+          "raw_data": "D2BD"
+        },
+        "data_quality": 0.6
+      }
+    ],
+    "status": "pending"
+  },
+  "78:9A:BC:E3": {
+    "device_id": "78:9A:BC:E3",
+    "first_seen": 1754326825.367011,
+    "last_seen": 1754326825.367011,
+    "packet_count": 1,
+    "sample_packets": [
+      "d2144100a1dec06470440b6380"
+    ],
+    "rorg_types": [
+      210
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "D2-01-12",
+        "confidence": 1.0,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "multi_sensor",
+          "temperature_c": -13.02,
+          "temperature_f": 8.56,
+          "humidity_percent": 6.3,
+          "illumination_lx": 82862.0,
+          "acceleration_x_g": -2.37,
+          "acceleration_y_g": 1.437,
+          "acceleration_z_g": -1.408,
+          "acceleration_status": 2,
+          "magnet_contact": "closed",
+          "eep_profile": "D2-14-41",
+          "debug_raw_values": {
+            "temp_raw": 276,
+            "humidity_raw": 16,
+            "illumination_raw": 108608,
+            "accel_x_raw": 27,
+            "accel_y_raw": 806,
+            "accel_z_raw": 224,
+            "magnet_raw": 0
+          }
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "D2-14-40",
+        "confidence": 0.85,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "multi_sensor",
+          "temperature_c": -13.02,
+          "temperature_f": 8.56,
+          "humidity_percent": 6.3,
+          "illumination_lx": 82862.0,
+          "acceleration_x_g": -2.37,
+          "acceleration_y_g": 1.437,
+          "acceleration_z_g": -1.408,
+          "acceleration_status": 2,
+          "magnet_contact": "closed",
+          "eep_profile": "D2-14-41",
+          "debug_raw_values": {
+            "temp_raw": 276,
+            "humidity_raw": 16,
+            "illumination_raw": 108608,
+            "accel_x_raw": 27,
+            "accel_y_raw": 806,
+            "accel_z_raw": 224,
+            "magnet_raw": 0
+          }
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "D2-14-41",
+        "confidence": 0.82,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "multi_sensor",
+          "temperature_c": -13.02,
+          "temperature_f": 8.56,
+          "humidity_percent": 6.3,
+          "illumination_lx": 82862.0,
+          "acceleration_x_g": -2.37,
+          "acceleration_y_g": 1.437,
+          "acceleration_z_g": -1.408,
+          "acceleration_status": 2,
+          "magnet_contact": "closed",
+          "eep_profile": "D2-14-41",
+          "debug_raw_values": {
+            "temp_raw": 276,
+            "humidity_raw": 16,
+            "illumination_raw": 108608,
+            "accel_x_raw": 27,
+            "accel_y_raw": 806,
+            "accel_z_raw": 224,
+            "magnet_raw": 0
+          }
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "D2-01-01",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "multi_sensor",
+          "temperature_c": -13.02,
+          "temperature_f": 8.56,
+          "humidity_percent": 6.3,
+          "illumination_lx": 82862.0,
+          "acceleration_x_g": -2.37,
+          "acceleration_y_g": 1.437,
+          "acceleration_z_g": -1.408,
+          "acceleration_status": 2,
+          "magnet_contact": "closed",
+          "eep_profile": "D2-14-41",
+          "debug_raw_values": {
+            "temp_raw": 276,
+            "humidity_raw": 16,
+            "illumination_raw": 108608,
+            "accel_x_raw": 27,
+            "accel_y_raw": 806,
+            "accel_z_raw": 224,
+            "magnet_raw": 0
+          }
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "D2-05-00",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "multi_sensor",
+          "temperature_c": -13.02,
+          "temperature_f": 8.56,
+          "humidity_percent": 6.3,
+          "illumination_lx": 82862.0,
+          "acceleration_x_g": -2.37,
+          "acceleration_y_g": 1.437,
+          "acceleration_z_g": -1.408,
+          "acceleration_status": 2,
+          "magnet_contact": "closed",
+          "eep_profile": "D2-14-41",
+          "debug_raw_values": {
+            "temp_raw": 276,
+            "humidity_raw": 16,
+            "illumination_raw": 108608,
+            "accel_x_raw": 27,
+            "accel_y_raw": 806,
+            "accel_z_raw": 224,
+            "magnet_raw": 0
+          }
+        },
+        "data_quality": 1.0
+      }
+    ],
+    "status": "pending"
+  },
+  "78:9A:BC:E4": {
+    "device_id": "78:9A:BC:E4",
+    "first_seen": 1754326827.366591,
+    "last_seen": 1754326827.366591,
+    "packet_count": 1,
+    "sample_packets": [
+      "d214410099a28056cfe3fd6580"
+    ],
+    "rorg_types": [
+      210
+    ],
+    "eep_suggestions": [
+      {
+        "eep_profile": "D2-01-12",
+        "confidence": 1.0,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "multi_sensor",
+          "temperature_c": -13.02,
+          "temperature_f": 8.56,
+          "humidity_percent": 6.3,
+          "illumination_lx": 32471.0,
+          "acceleration_x_g": -2.405,
+          "acceleration_y_g": 0.88,
+          "acceleration_z_g": 2.023,
+          "acceleration_status": 1,
+          "magnet_contact": "closed",
+          "eep_profile": "D2-14-41",
+          "debug_raw_values": {
+            "temp_raw": 276,
+            "humidity_raw": 16,
+            "illumination_raw": 42560,
+            "accel_x_raw": 20,
+            "accel_y_raw": 692,
+            "accel_z_raw": 926,
+            "magnet_raw": 0
+          }
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "D2-14-40",
+        "confidence": 0.85,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "multi_sensor",
+          "temperature_c": -13.02,
+          "temperature_f": 8.56,
+          "humidity_percent": 6.3,
+          "illumination_lx": 32471.0,
+          "acceleration_x_g": -2.405,
+          "acceleration_y_g": 0.88,
+          "acceleration_z_g": 2.023,
+          "acceleration_status": 1,
+          "magnet_contact": "closed",
+          "eep_profile": "D2-14-41",
+          "debug_raw_values": {
+            "temp_raw": 276,
+            "humidity_raw": 16,
+            "illumination_raw": 42560,
+            "accel_x_raw": 20,
+            "accel_y_raw": 692,
+            "accel_z_raw": 926,
+            "magnet_raw": 0
+          }
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "D2-14-41",
+        "confidence": 0.82,
+        "reasoning": "Matched capabilities: humidity, temperature; Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "multi_sensor",
+          "temperature_c": -13.02,
+          "temperature_f": 8.56,
+          "humidity_percent": 6.3,
+          "illumination_lx": 32471.0,
+          "acceleration_x_g": -2.405,
+          "acceleration_y_g": 0.88,
+          "acceleration_z_g": 2.023,
+          "acceleration_status": 1,
+          "magnet_contact": "closed",
+          "eep_profile": "D2-14-41",
+          "debug_raw_values": {
+            "temp_raw": 276,
+            "humidity_raw": 16,
+            "illumination_raw": 42560,
+            "accel_x_raw": 20,
+            "accel_y_raw": 692,
+            "accel_z_raw": 926,
+            "magnet_raw": 0
+          }
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "D2-01-01",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "multi_sensor",
+          "temperature_c": -13.02,
+          "temperature_f": 8.56,
+          "humidity_percent": 6.3,
+          "illumination_lx": 32471.0,
+          "acceleration_x_g": -2.405,
+          "acceleration_y_g": 0.88,
+          "acceleration_z_g": 2.023,
+          "acceleration_status": 1,
+          "magnet_contact": "closed",
+          "eep_profile": "D2-14-41",
+          "debug_raw_values": {
+            "temp_raw": 276,
+            "humidity_raw": 16,
+            "illumination_raw": 42560,
+            "accel_x_raw": 20,
+            "accel_y_raw": 692,
+            "accel_z_raw": 926,
+            "magnet_raw": 0
+          }
+        },
+        "data_quality": 1.0
+      },
+      {
+        "eep_profile": "D2-05-00",
+        "confidence": 0.7,
+        "reasoning": "Contains both temperature and humidity data",
+        "decoded_data": {
+          "type": "multi_sensor",
+          "temperature_c": -13.02,
+          "temperature_f": 8.56,
+          "humidity_percent": 6.3,
+          "illumination_lx": 32471.0,
+          "acceleration_x_g": -2.405,
+          "acceleration_y_g": 0.88,
+          "acceleration_z_g": 2.023,
+          "acceleration_status": 1,
+          "magnet_contact": "closed",
+          "eep_profile": "D2-14-41",
+          "debug_raw_values": {
+            "temp_raw": 276,
+            "humidity_raw": 16,
+            "illumination_raw": 42560,
+            "accel_x_raw": 20,
+            "accel_y_raw": 692,
+            "accel_z_raw": 926,
+            "magnet_raw": 0
+          }
+        },
+        "data_quality": 1.0
+      }
+    ],
+    "status": "pending"
+  }
+}

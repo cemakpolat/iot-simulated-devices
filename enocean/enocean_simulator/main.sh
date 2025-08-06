@@ -215,9 +215,15 @@ start_simulator_background() {
     log_debug "Main script: '$MAIN_PY'"
     log_debug "Arguments: $*"
 
-    # Skip the verification test and start directly since you mentioned it works with python main.py
+    # Create logs directory if it doesn't exist
+    mkdir -p "$LOGS_DIR"
+    
+    # Clear previous log file
+    > "$LOGS_DIR/simulator_output.log"
+
     log_info "Starting simulator in background..."
-    nohup "$PYTHON_CMD" "$MAIN_PY" "$@" > "$LOGS_DIR/simulator_output.log" 2>&1 &
+    # Use unbuffered output to ensure logs are written immediately
+    nohup "$PYTHON_CMD" -u "$MAIN_PY" "$@" > "$LOGS_DIR/simulator_output.log" 2>&1 &
     PID=$!
 
     # Save PID
@@ -230,12 +236,23 @@ start_simulator_background() {
         log_info "Simulator started successfully (PID: $PID)"
         log_info "Output logged to: $LOGS_DIR/simulator_output.log"
 
-        # Show last few lines of output for immediate feedback
-        sleep 2  # Give it a moment to generate some output
+        # Show startup output and look for serial interface
+        sleep 2  # Give it more time to generate output
         if [ -f "$LOGS_DIR/simulator_output.log" ]; then
             echo ""
-            log_info "Recent output:"
-            tail -n 10 "$LOGS_DIR/simulator_output.log" | sed 's/^/    /'
+            log_info "Startup output:"
+            echo "=========================================="
+            cat "$LOGS_DIR/simulator_output.log"
+            echo "=========================================="
+            
+            # Extract and highlight serial interface
+            SERIAL_INTERFACE=$(grep -o "/dev/ttys[0-9]*" "$LOGS_DIR/simulator_output.log" | head -1)
+            if [ -n "$SERIAL_INTERFACE" ]; then
+                echo ""
+                log_info "Serial Interface Created: $SERIAL_INTERFACE"
+                echo -e "${YELLOW}Copy this: $SERIAL_INTERFACE${NC}"
+                echo ""
+            fi
         fi
     else
         log_error "Failed to start simulator"
@@ -311,6 +328,15 @@ show_status() {
         if command -v ps &> /dev/null; then
             echo "Process info:"
             ps -p "$PID" -o pid,ppid,etime,cmd 2>/dev/null || true
+        fi
+        
+        # Show serial interface if available in logs
+        if [ -f "$LOGS_DIR/simulator_output.log" ]; then
+            SERIAL_INTERFACE=$(grep -o "/dev/ttys[0-9]*" "$LOGS_DIR/simulator_output.log" | head -1)
+            if [ -n "$SERIAL_INTERFACE" ]; then
+                echo ""
+                log_info "Serial Interface: $SERIAL_INTERFACE"
+            fi
         fi
     else
         log_info "Simulator is not running"
@@ -418,6 +444,7 @@ test_environment() {
 
     log_info "Environment test complete!"
 }
+
 debug_simulator() {
     log_info "Running simulator in debug mode..."
 
@@ -456,55 +483,73 @@ validate_config() {
     "$PYTHON_CMD" "$MAIN_PY" --verify-config
 }
 
-# Show live logs
+# Show live logs with proper tail functionality
 tail_logs() {
-    # Clear the terminal for better viewing
-    clear
+    # Check if log file exists or if simulator is running
+    if [ ! -f "$LOGS_DIR/simulator_output.log" ] && ! is_running; then
+        log_warn "No log file found and simulator is not running"
+        log_info "Start the simulator first with: ./main.sh start"
+        return 1
+    fi
 
+    log_info "Following live simulator logs (Press Ctrl+C to exit)..."
+    
     if [ -f "$LOGS_DIR/simulator_output.log" ]; then
-        echo -e "${GREEN}[INFO]${NC} Showing live simulator logs (Press Ctrl+C to exit)..."
         echo "File: $LOGS_DIR/simulator_output.log"
         echo "=========================================="
-        tail -f "$LOGS_DIR/simulator_output.log"
+        
+        # Use tail -F to follow the file even if it gets recreated
+        tail -F "$LOGS_DIR/simulator_output.log" 2>/dev/null
     else
-        echo -e "${YELLOW}[WARN]${NC} No simulator output log found at: $LOGS_DIR/simulator_output.log"
-
-        # Check if simulator is running
-        if is_running; then
-            echo -e "${GREEN}[INFO]${NC} Simulator is running but no log file yet. Waiting for logs..."
-            while [ ! -f "$LOGS_DIR/simulator_output.log" ]; do
-                sleep 1
-                echo -n "."
-            done
+        log_info "Waiting for log file to be created..."
+        
+        # Wait for the log file to appear
+        while [ ! -f "$LOGS_DIR/simulator_output.log" ] && is_running; do
+            sleep 1
+            echo -n "."
+        done
+        
+        if [ -f "$LOGS_DIR/simulator_output.log" ]; then
             echo ""
-            echo -e "${GREEN}[INFO]${NC} Log file appeared! Showing live logs..."
+            log_info "Log file created! Following logs..."
             echo "=========================================="
-            tail -f "$LOGS_DIR/simulator_output.log"
+            tail -F "$LOGS_DIR/simulator_output.log" 2>/dev/null
         else
-            echo -e "${GREEN}[INFO]${NC} Simulator is not running. Start it with: ./main.sh start"
+            echo ""
+            log_warn "Log file was not created and simulator is not running"
         fi
     fi
 }
+
 # Show recent logs
 show_logs() {
     if [ -f "$LOGS_DIR/simulator_output.log" ]; then
-        log_info "Recent simulator output (last 20 lines):"
+        log_info "Recent simulator output:"
         echo "=========================================="
-        tail -n 20 "$LOGS_DIR/simulator_output.log"
+        cat "$LOGS_DIR/simulator_output.log"
         echo "=========================================="
+        
+        # Extract and show serial interface
+        SERIAL_INTERFACE=$(grep -o "/dev/ttys[0-9]*" "$LOGS_DIR/simulator_output.log" | head -1)
+        if [ -n "$SERIAL_INTERFACE" ]; then
+            echo ""
+            log_info "Serial Interface: $SERIAL_INTERFACE"
+            echo -e "${YELLOW}Copy this: $SERIAL_INTERFACE${NC}"
+        fi
+        
+        echo ""
         log_info "For live logs use: ./main.sh tail"
     else
-        log_warn "No simulator output log found"
-    fi
-
-    if [ -f "$LOGS_DIR/startup_test.log" ]; then
-        echo ""
-        log_info "Startup test log:"
-        echo "=========================================="
-        cat "$LOGS_DIR/startup_test.log"
-        echo "=========================================="
+        log_warn "No simulator output log found at: $LOGS_DIR/simulator_output.log"
+        
+        if is_running; then
+            log_info "Simulator is running but no log file yet. Try again in a moment."
+        else
+            log_info "Simulator is not running. Start it with: ./main.sh start"
+        fi
     fi
 }
+
 # Show usage
 show_usage() {
     echo "Usage: $0 [COMMAND] [OPTIONS]"
@@ -514,22 +559,24 @@ show_usage() {
     echo "  run         Start the EnOcean Simulator in foreground"
     echo "  stop        Stop the EnOcean Simulator"
     echo "  restart     Restart the EnOcean Simulator"
-    echo "  status      Show simulator status"
+    echo "  status      Show simulator status and serial interface"
     echo "  debug       Run simulator in foreground with full output"
     echo "  validate    Validate configuration without starting"
-    echo "  logs        Show recent logs
-  tail        Show live simulator logs (real-time)"
+    echo "  logs        Show all simulator logs and serial interface"
+    echo "  tail        Show live simulator logs (real-time)"
     echo "  loganalyze  Run log analyzer"
     echo "  clean       Clean virtual environment and logs"
-    echo "  setup       Setup environment (create venv, install deps)
-  test        Test environment setup and Python detection"
+    echo "  setup       Setup environment (create venv, install deps)"
+    echo "  test        Test environment setup and Python detection"
     echo ""
     echo "Examples:"
-    echo "  $0 start"
-    echo "  $0 debug --list-devices"
-    echo "  $0 validate"
-    echo "  $0 loganalyze --report"
-    echo "  $0 loganalyze --session 20250702_221158"
+    echo "  $0 start                                  # Start in background"
+    echo "  $0 run                                    # Start in foreground"
+    echo "  $0 logs                                   # Show logs and serial interface"
+    echo "  $0 tail                                   # Follow live logs"
+    echo "  $0 status                                 # Show status and serial interface"
+    echo "  $0 debug --list-devices                   # Debug mode with options"
+    echo "  $0 loganalyze --report                    # Analyze logs"
     echo ""
 }
 

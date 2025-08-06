@@ -1,0 +1,9 @@
+pyserial==3.5
+paho-mqtt==2.1.0
+python-dotenv==1.0.0
+# Web Interface
+flask>=2.3.0
+flask-cors>=4.0.0
+
+# Configuration Management
+psutil>=7.0.0

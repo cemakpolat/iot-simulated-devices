@@ -1,0 +1,94 @@
+{
+  "version": "1.0",
+  "devices": {
+    "78:9A:BC:54": {
+      "name": "switch",
+      "eep_profile": "F6-02-01",
+      "device_type": "unknown",
+      "location": "room2",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Registered via discovery with EEP F6-02-01",
+      "enabled": true,
+      "capabilities": [
+        "switch"
+      ],
+      "interval": 0,
+      "first_seen": 1754392351.605611,
+      "last_seen": 1754480460.3468108,
+      "packet_count": 1900
+    },
+    "78:9A:BC:80": {
+      "name": "device",
+      "eep_profile": "D2-01-01",
+      "device_type": "unknown",
+      "location": "room2",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Registered via discovery with EEP D2-01-01",
+      "enabled": true,
+      "capabilities": [
+        "switch",
+        "energy"
+      ],
+      "interval": 0,
+      "first_seen": 1754392433.654916,
+      "last_seen": 1754480304.265707,
+      "packet_count": 392
+    },
+    "78:9A:BC:32": {
+      "name": "temperature sensor",
+      "eep_profile": "A5-02-01",
+      "device_type": "unknown",
+      "location": "room2",
+      "manufacturer": "Unknown",
+      "model": "Unknown",
+      "description": "Registered via discovery with EEP A5-02-01",
+      "enabled": true,
+      "capabilities": [
+        "temperature"
+      ],
+      "interval": 0,
+      "first_seen": 1754394944.891167,
+      "last_seen": 1754480316.274731,
+      "packet_count": 146
+    }
+  },
+  "locations": {
+    "Unknown": {
+      "building": "Main",
+      "floor": 1,
+      "zone": "general"
+    }
+  },
+  "eep_profiles": {
+    "A5-04-01": {
+      "description": "Temperature and humidity sensor",
+      "capabilities": [
+        "temperature",
+        "humidity"
+      ]
+    },
+    "F6-02-01": {
+      "description": "Rocker switch",
+      "capabilities": [
+        "switch"
+      ]
+    },
+    "D5-00-01": {
+      "description": "Contact sensor",
+      "capabilities": [
+        "contact"
+      ]
+    },
+    "D2-14-40": {
+      "description": "Multi-sensor",
+      "capabilities": [
+        "temperature",
+        "humidity",
+        "contact",
+        "acceleration"
+      ]
+    }
+  }
+}

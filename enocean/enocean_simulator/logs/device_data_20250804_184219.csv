@@ -1,0 +1,27 @@
+Timestamp,Device_Name,Device_ID,EEP_Type,Raw_Telegram,Payload,Decoded_Data,Status
+2025-08-04T18:42:21.352373,HumiditySensor_Bathroom,789abc31,A5-10-01,55000a000180a5008e00ef789abc31303d,a5008e00ef789abc3130,"{""humidity"": 0.0}",SUCCESS
+2025-08-04T18:42:23.355480,TempHumidity_LivingRoom,789abc32,A5-02-03,55000a000180a500799e7a789abc3230c1,a500799e7a789abc3230,"{""humidity"": 0.0, ""temperature"": 19.0}",SUCCESS
+2025-08-04T18:42:25.352524,CO2Sensor_Office,789abc33,A5-09-04,55000a000180a5006d00b8789abc333018,a5006d00b8789abc3330,"{""co2_ppm"": 855}",SUCCESS
+2025-08-04T18:42:27.350046,LightSensor_ConferenceRoom,789abc34,A5-06-01,55000a000180a5a80000ec789abc3430b2,a5a80000ec789abc3430,"{""light_lux"": 0}",SUCCESS
+2025-08-04T18:42:29.359494,TempRangeSensor_Warehouse,789abc35,A5-02-02,55000a000180a5713456c8789abc353064,a5713456c8789abc3530,"{""temperature"": 17.7}",SUCCESS
+2025-08-04T18:42:31.356419,TempIlluminance_Reception,789abc36,A5-02-04,55000a000180a5a19a002d789abc3630a5,a5a19a002d789abc3630,"{""illuminance_lux"": 631, ""temperature"": 8.3}",SUCCESS
+2025-08-04T18:42:33.358564,TempHumidityIlluminance_Lobby,789abc37,A5-02-05,55000a000180a5562e6e0b789abc3730db,a5562e6e0b789abc3730,"{""illuminance_lux"": 337, ""temperature"": -25.6, ""humidity"": 43.1}",SUCCESS
+2025-08-04T18:42:35.351857,BarometricSensor_WeatherStation,789abc38,A5-10-02,55000a000180a500d9002b789abc38302c,a500d9002b789abc3830,"{""pressure_hpa"": 1023}",SUCCESS
+2025-08-04T18:42:37.362740,TempHumidityBarometric_Outdoor,789abc39,A5-10-03,55000a000180a5d08537da789abc3930da,a5d08537da789abc3930,"{""pressure_hpa"": 1002, ""humidity"": 52.2, ""temperature"": 8.6}",SUCCESS
+2025-08-04T18:42:39.358227,MotionSensor_Hallway,789abc3d,A5-07-01,55000a000180a500000008789abc3d30f2,a500000008789abc3d30,"{""motion_detected"": true}",SUCCESS
+2025-08-04T18:42:41.359981,MotionTempSensor_Bathroom,789abc3e,A5-07-02,55000a000180a5003a0008789abc3e302a,a5003a0008789abc3e30,"{""temperature"": -21.8, ""motion_detected"": true}",SUCCESS
+2025-08-04T18:42:43.357082,Accelerometer_VibrationMonitor,789abc40,A5-08-01,55000a000180a5817fc208789abc4030e6,a5817fc208789abc4030,"{""acceleration_x"": 0.02, ""acceleration_y"": -0.01, ""acceleration_z"": 1.04}",SUCCESS
+2025-08-04T18:42:45.364380,SoilMoisture_Garden,789abc43,A5-20-01,55000a000180a500008be8789abc433021,a500008be8789abc4330,"{""soil_moisture_percent"": 0}",SUCCESS
+2025-08-04T18:42:47.357966,RainSensor_Outdoor,789abc44,A5-20-02,55000a000180a5006000fd789abc4430ed,a5006000fd789abc4430,"{""rain_detected"": true}",SUCCESS
+2025-08-04T18:42:49.364773,ContactSensor_FrontDoor,789abc45,D5-00-01,550007000111d509789abc453007,d509789abc4530,"{""contact"": ""open""}",SUCCESS
+2025-08-04T18:42:51.361126,WindowHandle_MasterBedroom,789abc46,D5-00-02,550007000111d500789abc46305e,d500789abc4630,"{""window_handle"": ""closed""}",SUCCESS
+2025-08-04T18:42:53.364562,DoorHandle_MainEntrance,789abc47,D5-00-03,550007000111d500789abc47304b,d500789abc4730,"{""door_handle"": ""closed""}",SUCCESS
+2025-08-04T18:42:55.361575,SmokeDetector_Kitchen,789abc49,A5-07-04,55000a000180a50000000f789abc4930db,a50000000f789abc4930,"{""smoke_alarm"": false}",SUCCESS
+2025-08-04T18:42:57.366716,GlassBreakDetector_LivingRoom,789abc4a,A5-07-05,55000a000180a50000001e789abc4a3053,a50000001e789abc4a30,"{""glass_break_alarm"": true}",SUCCESS
+2025-08-04T18:42:59.370366,VibrationDetector_Safe,789abc4b,A5-07-06,55000a000180a500dc001e789abc4b30c6,a500dc001e789abc4b30,"{""vibration_detected"": true}",SUCCESS
+2025-08-04T18:43:01.372365,FloodDetector_Basement,789abc4c,A5-07-07,55000a000180a500000099789abc4c301e,a500000099789abc4c30,"{""flood_detected"": true}",SUCCESS
+2025-08-04T18:43:03.366532,RockerSwitch_MasterBedroom,789abc50,F6-02-01,550007000111f600789abc5030b0,f600789abc5030,"{""rocker_action"": ""released""}",SUCCESS
+2025-08-04T18:43:05.364318,RockerSwitch2_LivingRoom,789abc51,F6-02-02,550007000111f600789abc5130a5,f600789abc5130,"{""rocker_action"": ""released""}",SUCCESS
+2025-08-04T18:43:07.367502,PushButton_Doorbell,789abc52,F6-02-03,550007000111f610789abc523004,f610789abc5230,"{""button_pressed"": true}",SUCCESS
+2025-08-04T18:43:09.370877,DualPushButton_Office,789abc54,F6-02-05,550007000111f600789abc5430e4,f600789abc5430,"{""buttons_pressed"": ""none""}",SUCCESS
+2025-08-04T18:43:11.367040,RadiatorThermostat_LivingRoom,789abc60,A5-04-01,55000a000180a50073b2bc789abc60300b,a50073b2bc789abc6030,"{""humidity"": 0.0, ""temperature"": 18.0}",SUCCESS

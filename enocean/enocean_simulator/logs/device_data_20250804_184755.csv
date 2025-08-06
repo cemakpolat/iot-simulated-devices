@@ -1,0 +1,43 @@
+Timestamp,Device_Name,Device_ID,EEP_Type,Raw_Telegram,Payload,Decoded_Data,Status
+2025-08-04T18:47:57.179396,HumiditySensor_Bathroom,789abc31,A5-10-01,55000a000180a5006a00cd789abc313015,a5006a00cd789abc3130,"{""humidity"": 0.0}",SUCCESS
+2025-08-04T18:47:59.175565,TempHumidity_LivingRoom,789abc32,A5-02-03,55000a000180a50079b85c789abc323061,a50079b85c789abc3230,"{""humidity"": 0.0, ""temperature"": 19.0}",SUCCESS
+2025-08-04T18:48:01.178081,CO2Sensor_Office,789abc33,A5-09-04,55000a000180a50054008c789abc3330cb,a50054008c789abc3330,"{""co2_ppm"": 659}",SUCCESS
+2025-08-04T18:48:03.179077,LightSensor_ConferenceRoom,789abc34,A5-06-01,55000a000180a56d0000df789abc3430d8,a56d0000df789abc3430,"{""light_lux"": 0}",SUCCESS
+2025-08-04T18:48:05.180031,TempRangeSensor_Warehouse,789abc35,A5-02-02,55000a000180a57034568d789abc3530e6,a57034568d789abc3530,"{""temperature"": 17.6}",SUCCESS
+2025-08-04T18:48:07.184919,TempIlluminance_Reception,789abc36,A5-02-04,55000a000180a575980068789abc363030,a575980068789abc3630,"{""illuminance_lux"": 459, ""temperature"": 7.7}",SUCCESS
+2025-08-04T18:48:09.180834,TempHumidityIlluminance_Lobby,789abc37,A5-02-05,55000a000180a53b3b909c789abc3730c9,a53b3b909c789abc3730,"{""illuminance_lux"": 231, ""temperature"": -21.5, ""humidity"": 56.5}",SUCCESS
+2025-08-04T18:48:11.188535,BarometricSensor_WeatherStation,789abc38,A5-10-02,55000a000180a500cc008a789abc3830ba,a500cc008a789abc3830,"{""pressure_hpa"": 992}",SUCCESS
+2025-08-04T18:48:13.189558,TempHumidityBarometric_Outdoor,789abc39,A5-10-03,55000a000180a5cb8e2e5e789abc393016,a5cb8e2e5e789abc3930,"{""pressure_hpa"": 990, ""humidity"": 55.7, ""temperature"": 7.2}",SUCCESS
+2025-08-04T18:48:15.192916,MotionSensor_Hallway,789abc3d,A5-07-01,55000a000180a500000000789abc3d30bd,a500000000789abc3d30,"{""motion_detected"": true}",SUCCESS
+2025-08-04T18:48:17.182657,MotionTempSensor_Bathroom,789abc3e,A5-07-02,55000a000180a5002e0000789abc3e301e,a5002e0000789abc3e30,"{""temperature"": -25.6, ""motion_detected"": true}",SUCCESS
+2025-08-04T18:48:19.192540,Accelerometer_VibrationMonitor,789abc40,A5-08-01,55000a000180a57f7cc008789abc40301c,a57f7cc008789abc4030,"{""acceleration_x"": -0.01, ""acceleration_y"": -0.05, ""acceleration_z"": 1.01}",SUCCESS
+2025-08-04T18:48:21.186975,SoilMoisture_Garden,789abc43,A5-20-01,55000a000180a500005cde789abc43307d,a500005cde789abc4330,"{""soil_moisture_percent"": 0}",SUCCESS
+2025-08-04T18:48:25.191858,ContactSensor_FrontDoor,789abc45,D5-00-01,550007000111d508789abc45302e,d508789abc4530,"{""contact"": ""closed""}",SUCCESS
+2025-08-04T18:48:27.186029,WindowHandle_MasterBedroom,789abc46,D5-00-02,550007000111d500789abc46305e,d500789abc4630,"{""window_handle"": ""closed""}",SUCCESS
+2025-08-04T18:48:29.188247,DoorHandle_MainEntrance,789abc47,D5-00-03,550007000111d500789abc47304b,d500789abc4730,"{""door_handle"": ""closed""}",SUCCESS
+2025-08-04T18:48:33.195524,GlassBreakDetector_LivingRoom,789abc4a,A5-07-05,55000a000180a5000000da789abc4a306d,a5000000da789abc4a30,"{""glass_break_alarm"": true}",SUCCESS
+2025-08-04T18:48:35.190280,VibrationDetector_Safe,789abc4b,A5-07-06,55000a000180a50013004e789abc4b30ac,a50013004e789abc4b30,"{""vibration_detected"": false}",SUCCESS
+2025-08-04T18:48:37.193220,FloodDetector_Basement,789abc4c,A5-07-07,55000a000180a5000000ae789abc4c3064,a5000000ae789abc4c30,"{""flood_detected"": false}",SUCCESS
+2025-08-04T18:48:39.193339,RockerSwitch_MasterBedroom,789abc50,F6-02-01,550007000111f600789abc5030b0,f600789abc5030,"{""rocker_action"": ""released""}",SUCCESS
+2025-08-04T18:48:41.193827,RockerSwitch2_LivingRoom,789abc51,F6-02-02,550007000111f600789abc5130a5,f600789abc5130,"{""rocker_action"": ""released""}",SUCCESS
+2025-08-04T18:48:43.195522,PushButton_Doorbell,789abc52,F6-02-03,550007000111f600789abc52309a,f600789abc5230,"{""button_pressed"": false}",SUCCESS
+2025-08-04T18:48:45.196578,DualPushButton_Office,789abc54,F6-02-05,550007000111f600789abc5430e4,f600789abc5430,"{""buttons_pressed"": ""none""}",SUCCESS
+2025-08-04T18:48:47.198654,RadiatorThermostat_LivingRoom,789abc60,A5-04-01,55000a000180a50088be3f789abc603094,a50088be3f789abc6030,"{""humidity"": 0.0, ""temperature"": 21.3}",SUCCESS
+2025-08-04T18:48:49.206056,FanCoilThermostat_Office,789abc62,A5-04-03,55000a000180a5006eb969789abc6230d4,a5006eb969789abc6230,"{""fan_speed"": 0, ""temperature"": 17.3}",SUCCESS
+2025-08-04T18:48:51.201213,MultiSensor_SmartBuilding,789abc70,A5-12-01,55000a000180a5006d9ebb789abc703078,a5006d9ebb789abc7030,"{""humidity"": 0.0, ""temperature"": -5.8, ""motion_detected"": false}",SUCCESS
+2025-08-04T18:49:05.209548,ValveControl_Heating,789abc96,D2-33-00,550007000111d205789abc96307a,d205789abc9630,"{""valve_position_percent"": 5}",SUCCESS
+2025-08-04T18:49:11.215459,MultiSensor_ConferenceRoom,789abce3,D2-14-40,550012000173d2144100a861803ab02bff6490789abce38fa9,d2144100a861803ab02bff6490789abce38f,"{""temperature"": -33.7, ""humidity"": 25.5, ""acceleration_x"": -2.01, ""acceleration_y"": 0.63, ""acceleration_z"": -0.49}",SUCCESS
+2025-08-04T18:49:13.208710,MultiSensorMagnet_Reception,789abce4,D2-14-41,550012000173d21441009f1f800f9024036790789abce48f31,d21441009f1f800f9024036790789abce48f,"{""temperature"": -33.7, ""humidity"": 25.5, ""acceleration_x"": -2.01, ""acceleration_y"": 0.49, ""acceleration_z"": -1.52, ""magnetic_field_ut"": 0.0}",SUCCESS
+2025-08-04T18:49:31.216798,WindowHandle_MasterBedroom,789abc46,D5-00-02,550007000111d500789abc46305e,d500789abc4630,"{""window_handle"": ""closed""}",SUCCESS
+2025-08-04T18:49:33.213637,DoorHandle_MainEntrance,789abc47,D5-00-03,550007000111d540789abc47303d,d540789abc4730,"{""door_handle"": ""closed""}",SUCCESS
+2025-08-04T18:49:37.224394,VibrationDetector_Safe,789abc4b,A5-07-06,55000a000180a5001600fb789abc4b3037,a5001600fb789abc4b30,"{""vibration_detected"": true}",SUCCESS
+2025-08-04T18:49:39.218890,RockerSwitch_MasterBedroom,789abc50,F6-02-01,550007000111f600789abc5030b0,f600789abc5030,"{""rocker_action"": ""released""}",SUCCESS
+2025-08-04T18:49:45.223164,DualPushButton_Office,789abc54,F6-02-05,550007000111f610789abc54307a,f610789abc5430,"{""buttons_pressed"": ""button_A""}",SUCCESS
+2025-08-04T18:49:59.223553,WindowHandle_MasterBedroom,789abc46,D5-00-02,550007000111d500789abc46305e,d500789abc4630,"{""window_handle"": ""closed""}",SUCCESS
+2025-08-04T18:50:09.235260,RockerSwitch2_LivingRoom,789abc51,F6-02-02,550007000111f600789abc5130a5,f600789abc5130,"{""rocker_action"": ""released""}",SUCCESS
+2025-08-04T18:50:13.239285,DualPushButton_Office,789abc54,F6-02-05,550007000111f600789abc5430e4,f600789abc5430,"{""buttons_pressed"": ""none""}",SUCCESS
+2025-08-04T18:50:27.232141,ContactSensor_FrontDoor,789abc45,D5-00-01,550007000111d509789abc453007,d509789abc4530,"{""contact"": ""open""}",SUCCESS
+2025-08-04T18:50:33.243782,GlassBreakDetector_LivingRoom,789abc4a,A5-07-05,55000a000180a50000000e789abc4a30cd,a50000000e789abc4a30,"{""glass_break_alarm"": false}",SUCCESS
+2025-08-04T18:50:35.245338,VibrationDetector_Safe,789abc4b,A5-07-06,55000a000180a50011003e789abc4b3059,a50011003e789abc4b30,"{""vibration_detected"": true}",SUCCESS
+2025-08-04T18:50:39.241887,RockerSwitch2_LivingRoom,789abc51,F6-02-02,550007000111f600789abc5130a5,f600789abc5130,"{""rocker_action"": ""released""}",SUCCESS
+2025-08-04T18:50:41.242533,PushButton_Doorbell,789abc52,F6-02-03,550007000111f610789abc523004,f610789abc5230,"{""button_pressed"": true}",SUCCESS

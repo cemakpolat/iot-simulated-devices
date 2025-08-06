@@ -1,0 +1,26 @@
+{
+  "base_confidence": 0.5,
+  "capability_match": 0.3,
+  "data_quality_bonuses": {
+    "temperature_c": 0.1,
+    "humidity_percent": 0.1,
+    "button_name": 0.2,
+    "contact_state": 0.15
+  },
+  "reasonable_ranges": {
+    "temperature_c": {
+      "min": -50,
+      "max": 100,
+      "indoor_min": 10,
+      "indoor_max": 40,
+      "indoor_bonus": 0.1
+    },
+    "humidity_percent": {
+      "min": 0,
+      "max": 100,
+      "typical_min": 20,
+      "typical_max": 80,
+      "typical_bonus": 0.1
+    }
+  }
+}

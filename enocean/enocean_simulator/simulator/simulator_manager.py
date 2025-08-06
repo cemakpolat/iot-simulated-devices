@@ -33,9 +33,9 @@ class SimulatorManager:
                 return False
 
             # Create and start gateway receiver
-            if self.gateway_receiver_is_activated:
-                self.gateway_receiver = GatewayReceiver(device_manager=self.device_manager)
-                await self.gateway_receiver.start(gateway_port)
+            # if self.gateway_receiver_is_activated:
+            #     self.gateway_receiver = GatewayReceiver(device_manager=self.device_manager)
+            #     await self.gateway_receiver.start(gateway_port)
 
             self.running = True
             print(f"[SimulatorManager] Simulator started successfully on {gateway_port}")
