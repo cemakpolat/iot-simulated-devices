@@ -1,0 +1,51 @@
+{
+  "temperature": {
+    "description": "Detects temperature readings.",
+    "rules": [
+      { "type": "key_exists", "key": "temperature_c" }
+    ]
+  },
+  "humidity": {
+    "description": "Detects humidity readings.",
+    "rules": [
+      { "type": "key_exists", "key": "humidity_percent" }
+    ]
+  },
+  "illuminance": {
+    "description": "Detects illuminance readings.",
+    "rules": [
+      { "type": "key_exists", "key": "illuminance_lux" }
+    ]
+  },
+  "motion": {
+    "description": "Detects a motion event.",
+    "rules": [
+      { "type": "is_true", "key": "motion_detected" }
+    ]
+  },
+  "contact": {
+    "description": "Detects a door/window contact sensor state.",
+    "rules": [
+      { "type": "value_in", "key": "state", "values": ["open", "closed"] }
+    ]
+  },
+  "switch": {
+    "description": "Detects a button press from a switch.",
+    "rules": [
+      { "type": "key_exists", "key": "button_name" },
+      { "type": "key_exists", "key": "pressed" }
+    ]
+  },
+  "acceleration": {
+    "description": "Detects any acceleration data.",
+    "rules": [
+      { "type": "any_key_exists", "keys": ["acceleration_x", "acceleration_y", "acceleration_z"] }
+    ]
+  },
+  "energy": {
+    "description": "Detects power or energy readings.",
+    "rules": [
+      { "type": "any_key_exists", "keys": ["power_w", "energy_kwh"] }
+    ]
+  }
+}

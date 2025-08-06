@@ -1,0 +1,25 @@
+# requirements.txt
+# Core dependencies for the unified EnOcean gateway system
+
+# MQTT Communication
+paho-mqtt>=1.6.0
+
+# Serial Communication
+pyserial>=3.5
+
+# Web Interface
+flask>=2.3.0
+flask-cors>=4.0.0
+
+# Configuration Management
+python-dotenv>=1.0.0
+
+# Optional: Enhanced Storage Backends
+# Uncomment if you want to use SQLite/PostgreSQL instead of JSON
+# sqlite3 is built into Python
+# psycopg2-binary>=2.9.0  # For PostgreSQL
+# redis>=4.5.0            # For Redis
+
+# Development & Testing (Optional)
+# pytest>=7.0.0
+# pytest-mock>=3.10.0

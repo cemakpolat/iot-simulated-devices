@@ -1,0 +1,47 @@
+{
+  "temperature_sensor": {
+    "name": "Temperature Sensor",
+    "icon": "\ud83c\udf21\ufe0f",
+    "expected_capabilities": [
+      "temperature"
+    ],
+    "typical_interval": 300
+  },
+  "temp_humidity_sensor": {
+    "name": "Temperature & Humidity Sensor",
+    "icon": "\ud83c\udf21\ufe0f\ud83d\udca7",
+    "expected_capabilities": [
+      "temperature",
+      "humidity"
+    ],
+    "typical_interval": 300
+  },
+  "rocker_switch": {
+    "name": "Rocker Switch",
+    "icon": "\ud83d\udd18",
+    "expected_capabilities": [
+      "switch"
+    ],
+    "typical_interval": 0
+  },
+  "contact_sensor": {
+    "name": "Contact Sensor",
+    "icon": "\ud83d\udeaa",
+    "expected_capabilities": [
+      "contact"
+    ],
+    "typical_interval": 0
+  },
+  "multi_sensor_magnet": {
+    "name": "Multi-sensor with Magnet",
+    "icon": "\ud83d\udcca\ud83e\uddf2",
+    "expected_capabilities": [
+      "temperature",
+      "humidity",
+      "acceleration",
+      "illumination",
+      "magnet_contact"
+    ],
+    "typical_interval": 600
+  }
+}

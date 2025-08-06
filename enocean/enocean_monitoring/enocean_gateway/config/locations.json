@@ -1,0 +1,22 @@
+{
+  "Kitchen": {
+    "building": "Main",
+    "floor": 1,
+    "zone": "residential"
+  },
+  "Warehouse": {
+    "building": "Storage",
+    "floor": 1,
+    "zone": "industrial"
+  },
+  "Workstation": {
+    "building": "Main",
+    "floor": 2,
+    "zone": "work"
+  },
+  "Unknown": {
+    "building": "Main",
+    "floor": 1,
+    "zone": "general"
+  }
+}

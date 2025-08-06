@@ -1,0 +1,16 @@
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB-EnOcean
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    isDefault: true
+    editable: true
+    jsonData:
+      version: Flux
+      organization: enocean
+      defaultBucket: sensors
+      tlsSkipVerify: true
+    secureJsonData:
+      token: admin_token_secret
