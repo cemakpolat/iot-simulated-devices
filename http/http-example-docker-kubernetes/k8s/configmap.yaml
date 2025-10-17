@@ -1,0 +1,10 @@
+# configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iot-config
+data:
+  redis-url: "redis://redis-service:6379/0"
+  server-url: "http://iot-server-service/data"
+  database-host: "timescaledb-service"
+  database-port: "5432"

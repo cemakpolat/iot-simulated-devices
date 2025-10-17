@@ -1,0 +1,6 @@
+.git
+.gitignore
+README.md
+.env
+__pycache__/
+*.pyc

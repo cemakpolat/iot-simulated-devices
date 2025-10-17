@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iot-server-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: iot-server
+  template:
+    metadata:
+      labels:
+        app: iot-server
+    spec:
+      containers:
+      - name: server
+        image: cemakpolat/iot-server:latest
+        command: ["/bin/sh", "-c"]
+        args:
+        - "/wait-for-it.sh timescaledb-service:5432 && /wait-for-it.sh redis-service:6379 && python -m init_db && /start.sh"
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: iot-secrets
+              key: database-url
+        - name: REDIS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: iot-config
+              key: redis-url
+        ports:
+        - containerPort: 80
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 10

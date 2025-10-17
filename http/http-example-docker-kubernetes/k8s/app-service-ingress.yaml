@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: iot-server-service
+spec:
+  selector:
+    app: iot-server
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80 # Explicitly target port 80 on the pod
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: iot-server-ingress
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: iot.k3s.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: iot-server-service
+                port:
+                  number: 80

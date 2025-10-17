@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iot-client-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: iot-client
+  template:
+    metadata:
+      labels:
+        app: iot-client
+    spec:
+      containers:
+      - name: client
+        image: cemakpolat/iot-client:latest
+        imagePullPolicy: Always
+        command: ["/bin/sh", "-c"]
+        args:
+          - "/wait-for-it.sh iot-server-service:80 && python -m main"
+        env:
+        - name: SERVER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: iot-config
+              key: server-url
+        - name: DEVICE_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name

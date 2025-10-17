@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IoT AI Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'base': '#000000',
+            'card': '#0a0a0a',
+            'border': '#272727',
+            'normal': '#10b981',
+            'anomaly': '#ef4444',
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    #devices-container {
+      align-items: start;
+    }
+    .metric-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .chart-container {
+      height: 60px;
+      position: relative;
+      /* --- THE DEFINITIVE FIX FOR CANVAS OVERFLOW --- */
+      min-width: 0; /* This forces the grid item to shrink properly. */
+    }
+    #connection-status {
+      transition: opacity 0.5s;
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      border-radius: 0.25rem;
+    }
+  </style>
+</head>
+<body class="bg-base text-white min-h-screen">
+  <div class="container mx-auto px-4 py-8">
+    
+    <div id="connection-status" class="bg-gray-700 text-gray-300 opacity-0">Connecting...</div>
+
+    <!-- Live Devices -->
+    <section>
+      <div class="flex items-center mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 13v-1m4 1v-3m4 3V8M5 21h14M5 21a2 2 0 01-2-2V7a2 2 0 012-2h14a2 2 0 012 2v12a2 2 0 01-2 2M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <h1 class="text-2xl font-bold text-white">Live Device Readings</h1>
+      </div>
+      <div id="devices-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </section>
+
+    <footer class="mt-16 pt-6 border-t border-border text-center text-gray-600 text-sm">
+      IoT Anomaly Detection Dashboard
+    </footer>
+  </div>
+
+  <script>
+    // The JavaScript remains correct and does not need any changes.
+    const devices = {};
+    const MAX_POINTS = 30;
+
+    function getUnitForMetric(metricType) {
+        const units = { temperature: '°C', humidity: '%' };
+        return units[metricType] || '';
+    }
+
+    function renderOrUpdateDevice(deviceData) {
+      const { device_id, metrics } = deviceData;
+      
+      let deviceState = devices[device_id];
+      if (!deviceState) {
+        devices[device_id] = { metrics: {} };
+        deviceState = devices[device_id];
+      }
+
+      let card = document.getElementById(`device-${device_id}`);
+      if (!card) {
+        card = document.createElement('div');
+        card.id = `device-${device_id}`;
+        card.className = 'bg-card border border-border p-5';
+        card.innerHTML = `
+          <h2 class="text-xl font-semibold text-white font-mono mb-4">${device_id}</h2>
+          <div id="metrics-container-${device_id}" class="space-y-4"></div>
+        `;
+        document.getElementById('devices-container').appendChild(card);
+      }
+
+      const metricsContainer = document.getElementById(`metrics-container-${device_id}`);
+      
+      metrics.forEach(metric => {
+        const { type, value, result, confidence } = metric;
+        let metricState = deviceState.metrics[type];
+
+        if (!metricState) {
+          deviceState.metrics[type] = { values: [], chart: null };
+          metricState = deviceState.metrics[type];
+          
+          const metricElement = document.createElement('div');
+          metricElement.id = `metric-${device_id}-${type}`;
+          metricElement.innerHTML = `
+            <div class="metric-row border-t border-border pt-4">
+              <div>
+                <div class="flex items-baseline gap-x-2">
+                  <p class="text-2xl font-bold">
+                    <span id="value-${device_id}-${type}">${value}</span>${getUnitForMetric(type)}
+                  </p>
+                  <span id="status-${device_id}-${type}"></span>
+                </div>
+                <p class="text-xs text-gray-400 capitalize mt-1">${type}</p>
+                <p class="text-xs text-gray-500">Confidence: <span id="conf-${device_id}-${type}"></span></p>
+              </div>
+              <div class="chart-container">
+                <canvas id="chart-${device_id}-${type}"></canvas>
+              </div>
+            </div>
+          `;
+          metricsContainer.appendChild(metricElement);
+
+          const ctx = document.getElementById(`chart-${device_id}-${type}`).getContext('2d');
+          metricState.chart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: [], datasets: [{ data: [], borderWidth: 2, tension: 0.4, pointRadius: 0, fill: true }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
+          });
+        }
+        
+        metricState.values.push(value);
+        if (metricState.values.length > MAX_POINTS) metricState.values.shift();
+
+        document.getElementById(`value-${device_id}-${type}`).textContent = value;
+        document.getElementById(`conf-${device_id}-${type}`).textContent = `${(confidence * 100).toFixed(1)}%`;
+        
+        const statusEl = document.getElementById(`status-${device_id}-${type}`);
+        statusEl.textContent = result.toUpperCase();
+        const isAnomaly = result === 'anomaly';
+        statusEl.className = `font-mono text-xs font-bold px-2 py-1 ${isAnomaly ? 'bg-anomaly text-black' : 'bg-normal text-black'}`;
+        
+        const chart = metricState.chart;
+        chart.data.datasets[0].data = [...metricState.values];
+        chart.data.labels = metricState.values.map(() => '');
+        const chartColor = isAnomaly ? tailwind.config.theme.extend.colors.anomaly : tailwind.config.theme.extend.colors.normal;
+        chart.data.datasets[0].borderColor = chartColor;
+        chart.data.datasets[0].backgroundColor = chartColor + '33';
+        chart.update('none');
+      });
+    }
+
+    const statusEl = document.getElementById('connection-status');
+    async function fetchAndUpdateDashboard() {
+        try {
+            const response = await fetch('/latest');
+            if (!response.ok) throw new Error(`Server responded with ${response.status}`);
+            
+            const liveDevices = await response.json();
+            liveDevices.forEach(deviceData => renderOrUpdateDevice(deviceData));
+
+            statusEl.className = "bg-green-800 text-green-200 opacity-100";
+            statusEl.textContent = "Connected";
+        } catch (error) {
+            console.error("Failed to fetch latest data:", error);
+            statusEl.className = "bg-red-800 text-red-200 opacity-100";
+            statusEl.textContent = "Connection Lost";
+        } finally {
+            setTimeout(() => { statusEl.style.opacity = '0'; }, 2000);
+        }
+    }
+
+    fetchAndUpdateDashboard();
+    setInterval(fetchAndUpdateDashboard, 2000);
+  </script>
+</body>
+</html>
