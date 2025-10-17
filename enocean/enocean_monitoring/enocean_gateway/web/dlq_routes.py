@@ -1,6 +1,7 @@
 # web/dlq_routes.py
 from flask import Blueprint, jsonify, request
 from typing import Dict, Any
+import logging
 
 def create_dlq_routes(gateway_system) -> Blueprint:
     """Create Flask routes for Dead Letter Queue management"""
@@ -48,9 +49,10 @@ def create_dlq_routes(gateway_system) -> Blueprint:
                 "data": messages
             })
         except Exception as e:
+            logging.exception("Error in get_handler_dlq_messages for handler '%s':", handler_name)
             return jsonify({
                 "success": False,
-                "error": str(e)
+                "error": "An internal error has occurred."
             }), 500
     
     @dlq_bp.route('/health', methods=['GET'])
