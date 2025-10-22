@@ -1,0 +1,60 @@
+services:
+  http-server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    ports:
+      - "80:80"  # Expose Nginx on port 80
+    environment:
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=5000
+      - LOG_LEVEL=INFO
+      - GUNICORN_WORKERS=4
+      - GUNICORN_THREADS=2
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]  # Still hits Flask directly
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  http-client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    depends_on:
+      http-server:
+        condition: service_healthy
+    environment:
+      - DEVICE_ID=device-01
+      - SERVER_URL=http://http-server:5000/data
+      - SEND_INTERVAL=2
+      - LOG_LEVEL=INFO
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  http-client-2:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    depends_on:
+      http-server:
+        condition: service_healthy
+    environment:
+      - DEVICE_ID=device-02
+      - SERVER_URL=http://http-server:5000/data
+      - SEND_INTERVAL=2
+      - LOG_LEVEL=INFO
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

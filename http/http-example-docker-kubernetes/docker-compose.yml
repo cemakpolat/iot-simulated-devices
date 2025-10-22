@@ -1,0 +1,103 @@
+services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg14
+    container_name: timescaledb
+    environment:
+      - POSTGRES_USER=iotuser
+      - POSTGRES_PASSWORD=iotpassword
+      - POSTGRES_DB=iotdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - timescale-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U iotuser -d iotdata"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build:
+      context: ./server
+    container_name: iot-server
+    # --- THIS IS THE FINAL FIX ---
+    # 1. Wait for the DB.
+    # 2. Run the dedicated init_db.py script.
+    # 3. Start the main server application.
+    command: >
+      sh -c "/wait-for-it.sh timescaledb:5432 &&
+             python -m init_db &&
+             /start.sh"
+    # -----------------------------
+    ports:
+      - "8080:80"
+    environment:
+      - DATABASE_URL=postgresql://iotuser:iotpassword@timescaledb:5432/iotdata
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery-worker:
+    build:
+      context: ./server
+    container_name: celery-worker
+    command: >
+      sh -c "/wait-for-it.sh timescaledb:5432 && /wait-for-it.sh redis:6379 && celery -A celery_app.celery worker --loglevel=info"
+    environment:
+      - DATABASE_URL=postgresql://iotuser:iotpassword@timescaledb:5432/iotdata
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery-beat:
+    build:
+      context: ./server
+    container_name: celery-beat
+    command: celery -A celery_app.celery beat --loglevel=info
+    environment:
+      - DATABASE_URL=postgresql://iotuser:iotpassword@timescaledb:5432/iotdata
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - celery-beat-schedule:/app/
+    depends_on:
+      - timescaledb
+      - redis
+
+  client-01:
+    build:
+      context: ./client
+    container_name: iot-client-01
+    environment:
+      - SERVER_URL=http://server/data # Correct internal URL
+      - DEVICE_ID=device-01
+    depends_on:
+      - server
+
+  client-02:
+    build:
+      context: ./client
+    container_name: iot-client-02
+    environment:
+      - SERVER_URL=http://server/data
+      - DEVICE_ID=device-02
+    depends_on:
+      - server
+
+volumes:
+  timescale-data:
+  celery-beat-schedule:
